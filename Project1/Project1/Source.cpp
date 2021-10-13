@@ -13,6 +13,7 @@ class NCHU {
 protected:
     float startx, starty;
     void draw_ch(int(*data)[2], int len) {
+	   glColor3f(0.007, 0.4375, 0.589);
 	   glBegin(GL_POLYGON);
 	   for (int i = 0; i < len; i++) {
 		  glVertex2f(((data[i][0] - startx) / startx), ((starty - data[i][1]) / starty));
@@ -58,7 +59,6 @@ class A:protected NCHU{
 	   A(float width, float height):NCHU(width, height){
 	   }
 	   void display_ch() {
-		  glColor3f(0.007, 0.4375, 0.589);
 		  draw_ch(a_3, sizeof(a_3) / sizeof(a_3[0]));
 		  draw_ch(a_4, sizeof(a_4) / sizeof(a_4[0]));
 		  draw_ch(a_5, sizeof(a_5) / sizeof(a_5[0]));
@@ -73,6 +73,45 @@ class A:protected NCHU{
 		  }
 	   }
 };
+class B :protected NCHU {
+private:
+    int a_four[2][4][2] = {
+	   {{269,588},{287,565},{314,553},{313,559}},
+	   {{314,553},{313,559},{318,560},{327,554}},
+    };
+    int a_five[2][5][2] = {
+	   {{275,520},{275,508},{308,522},{308,529},{287,533}},
+	   {{318,560},{327,554},{331,561},{295,604},{277,605}},
+    };
+    int a_six[1][6][2] = {
+	   {{292,546},{315,541},{287,565},{269,588},{260,586},{260,573}},
+    };
+    int a_seven[2][7][2] = {
+	   {{308,529},{287,533},{244,542},{240,558}, {247,562},{329,541},{324,530}},
+	   {{295,604},{277,605},{238,608},{249,622},{314,613},{352,612},{346,602}},
+    };
+
+public:
+    B(float width, float height) :NCHU(width, height) {
+    }
+    void display_ch() {
+	   /*for (int i = 0; i < 2; i++) {
+		  draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
+	   }*/
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
+	   }
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
+	   }
+	   for (int i = 0; i < 1; i++) {
+		  draw_ch(a_six[i], sizeof(a_six[i]) / sizeof(a_six[i][0]));
+	   }
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_seven[i], sizeof(a_seven[i]) / sizeof(a_seven[i][0]));
+	   }
+    }
+};
 
 
 
@@ -84,11 +123,13 @@ void init(void)
 
 void display(void) {
     A a(WIDTH,HEIGHT);
+    B b(WIDTH, HEIGHT);
     glClearColor(1.0, 1.0, 1.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, WIDTH, HEIGHT);
     glOrtho(0.0f, WIDTH, 0.0f, HEIGHT, 0.0f, 0.0f);
     a.display_ch();
+    b.display_ch();
     glutSwapBuffers();
 }
 
