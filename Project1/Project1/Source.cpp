@@ -112,7 +112,47 @@ public:
 	   }
     }
 };
+class C :protected NCHU {
+private:
+    int a_four[4][4][2] = {
+	   {{442,501},{452,499},{450,671},{438,680}},
+	   {{377,529},{388,535},{396,533},{393,529}},
+	   {{439,527} ,{436,519},{480,517},{471,524}},
+	   {{480,517},{471,524},{489,529},{489,522}},
+    };
+    int a_five[1][5][2] = {
+	   {{471,524},{489,529},{447,563},{414,575},{415,536}},
+    };
+    int a_six[2][6][2] = {
+	   {{471,524},{489,529},{447,563},{414,575},{415,566},{447,551}},
+	   {{439,527} ,{436,519} ,{395,525},{393,529},{396,533},{406,542}},
+    };
+    int a_seven[2][7][2] = {
+	   {{377,529},{388,535},{391,535},{398,580},{389,578},{378,561},{374,534}},
+	   {{414,575},{415,566},{447,557},{460,556},{469,558},{465,568},{444,575}},
+    };
 
+public:
+    C(float width, float height) :NCHU(width, height) {
+    }
+    void display_ch() {
+	   /*for (int i = 0; i < 2; i++) {
+		  draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
+	   }*/
+	   for (int i = 0; i < 4; i++) {
+		  draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
+	   }/*
+	   for (int i = 0; i < 1; i++) {
+		  draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
+	   }*/
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_six[i], sizeof(a_six[i]) / sizeof(a_six[i][0]));
+	   }
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_seven[i], sizeof(a_seven[i]) / sizeof(a_seven[i][0]));
+	   }
+    }
+};
 
 
 void init(void)
@@ -124,12 +164,14 @@ void init(void)
 void display(void) {
     A a(WIDTH,HEIGHT);
     B b(WIDTH, HEIGHT);
+    C c(WIDTH, HEIGHT);
     glClearColor(1.0, 1.0, 1.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, WIDTH, HEIGHT);
     glOrtho(0.0f, WIDTH, 0.0f, HEIGHT, 0.0f, 0.0f);
     a.display_ch();
     b.display_ch();
+    c.display_ch();
     glutSwapBuffers();
 }
 
