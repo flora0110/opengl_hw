@@ -1,7 +1,7 @@
 ﻿  Source.cpp
-C:\Junior\openGL\Project1\Project1\Source.cpp(71,1): warning C4305: '引數': 從 'double' 轉換為 'GLfloat'，是由較大的類型轉換為較小的類型，可能導致資料遺失
-C:\Junior\openGL\Project1\Project1\Source.cpp(92,29): warning C4244: '引數': 將 'float' 轉換為 'GLsizei'，由於類型不同，可能導致資料遺失
-C:\Junior\openGL\Project1\Project1\Source.cpp(92,22): warning C4244: '引數': 將 'float' 轉換為 'GLsizei'，由於類型不同，可能導致資料遺失
-C:\Junior\openGL\Project1\Project1\Source.cpp(99,29): warning C4244: '引數': 將 'float' 轉換為 'GLsizei'，由於類型不同，可能導致資料遺失
-C:\Junior\openGL\Project1\Project1\Source.cpp(99,22): warning C4244: '引數': 將 'float' 轉換為 'GLsizei'，由於類型不同，可能導致資料遺失
-  Project1.vcxproj -> C:\Junior\openGL\Project1\Debug\Project1.exe
+C:\Junior\openGL\opengl_hw\Project1\Project1\Source.cpp(62,1): warning C4305: '引數': 從 'double' 轉換為 'GLfloat'，是由較大的類型轉換為較小的類型，可能導致資料遺失
+C:\Junior\openGL\opengl_hw\Project1\Project1\Source.cpp(92,29): warning C4244: '引數': 將 'float' 轉換為 'GLsizei'，由於類型不同，可能導致資料遺失
+C:\Junior\openGL\opengl_hw\Project1\Project1\Source.cpp(92,22): warning C4244: '引數': 將 'float' 轉換為 'GLsizei'，由於類型不同，可能導致資料遺失
+C:\Junior\openGL\opengl_hw\Project1\Project1\Source.cpp(99,29): warning C4244: '引數': 將 'float' 轉換為 'GLsizei'，由於類型不同，可能導致資料遺失
+C:\Junior\openGL\opengl_hw\Project1\Project1\Source.cpp(99,22): warning C4244: '引數': 將 'float' 轉換為 'GLsizei'，由於類型不同，可能導致資料遺失
+  Project1.vcxproj -> C:\Junior\openGL\opengl_hw\Project1\Debug\Project1.exe
