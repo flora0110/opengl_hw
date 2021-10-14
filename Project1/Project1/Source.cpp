@@ -95,9 +95,6 @@ public:
     B(float width, float height) :NCHU(width, height) {
     }
     void display_ch() {
-	   /*for (int i = 0; i < 2; i++) {
-		  draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
-	   }*/
 	   for (int i = 0; i < 2; i++) {
 		  draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
 	   }
@@ -136,15 +133,9 @@ public:
     C(float width, float height) :NCHU(width, height) {
     }
     void display_ch() {
-	   /*for (int i = 0; i < 2; i++) {
-		  draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
-	   }*/
 	   for (int i = 0; i < 4; i++) {
 		  draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
-	   }/*
-	   for (int i = 0; i < 1; i++) {
-		  draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
-	   }*/
+	   }
 	   for (int i = 0; i < 2; i++) {
 		  draw_ch(a_six[i], sizeof(a_six[i]) / sizeof(a_six[i][0]));
 	   }
@@ -153,7 +144,67 @@ public:
 	   }
     }
 };
+class D :protected NCHU {
+private:
+    int a_three[2][3][2] = {
+	   {{608,547},{615,562},{613,565}},
+	   {{577,604},{581,598},{597,595}},
+    };
+    int a_four[13][4][2] = {
+	   {{540,516},{551,513},{554,520},{544,522}},
+	   {{554,520},{544,522},{544,582},{553,579}},
+	   {{554,512},{562,510},{569,518},{560,518}},
+	   {{572,511},{599,499},{608,498},{612,504}},
+	   {{596,536},{584,538},{586,541},{591,545}},
+	   {{598,549},{598,553},{587,555},{587,550}},
+	   {{605,517},{606,509},{621,507},{623,517}},
+	   {{623,517},{631,519},{626,538},{620,534}},
+	   {{601,543},{615,543},{618,548},{601,546}},
+	   {{611,558},{614,556},{622,565},{614,568}},
+	   {{651,556},{657,555},{660,570},{651,565} },
+	   {{526,603},{529,619},{541,627},{541,609}},
+	   {{654,632},{659,623},{659,612},{623,589}},
+    };
+    int a_five[6][5][2] = {
+	   {{560,518},{569,518},{569,574},{563,585},{559,574}},
+	   {{599,499},{608,498},{612,504},{601,578},{597,580}},
+	   {{577,511},{583,510},{583,572},{577,580},{576,572}},
+	   {{586,541},{591,545},{588,565},{581,564},{581,544}},
+	   {{621,507},{623,517},{631,519},{637,501},{628,501}},
+	   {{541,627},{541,609},{555,604},{574,601},{571,610}},
+    };
+    int a_six[2][6][2] = {
+	   {{626,538},{620,534},{617,559},{613,568},{615,576},{624,565}},
+	   {{570,579},{584,568},{620,562},{660,559},{660,570},{662,570}},
+    };
+    int a_seven[2][7][2] = {
+	   {{574,541},{574,533},{588,524},{596,522},{608,527},{596,536},{584,538}},
+	   {{626,538},{620,534},{607,527},{602,530},{622,552},{627,551},{631,542}},
+    };
+    int a_nine[9][2] = { {547,577},{506,586},{495,586},{493,601},{499,607},{504,607},{523,595},{570,579},{584,568}};
 
+public:
+    D(float width, float height) :NCHU(width, height) {
+    }
+    void display_ch() {
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
+	   }
+	   for (int i = 0; i < 13; i++) {
+		  draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
+	   }
+	   for (int i = 0; i < 6; i++) {
+		  draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
+	   }
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_six[i], sizeof(a_six[i]) / sizeof(a_six[i][0]));
+	   }
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_seven[i], sizeof(a_seven[i]) / sizeof(a_seven[i][0]));
+	   }
+	   draw_ch(a_nine, sizeof(a_nine) / sizeof(a_nine[0]));
+    }
+};
 
 void init(void)
 {
@@ -165,6 +216,7 @@ void display(void) {
     A a(WIDTH,HEIGHT);
     B b(WIDTH, HEIGHT);
     C c(WIDTH, HEIGHT);
+    D d(WIDTH, HEIGHT);
     glClearColor(1.0, 1.0, 1.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, WIDTH, HEIGHT);
@@ -172,6 +224,7 @@ void display(void) {
     a.display_ch();
     b.display_ch();
     c.display_ch();
+    d.display_ch();
     glutSwapBuffers();
 }
 
