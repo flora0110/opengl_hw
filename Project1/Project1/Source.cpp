@@ -205,7 +205,57 @@ public:
 	   draw_ch(a_nine, sizeof(a_nine) / sizeof(a_nine[0]));
     }
 };
+class E :protected NCHU {
+private:
+    int a_three[1][3][2] = {
+	   {{769,503},{769,525},{762,525}},
+    };
+    int a_four[10][4][2] = {
+	   {{723,553},{729,564},{760,551},{759,540}},
+	   {{760,551},{759,540},{768,538},{768,549}},
+	   {{768,549},{768,538},{785,535},{788,548}},
+	   {{766,507},{771,508},{770,539},{768,540}},
+	   {{762,525},{767,522},{764,542},{757,544}},
+	   {{755,546},{761,549},{759,565},{751,563}},
+	   {{759,565},{751,563},{744,577},{755,577}},
+	   {{722,599},{722,602},{712,605},{716,600}},
+	   {{770,577},{799,586},{809,593},{789,593}},
+	   {{789,593},{790,604},{774,604},{782,599}},
+    };
+    int a_five[1][5][2] = {
+	   {{750,590},{736,586},{721,596},{720,604},{735,604}},
+    };
+    int a_six[2][6][2] = {
+	   {{744,577},{755,577},{750,589},{744,597},{750,590},{736,586}},
+	   {{809,593},{789,593},{790,604},{801,611},{805,610},{809,606}},
+    };
+    int a_seven[2][7][2] = {
+    };
+    int a_eight[8][2] = { {728,552},{729,564} ,{725,570},{717,574},{706,575},{700,568},{702,557},{713,553} };
 
+public:
+    E(float width, float height) :NCHU(width, height) {
+    }
+    void display_ch() {
+	   
+	   for (int i = 0; i < 1; i++) {
+		  draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
+	   }
+	   for (int i = 0; i < 10; i++) {
+		  draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
+	   }
+	   for (int i = 0; i < 1; i++) {
+		  draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
+	   }
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_six[i], sizeof(a_six[i]) / sizeof(a_six[i][0]));
+	   }/*
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_seven[i], sizeof(a_seven[i]) / sizeof(a_seven[i][0]));
+	   }*/
+	   draw_ch(a_eight, sizeof(a_eight) / sizeof(a_eight[0]));
+    }
+};
 void init(void)
 {
     glClearColor(1.0, 1.0, 1.0, 0.0);
@@ -217,6 +267,7 @@ void display(void) {
     B b(WIDTH, HEIGHT);
     C c(WIDTH, HEIGHT);
     D d(WIDTH, HEIGHT);
+    E e(WIDTH, HEIGHT);
     glClearColor(1.0, 1.0, 1.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, WIDTH, HEIGHT);
@@ -225,6 +276,7 @@ void display(void) {
     b.display_ch();
     c.display_ch();
     d.display_ch();
+    e.display_ch();
     glutSwapBuffers();
 }
 
