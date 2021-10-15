@@ -13,7 +13,6 @@ class NCHU {
 protected:
     float startx, starty;
     void draw_ch(int(*data)[2], int len) {
-	   glColor3f(0.007, 0.4375, 0.589);
 	   glBegin(GL_POLYGON);
 	   for (int i = 0; i < len; i++) {
 		  glVertex2f(((data[i][0] - startx) / startx), ((starty - data[i][1]) / starty));
@@ -59,6 +58,7 @@ class A:protected NCHU{
 	   A(float width, float height):NCHU(width, height){
 	   }
 	   void display_ch() {
+		  glColor3f(0.007, 0.4375, 0.589);
 		  draw_ch(a_3, sizeof(a_3) / sizeof(a_3[0]));
 		  draw_ch(a_4, sizeof(a_4) / sizeof(a_4[0]));
 		  draw_ch(a_5, sizeof(a_5) / sizeof(a_5[0]));
@@ -95,6 +95,7 @@ public:
     B(float width, float height) :NCHU(width, height) {
     }
     void display_ch() {
+	   glColor3f(0.007, 0.4375, 0.589);
 	   for (int i = 0; i < 2; i++) {
 		  draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
 	   }
@@ -133,6 +134,7 @@ public:
     C(float width, float height) :NCHU(width, height) {
     }
     void display_ch() {
+	   glColor3f(0.007, 0.4375, 0.589);
 	   for (int i = 0; i < 4; i++) {
 		  draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
 	   }
@@ -187,6 +189,7 @@ public:
     D(float width, float height) :NCHU(width, height) {
     }
     void display_ch() {
+	   glColor3f(0.007, 0.4375, 0.589);
 	   for (int i = 0; i < 2; i++) {
 		  draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
 	   }
@@ -237,7 +240,7 @@ public:
     E(float width, float height) :NCHU(width, height) {
     }
     void display_ch() {
-	   
+	   glColor3f(0.007, 0.4375, 0.589);
 	   for (int i = 0; i < 1; i++) {
 		  draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
 	   }
@@ -311,6 +314,7 @@ public:
     F(float width, float height) :NCHU(width, height) {
     }
     void display_ch() {
+	   glColor3f(0.007, 0.4375, 0.589);
 	   for (int i = 0; i < 7; i++) {
 		  draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
 	   }
@@ -325,9 +329,98 @@ public:
 	   }
 	   for (int i = 0; i < 5; i++) {
 		  draw_ch(a_seven[i], sizeof(a_seven[i]) / sizeof(a_seven[i][0]));
+	   }
+    }
+};
+class Logo :protected NCHU {
+private:
+    int a_three[5][3][2] = {
+	   {{1198,517},{1212,482},{1159,490}},
+	   //left
+	   {{1175,633},{1162,630},{1169,615}},
+
+	   {{1034,649},{1058,638},{1044,622}},
+	   {{1074,509},{1056,515},{1053,499}},
+
+	   {{1127,586},{1057,569},{1107,538}},
+    };
+    int a_four[18][4][2] = {
+	   {{1224,652},{1206,607},{1175,613},{1179,634}},
+	   {{1206,607},{1175,613},{1162,581},{1199,575}},
+	   {{1162,581},{1199,575},{1197,550},{1148,541}},
+	   {{1197,550},{1148,541},{1117,523},{1198,517}},
+
+	   {{1117,523},{1198,517},{1212,482},{1159,490}},
+	   {{1159,490},{1116,490},{1101,509},{1117,523}},
+	   {{1101,509},{1085,500},{1092,488},{1116,490}},
+	   {{1117,523},{1159,490},{1116,490},{1148,541}},
+
+	   {{1085,500},{1092,488},{1069,483},{1066,492}},
+	   {{1069,483},{1066,492},{1049,487},{1045,476}},
+	   //left
+	   {{1162,630},{1169,615},{1163,601},{1141,625}},
+
+	   {{1058,638},{1044,622},{1051,597},{1076,632}},
+	   {{1051,597},{1076,632},{1099,627},{1057,569} },
+	   {{1099,627},{1057,569},{1127,587},{1122,625} },
+
+	   {{1057,569},{1129,586},{1105,528},{1059,545}},
+	   {{1105,528},{1059,545},{1058,531},{1093,519}},
+	   {{1058,531},{1093,519},{1074,509},{1056,515}},
+	   {{1127,586},{1105,528},{1066,528},{1064,578}},
+
+    };
+    int a_five[1][5][2] = {
+	   //left
+	   {{1163,601},{1141,625},{1122,625},{1127,587},{1156,589}},
+    };
+    int a_six[2][6][2] = {
+	  
+    };
+    int a_seven[2][7][2] = {
+    };
+    int a_eight[8][2] = {  };
+    //red
+    int red_three[1][3][2] = {
+	   {{1161,579},{1166,569},{1156,570}},
+    };
+    int red_four[5][4][2] = {
+	   {{1166,569},{1156,570},{1150,561},{1168,557}},
+	   {{1150,561},{1168,557},{1164,543},{1142,550}},
+	   {{1164,543},{1142,550},{1134,541},{1156,531}},
+	   {{1134,541},{1156,531},{1143,525},{1125,532}},
+	   {{1143,525},{1125,532},{1117,523},{1126,521}},
+    };
+    int ball[15][2] = { {1155,589},{1150,578},{1142,566},{1133,554},{1124,545},{1114,536},{1105,528},
+	   {1098,537},{1092,546},{1093,571},{1098,581},{1107,590},{1118,595},{1131,596},{1142,594} };
+public:
+    Logo(float width, float height) :NCHU(width, height) {
+    }
+    void display_ch() {
+	   glColor3f(0.007, 0.4375, 0.589);
+	   
+	   for (int i = 0; i < 5; i++) {
+		  draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
+	   }
+	   for (int i = 0; i < 18; i++) {
+		  draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
+	   }
+	   for (int i = 0; i < 1; i++) {
+		  draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
 	   }/*
-	   draw_ch(a_eight, sizeof(a_eight) / sizeof(a_eight[0]));
-	   */
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_six[i], sizeof(a_six[i]) / sizeof(a_six[i][0]));
+	   }
+	   draw_ch(a_eight, sizeof(a_eight) / sizeof(a_eight[0]));*/
+	   glColor3f(1.0, 0.0, 0.0);
+	   for (int i = 0; i < 1; i++) {
+		  draw_ch(red_three[i], sizeof(red_three[i]) / sizeof(red_three[i][0]));
+	   }
+	   for (int i = 0; i < 5; i++) {
+		  draw_ch(red_four[i], sizeof(red_four[i]) / sizeof(red_four[i][0]));
+	   }
+	   draw_ch(ball, sizeof(ball) / sizeof(ball[0]));
+
     }
 };
 void init(void)
@@ -343,6 +436,7 @@ void display(void) {
     D d(WIDTH, HEIGHT);
     E e(WIDTH, HEIGHT);
     F f(WIDTH, HEIGHT);
+    Logo logo(WIDTH, HEIGHT);
     glClearColor(1.0, 1.0, 1.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0, 0, WIDTH, HEIGHT);
@@ -353,6 +447,7 @@ void display(void) {
     d.display_ch();
     e.display_ch();
     f.display_ch();
+    logo.display_ch();
     glutSwapBuffers();
 }
 
