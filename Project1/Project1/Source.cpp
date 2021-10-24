@@ -6,18 +6,52 @@
 #include <GL\glew.h>
 #include <GL\freeglut.h>
 #include <iostream>
+#include <sstream>
+using namespace std;
+
 
 #define WIDTH 1920.0f
 #define HEIGHT 1080.0f
+
 class NCHU {
 protected:
     float startx, starty;
-    void draw_ch(int(*data)[2], int len) {
-	   glBegin(GL_POLYGON);
-	   for (int i = 0; i < len; i++) {
-		  glVertex2f(((data[i][0] - startx) / startx), ((starty - data[i][1]) / starty));
+    int check(int(*data)[2],int len) {
+	   int cross;
+	   int Ax,Ay;
+	   int Bx,By;
+	   for (int i = 2; i < len; i++) {
+		  Ax = data[i-1][0] - data[i - 2][0];
+		  Ay = data[i-1][1] - data[i - 2][1];
+		  Bx = data[i][0] - data[i - 1][0];
+		  By = data[i][1] - data[i - 1][1];
+		  cross = Ax * By - Ay * Bx;
+		  if (cross > 0) {
+			 return 1;
+		  }
+		  else if (cross < 0) {
+			 return -1;
+		  }
 	   }
-	   glEnd();
+	   return 0;
+    }
+    void draw_ch(int(*data)[2], int len) {
+	   int cross = check(data,len);
+	   if (cross == 1) {
+		  glBegin(GL_POLYGON);
+		  for (int i = 0; i < len; i++) {
+			 glVertex2f(((data[i][0] - startx) / startx), ((starty - data[i][1]) / starty));
+		  }
+		  glEnd();
+	   }
+	   else if (cross==-1) {
+		  glBegin(GL_POLYGON);
+		  for (int i = len-1; i >=0; i--) {
+			 glVertex2f(((data[i][0] - startx) / startx), ((starty - data[i][1]) / starty));
+		  }
+		  glEnd();
+	   }
+	   
     }
 public:
     NCHU(float width, float height) {
@@ -29,7 +63,7 @@ class A:protected NCHU{
     private:
 	   //A
 	   int a_5[8][2] = {{73, 629},{86, 611},{120,607},{139,605},{171,606}, {170,617},{138,618},{119,619},};
-	   int a_4[7][2] = { {94,601},{142,579},{143,567},{125,572},{103,580},{89,589},{87,597} ,};
+	   int a_4[7][2] = {{94,601},{142,579},{143,567},{125,572},{103,580},{89,589},{87,597} ,};
 	   int a_3[8][2] = { {129,541},{144,537},{153,554},{161,576},{173,591},{169,602},{155,587} ,{148,577} };
 	   int a_three[2][3][2] = {
 		  {{178,621},{178,645},{168,622},},
@@ -443,20 +477,61 @@ public:
 class NCHU_en {
 protected:
     float startx, starty,s;
-    void draw_en(int(*data)[2],int move) {
-	   if (move == 0) {
-		  glBegin(GL_TRIANGLES);
-		  for (int i = 0; i < 3; i++) {
-			 glVertex2f(((data[i][0] - s) / startx), ((starty - data[i][1]) / starty));
+    int check(int(*data)[2], int len) {
+	   int cross;
+	   int Ax, Ay;
+	   int Bx, By;
+	   for (int i = 2; i < len; i++) {
+		  Ax = data[i - 1][0] - data[i - 2][0];
+		  Ay = data[i - 1][1] - data[i - 2][1];
+		  Bx = data[i][0] - data[i - 1][0];
+		  By = data[i][1] - data[i - 1][1];
+		  cross = Ax * By - Ay * Bx;
+		  if (cross > 0) {
+			 return 1;
 		  }
-		  glEnd();
+		  else if (cross < 0) {
+			 return -1;
+		  }
+	   }
+	   return 0;
+    }
+    void draw_en(int(*data)[2],int move) {
+	   int cross = check(data,3);
+	   
+	   if (move == 0) {
+		  if (cross == 1) {
+			 glBegin(GL_POLYGON);
+			 for (int i = 0; i < 3; i++) {
+				glVertex2f(((data[i][0] - s) / startx), ((starty - data[i][1]) / starty));
+			 }
+			 glEnd();
+		  }
+		  else if (cross == -1) {
+			 glBegin(GL_POLYGON);
+			 for (int i = 2; i >= 0; i--) {
+				glVertex2f(((data[i][0] - s) / startx), ((starty - data[i][1]) / starty));
+			 }
+			 glEnd();
+		  }
+		  
 	   }
 	   else {
-		  glBegin(GL_TRIANGLES);
-		  for (int i = 0; i < 3; i++) {
-			 glVertex2f(((data[i][0]+move - s) / startx), ((starty - data[i][1]) / starty));
+		  if (cross == 1) {
+			 glBegin(GL_POLYGON);
+			 for (int i = 0; i < 3; i++) {
+				glVertex2f(((data[i][0] + move - s) / startx), ((starty - data[i][1]) / starty));
+			 }
+			 glEnd();
 		  }
-		  glEnd();
+		  else if (cross == -1) {
+			 glBegin(GL_POLYGON);
+			 for (int i = 2; i >= 0; i--) {
+				glVertex2f(((data[i][0] + move - s) / startx), ((starty - data[i][1]) / starty));
+			 }
+			 glEnd();
+		  }
+		  
 	   }
     }
 public:
@@ -862,8 +937,7 @@ void display(void) {
     University university(WIDTH, HEIGHT);
     glClearColor(1.0, 1.0, 1.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glViewport(0, 0, WIDTH, HEIGHT);
-    glOrtho(0.0f, WIDTH, 0.0f, HEIGHT, 0.0f, 0.0f);
+    
     a.display_ch();
     b.display_ch();
     c.display_ch();
