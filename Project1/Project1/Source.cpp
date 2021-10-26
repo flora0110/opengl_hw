@@ -1,5 +1,5 @@
 /***************************
-4108056029 王傳馨 第2II次作業10/16
+4108056029 王傳馨 第三次作業10/27
 ***************************/
 
 #include <Windows.h>
@@ -13,6 +13,7 @@ using namespace std;
 #define WIDTH 1920.0f
 #define HEIGHT 1080.0f
 
+int global_key;
 class NCHU {
 protected:
     float startx, starty;
@@ -35,23 +36,55 @@ protected:
 	   }
 	   return 0;
     }
-    void draw_ch(int(*data)[2], int len) {
-	   int cross = check(data,len);
-	   if (cross == 1) {
+    void keyboard_switch(int(*data)[2], int len) {
+	   int j=0;
+	   float newdata[40];
+	   for (int i = 0; i < len; i++) {
+		  newdata[j++] = ((data[i][0] - startx) / startx);
+		  newdata[j++] = ((starty - data[i][1]) / starty);
+	   }
+	   switch (global_key) {
+	   case 1: 
+		  glVertexPointer(2, GL_FLOAT, 0, newdata);
+		  glDrawArrays(GL_POLYGON, 0, len);
+		  break;
+	   case 2:
+		  glVertexPointer(2, GL_FLOAT, 0, newdata);
+		  GLubyte array[40];
+		  for (int i = 0; i < (2 * len);i++) {
+			 array[i] = i;
+		  }
+		  glDrawElements(GL_POLYGON, len, GL_UNSIGNED_BYTE, array);
+		  break;
+	   case 3: 
+		  
+		  break;
+	   case 4:
+		  
+		  break;
+	   default:
 		  glBegin(GL_POLYGON);
 		  for (int i = 0; i < len; i++) {
 			 glVertex2f(((data[i][0] - startx) / startx), ((starty - data[i][1]) / starty));
 		  }
 		  glEnd();
+		  break;
+	   }
+    }
+    void draw_ch(int(*data)[2], int len) {
+	   int cross = check(data,len);
+	   if (cross == 1) {
+		  keyboard_switch(data,len);
 	   }
 	   else if (cross==-1) {
-		  glBegin(GL_POLYGON);
-		  for (int i = len-1; i >=0; i--) {
-			 glVertex2f(((data[i][0] - startx) / startx), ((starty - data[i][1]) / starty));
+		  int reverse_data[20][2];
+		  int j = 0;
+		  for (int i = len - 1; i >= 0; i--) {
+			 reverse_data[j][0] = data[i][0];
+			 reverse_data[j++][1] = data[i][1];
 		  }
-		  glEnd();
+		  keyboard_switch(reverse_data, len);
 	   }
-	   
     }
 public:
     NCHU(float width, float height) {
@@ -88,10 +121,11 @@ class A:protected NCHU{
 		  {{84,584},{109,550},{129,540},{112,559},{99,575}},
 	   };
 
-    public:
+public:
 	   A(float width, float height):NCHU(width, height){
 	   }
 	   void display_ch() {
+		  cout << "A" << endl;
 		  glColor3f(0.007, 0.4375, 0.589);
 		  draw_ch(a_3, sizeof(a_3) / sizeof(a_3[0]));
 		  draw_ch(a_4, sizeof(a_4) / sizeof(a_4[0]));
@@ -477,6 +511,42 @@ public:
 class NCHU_en {
 protected:
     float startx, starty,s;
+    void keyboard_switch(int(*data)[2], int move) {
+	   int j = 0;
+	   float newdata[40];
+	   for (int i = 0; i < 3; i++) {
+		  newdata[j++] = ((data[i][0] - s + move) / startx);
+		  newdata[j++] = ((starty - data[i][1]) / starty);
+	   }
+	   switch (global_key) {
+	   case 1:
+		  glVertexPointer(2, GL_FLOAT, 0, newdata);
+		  glDrawArrays(GL_POLYGON, 0, 3);
+
+		  break;
+	   case 2:
+		  glVertexPointer(2, GL_FLOAT, 0, newdata);
+		  GLubyte array[40];
+		  for (int i = 0; i < 3; i++) {
+			 array[i] = i;
+		  }
+		  glDrawElements(GL_POLYGON, 3, GL_UNSIGNED_BYTE, array);
+		  break;
+	   case 3:
+
+		  break;
+	   case 4:
+
+		  break;
+	   default:
+		  glBegin(GL_POLYGON);
+		  for (int i = 0; i < 3; i++) {
+			 glVertex2f(((data[i][0] - s + move) / startx), ((starty - data[i][1]) / starty));
+		  }
+		  glEnd();
+		  break;
+	   }
+    }
     int check(int(*data)[2], int len) {
 	   int cross;
 	   int Ax, Ay;
@@ -498,40 +568,17 @@ protected:
     }
     void draw_en(int(*data)[2],int move) {
 	   int cross = check(data,3);
-	   
-	   if (move == 0) {
-		  if (cross == 1) {
-			 glBegin(GL_POLYGON);
-			 for (int i = 0; i < 3; i++) {
-				glVertex2f(((data[i][0] - s) / startx), ((starty - data[i][1]) / starty));
-			 }
-			 glEnd();
-		  }
-		  else if (cross == -1) {
-			 glBegin(GL_POLYGON);
-			 for (int i = 2; i >= 0; i--) {
-				glVertex2f(((data[i][0] - s) / startx), ((starty - data[i][1]) / starty));
-			 }
-			 glEnd();
-		  }
-		  
+	   if (cross == 1) {
+		  keyboard_switch(data, move);
 	   }
-	   else {
-		  if (cross == 1) {
-			 glBegin(GL_POLYGON);
-			 for (int i = 0; i < 3; i++) {
-				glVertex2f(((data[i][0] + move - s) / startx), ((starty - data[i][1]) / starty));
-			 }
-			 glEnd();
+	   else if (cross == -1) {
+		  int reverse_data[20][2];
+		  int j = 0;
+		  for (int i = 2; i >= 0; i--) {
+			 reverse_data[j][0] = data[i][0];
+			 reverse_data[j++][1] = data[i][1];
 		  }
-		  else if (cross == -1) {
-			 glBegin(GL_POLYGON);
-			 for (int i = 2; i >= 0; i--) {
-				glVertex2f(((data[i][0] + move - s) / startx), ((starty - data[i][1]) / starty));
-			 }
-			 glEnd();
-		  }
-		  
+		  keyboard_switch(reverse_data, move);
 	   }
     }
 public:
@@ -921,10 +968,83 @@ public:
 void init(void)
 {
     glClearColor(1.0, 1.0, 1.0, 0.0);
-    glShadeModel(GL_FLAT);
+    //glShadeModel(GL_FLAT);
+    //glClearColor(0, 0, 0, 0);
+    //開啟頂點，顏色陣列
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnable(GL_COLOR_ARRAY);
 }
+void useGlDrawArrays() {
+    static GLfloat vertexs[] = {
+    0,0,0,
+    0,0.5,0,
+    0.3,0.4,0 };
+    /*static GLfloat colors[] = {
+    1,0,0,
+    0,1,0,
+    0,0,1
+    };*/
+    glColor3f(0.007, 0.4375, 0.589);
+    //繫結頂點陣列
+    glVertexPointer(3, GL_FLOAT, 0, vertexs);
+    //glColorPointer(3, GL_FLOAT, 0, colors);
+    //gldraw
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    A a(WIDTH, HEIGHT);
+}
+/*
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT);
+    //gl
+    //useGlArrayElement();
+    //useGlDrawElements();
+    useGlDrawArrays();
+    glFlush();
+}*/
+
 void display(void) {
-    A a(WIDTH,HEIGHT);
+    
+
+    //A a(WIDTH,HEIGHT);
+    //B b(WIDTH, HEIGHT);
+    //C c(WIDTH, HEIGHT);
+    //D d(WIDTH, HEIGHT);
+    //E e(WIDTH, HEIGHT);
+    //F f(WIDTH, HEIGHT);
+    //Logo logo(WIDTH, HEIGHT);
+    //National national(WIDTH, HEIGHT);
+    //Chung chung(WIDTH, HEIGHT);
+    //Hsing hsing(WIDTH, HEIGHT);
+    //University university(WIDTH, HEIGHT);
+    glClearColor(1.0, 1.0, 1.0, 0.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glPushMatrix();
+    //a.display_ch();
+    /*
+    b.display_ch();
+    c.display_ch();
+    d.display_ch();
+    e.display_ch();
+    f.display_ch();
+    logo.display_ch();*/
+    //national.display_en();
+    //chung.display_en();
+    //hsing.display_en();
+    //university.display_en();
+    //glPopMatrix();
+    //glutSwapBuffers();
+}
+
+void reshape(int Width, int Height) {
+    cout << "in reshape" << endl;
+    glViewport(0, 0, WIDTH, HEIGHT);
+    glOrtho(0.0f, WIDTH, 0.0f, HEIGHT, 0.0f, 0.0f);
+}
+void keyboard(unsigned char key, int x, int y){
+    glClearColor(1.0, 1.0, 1.0, 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    cout << "in function" << endl;
+    A a(WIDTH, HEIGHT);
     B b(WIDTH, HEIGHT);
     C c(WIDTH, HEIGHT);
     D d(WIDTH, HEIGHT);
@@ -935,39 +1055,79 @@ void display(void) {
     Chung chung(WIDTH, HEIGHT);
     Hsing hsing(WIDTH, HEIGHT);
     University university(WIDTH, HEIGHT);
-    glClearColor(1.0, 1.0, 1.0, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    a.display_ch();
-    b.display_ch();
-    c.display_ch();
-    d.display_ch();
-    e.display_ch();
-    f.display_ch();
-    logo.display_ch();
-    national.display_en();
-    chung.display_en();
-    hsing.display_en();
-    university.display_en();
-    glutSwapBuffers();
+    switch (key) {
+    case '1': 
+	   global_key = 1;
+	   a.display_ch();
+	   b.display_ch();
+	   c.display_ch();
+	   d.display_ch();
+	   e.display_ch();
+	   f.display_ch();
+	   logo.display_ch();
+	   national.display_en();
+	   chung.display_en();
+	   hsing.display_en();
+	   university.display_en();
+	   glutSwapBuffers();
+	   break;
+    case '2':
+	   global_key = 2;
+	   a.display_ch();
+	   b.display_ch();
+	   c.display_ch();
+	   d.display_ch();
+	   e.display_ch();
+	   f.display_ch();
+	   logo.display_ch();
+	   national.display_en();
+	   chung.display_en();
+	   hsing.display_en();
+	   university.display_en();
+	   glutSwapBuffers();
+	   break;
+    case '3': 
+	   global_key = 3;
+	   glClear(GL_COLOR_BUFFER_BIT);
+	   useGlDrawArrays();
+	   //glFlush();
+	   glutSwapBuffers();
+	   break;
+    case '4':
+	   global_key = 4;
+	   break;
+    default:
+	   cout << "ddddddddddddddddddd" << endl;
+	   global_key = 0;
+	   break;
+    }
 }
-
-void reshape(int Width, int Height) {
-    glViewport(0, 0, WIDTH, HEIGHT);
-    glOrtho(0.0f, WIDTH, 0.0f, HEIGHT, 0.0f, 0.0f);
-}
-
 int main(int argc, char* argv[]) {
+    
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
     glutInitWindowPosition(100, 100);	//set the position of Window
     glutInitWindowSize(1920, 1080);		//set the size of Window
     glutCreateWindow("NCHU");
     init();
+    cout << "keyboard" << endl;
+    glutKeyboardFunc(keyboard);
+    cout << "over" << endl;
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
+   
     glutMainLoop();
     return 0;
+    /*
+    glutInit(&argc, (char**)argv);
+    glutInitWindowSize(500, 500);
+    glutInitWindowPosition(100, 100);
+    glutCreateWindow("vertexArray");
+    //printGlInfo();
+    init();
+    glutDisplayFunc(display);
+    glutMainLoop();
+    return 0;*/
 }
 
 
