@@ -18,7 +18,7 @@ using namespace std;
 int global_key;
 class NCHU {
 protected:
-    float startx, starty;
+    float startx, starty,middlex;
 
     GLint MultiDrawPointsXY[814][2];
     int countPointIndex = 0;
@@ -67,9 +67,11 @@ protected:
 		  glDrawElements(GL_POLYGON, len, GL_UNSIGNED_BYTE, array);
 		  break;
 	   default:
+		  
 		  glBegin(GL_POLYGON);
 		  for (int i = 0; i < len; i++) {
 			 glVertex2f(((data[i][0] - startx) / startx), ((starty - data[i][1]) / starty));
+			 
 		  }
 		  glEnd();
 		  break;
@@ -116,7 +118,8 @@ protected:
     }
 public:
     NCHU(float width, float height) {
-	   startx = width / 2;
+	   middlex= (width / 2) - 500;
+	   startx = (width / 2);
 	   starty = height / 2;
     }
 };
@@ -1338,6 +1341,7 @@ void display() {
     glFlush();
 }*/
 static GLfloat spin = 0.0;
+static int xyz = 0;
 void display(void) {
     A a(WIDTH, HEIGHT);
     B b(WIDTH, HEIGHT);
@@ -1353,9 +1357,16 @@ void display(void) {
     glClearColor(1.0, 1.0, 1.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     if (global_key!=0) {
-	   cout << "re" << endl;
 	   glPushMatrix();
-	   glRotatef(spin, 0.0, 0.0, 1.0);
+	   if (xyz == 2) {
+		  glRotatef(spin, 0.0, 0.0, 1.0);
+	   }
+	   if (xyz == 1) {
+		  glRotatef(spin, 0.0, 1.0, 0.0);
+	   }
+	   if (xyz == 0) {
+		  glRotatef(spin, 1.0, 0.0, 0.0);
+	   }
 	   a.display_ch();
 	   b.display_ch();
 	   c.display_ch();
@@ -1374,8 +1385,9 @@ void display(void) {
 
 void reshape(int Width, int Height) {
     cout << "in reshape" << endl;
-    glViewport(0, 0, WIDTH, HEIGHT);
-    glOrtho(0.0f, WIDTH, 0.0f, HEIGHT, 0.0f, 0.0f);
+    glViewport(0, 0, (GLsizei)WIDTH, (GLsizei)HEIGHT);
+    //glOrtho(0.0f, WIDTH, 0.0f, HEIGHT, 0.0f, 0.0f);
+    glOrtho(-WIDTH, WIDTH, -HEIGHT, HEIGHT, 1000.0, 1000.0);
 }
 void spinDisplay(void){
     spin = spin + 2.0;
@@ -1389,16 +1401,19 @@ void mouse(int button, int state, int x, int y){
 	   cout << "mouse left" << endl;
 	   if (state == GLUT_DOWN)
 		  cout << "down" << endl;
+		  xyz = 0;
 		  glutIdleFunc(spinDisplay);
 	   break;
 
     case GLUT_MIDDLE_BUTTON:
 	   cout << "mouse middle" << endl;
 	   if (state == GLUT_DOWN)
+		  xyz = 1;
 		  glutIdleFunc(spinDisplay);
 	   break;
     case GLUT_RIGHT_BUTTON:
 	   if (state == GLUT_DOWN)
+		  xyz = 2;
 		  glutIdleFunc(spinDisplay);
 	   break;
     default:
@@ -1407,22 +1422,29 @@ void mouse(int button, int state, int x, int y){
 }
 void keyboard(unsigned char key, int x, int y){
     cout << "keyboard" << endl;
-    spin = 0.0;
-    glutIdleFunc(NULL);
+    
     switch (key) {
     case '1': 
+	   spin = 0.0;
+	   glutIdleFunc(NULL);
 	   global_key = 1; 
 	   glutPostRedisplay();
 	   break;
     case '2':
+	   spin = 0.0;
+	   glutIdleFunc(NULL);
 	   global_key = 2;
 	   glutPostRedisplay();
 	   break;
     case '3': 
+	   spin = 0.0;
+	   glutIdleFunc(NULL);
 	   global_key = 3;
 	   glutPostRedisplay();
 	   break;
     case '4':
+	   spin = 0.0;
+	   glutIdleFunc(NULL);
 	   global_key = 4;
 	   glutPostRedisplay();
 	   break;
@@ -1435,7 +1457,7 @@ int main(int argc, char* argv[]) {
     global_key = 0;
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-    glutInitWindowPosition(100, 100);	//set the position of Window
+    glutInitWindowPosition(0, 0);	//set the position of Window
     glutInitWindowSize(1920, 1080);		//set the size of Window
     glutCreateWindow("NCHU");
     init();
