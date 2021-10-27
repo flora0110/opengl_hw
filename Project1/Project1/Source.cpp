@@ -17,6 +17,14 @@ int global_key;
 class NCHU {
 protected:
     float startx, starty;
+
+    GLint MultiDrawPointsXY[814][2];
+    int countPointIndex = 0;
+    GLint MultiDrawStart[163];
+    GLsizei MultiDrawSize[163];
+    int countGraphIndex = 0;
+    GLuint* MultiDrawIndices[163];
+
     int check(int(*data)[2],int len) {
 	   int cross;
 	   int Ax,Ay;
@@ -56,11 +64,11 @@ protected:
 		  }
 		  glDrawElements(GL_POLYGON, len, GL_UNSIGNED_BYTE, array);
 		  break;
-	   case 3: 
-		  
-		  break;
-	   case 4:
-		  
+	   case 3:
+		  for (int i = 0; i < len; i++) {
+			 MultiDrawPointsXY[countPointIndex][0] = newdata[i];
+			 MultiDrawPointsXY[countPointIndex++][1] = newdata[i];
+		  }
 		  break;
 	   default:
 		  glBegin(GL_POLYGON);
@@ -84,6 +92,27 @@ protected:
 			 reverse_data[j++][1] = data[i][1];
 		  }
 		  keyboard_switch(reverse_data, len);
+	   }
+    }
+    void keyboard_threefour(GLint(*data)[2], GLint* first, GLsizei* count,int primcount,int len) {
+	   for (int i = 0; i < len; i++) {
+		  data[i][0] = ((data[i][0] - startx) / startx);
+		  data[i][1] = ((starty - data[i][1]) / starty);
+	   }
+	   switch (global_key) {
+	   case 3:
+		  //glVertexPointer(2, GL_FLOAT, 0, data);
+		  //glMultiDrawArrays(GL_POLYGON,first,count, primcount);
+		  glEnableClientState(GL_VERTEX_ARRAY);
+		  glVertexPointer(2, GL_INT, 0, MultiDrawPointsXY);
+		  glMultiDrawArrays(GL_POLYGON, MultiDrawStart, MultiDrawSize, 136);
+		  glDisableClientState(GL_VERTEX_ARRAY);
+		  break;
+	   case 4:
+		  
+		  break;
+	   default:
+		  break;
 	   }
     }
 public:
@@ -125,20 +154,75 @@ public:
 	   A(float width, float height):NCHU(width, height){
 	   }
 	   void display_ch() {
-		  cout << "A" << endl;
 		  glColor3f(0.007, 0.4375, 0.589);
-		  draw_ch(a_3, sizeof(a_3) / sizeof(a_3[0]));
-		  draw_ch(a_4, sizeof(a_4) / sizeof(a_4[0]));
-		  draw_ch(a_5, sizeof(a_5) / sizeof(a_5[0]));
-		  for (int i = 0; i < 2; i++) {
-			 draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
+		  if (global_key == 3) {
+			 GLint alldata[200][2];
+			 GLint first[30] ;
+			 GLsizei count[30] ;
+			 int k = 0, primcount = 0;
+
+			 count[primcount] = 8;
+			 first[primcount++] = 0;
+			 for (int i = 0; i < 8; i++) {
+				alldata[k][0] = a_3[i][0];
+				alldata[k++][1] = a_3[i][1];
+
+			 }
+			 count[primcount] = 7;
+			 first[primcount++] = first[primcount-1]+7;
+			 for (int i = 0; i < 7; i++) {
+				alldata[k][0] = a_4[i][0];
+				alldata[k++][1] = a_4[i][1];
+			 }
+			 count[primcount] = 8;
+			 first[primcount++] = first[primcount - 1] + 8;
+			 for (int i = 0; i < 8; i++) {
+				alldata[k][0] = a_5[i][0];
+				alldata[k++][1]= a_5[i][1];
+			 }
+
+			 for (int i = 0; i < 2; i++) {
+				count[primcount] = 3;
+				first[primcount++] = first[primcount - 1] + 3;
+				for (int j = 0; j < 3; j++) {
+				    alldata[k][0] = a_three[i][j][0];
+				    alldata[k++][1] = a_three[i][j][1];
+				}
+			 }
+			 for (int i = 0; i < 10; i++) {
+				count[primcount] = 4;
+				first[primcount++] = first[primcount - 1] + 4;
+				for (int j = 0; j < 4; j++) {
+				    alldata[k][0] = a_four[i][j][0];
+				    alldata[k++][1] = a_four[i][j][1];
+				}
+			 }
+			 for (int i = 0; i < 4; i++) {
+				count[primcount] = 5;
+				first[primcount++] = first[primcount - 1] + 5;
+				for (int j = 0; j < 5; j++) {
+				    alldata[k][0] = a_five[i][j][0];
+				    alldata[k++][1] = a_five[i][j][1];
+				}
+			 }
+			 keyboard_threefour(alldata,first,count,primcount,k);
 		  }
-		  for (int i = 0; i < 10;i++) {
-			 draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
+		  else if (global_key<=2) {
+			 draw_ch(a_3, sizeof(a_3) / sizeof(a_3[0]));
+			 draw_ch(a_4, sizeof(a_4) / sizeof(a_4[0]));
+			 draw_ch(a_5, sizeof(a_5) / sizeof(a_5[0]));
+			 for (int i = 0; i < 2; i++) {
+				draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
+			 }
+			 for (int i = 0; i < 10; i++) {
+				draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
+			 }
+			 for (int i = 0; i < 4; i++) {
+				draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
+			 }
 		  }
-		  for (int i = 0; i < 4; i++) {
-			 draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
-		  }
+
+		  
 	   }
 };
 class B :protected NCHU {
@@ -1088,9 +1172,17 @@ void keyboard(unsigned char key, int x, int y){
 	   break;
     case '3': 
 	   global_key = 3;
-	   glClear(GL_COLOR_BUFFER_BIT);
-	   useGlDrawArrays();
-	   //glFlush();
+	   a.display_ch();
+	   b.display_ch();
+	   c.display_ch();
+	   d.display_ch();
+	   e.display_ch();
+	   f.display_ch();
+	   logo.display_ch();
+	   national.display_en();
+	   chung.display_en();
+	   hsing.display_en();
+	   university.display_en();
 	   glutSwapBuffers();
 	   break;
     case '4':
