@@ -45,8 +45,11 @@ protected:
 		  newdata[j++] = ((data[i][0] - middlex) / startx);
 		  newdata[j++] = ((middley - data[i][1]) / starty);
 	   }
+	   static GLfloat colors[] = { 0.007, 0.4375, 0.589 };
+	   glColorPointer(3, GL_FLOAT, 0, colors);
 	   switch (global_key) {
 	   case 1: 
+		  
 		  glVertexPointer(2, GL_FLOAT, 0, newdata);
 		  glDrawArrays(GL_POLYGON, 0, len);
 		  break;
@@ -920,7 +923,7 @@ protected:
 	   switch (global_key) {
 	   case 1:
 		  glVertexPointer(2, GL_FLOAT, 0, newdata);
-		  glDrawArrays(GL_POLYGON, 0, 3);
+		  glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		  break;
 	   case 2:
@@ -929,17 +932,41 @@ protected:
 		  for (int i = 0; i < 3; i++) {
 			 array[i] = i;
 		  }
-		  glDrawElements(GL_POLYGON, 3, GL_UNSIGNED_BYTE, array);
+		  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_BYTE, array);
 		  break;
 	   
 	   default:
-		  glBegin(GL_POLYGON);
+		  glBegin(GL_TRIANGLES);
 		  for (int i = 0; i < 3; i++) {
 			 glVertex2f(((data[i][0] - s + move) / startx), ((middley - data[i][1]) / starty));
 		  }
 		  glEnd();
 		  break;
 	   }
+    }
+    void keyboard_three(float(*data), GLint* first, GLsizei* count, int primcount, int len) {
+	   for (int i = 0; i < len; i = i + 2) {
+		  data[i] = ((data[i] - middlex) / startx);
+		  data[i + 1] = ((middley - data[i + 1]) / starty);
+	   }
+	   glVertexPointer(2, GL_FLOAT, 0, data);
+	   glMultiDrawArrays(GL_TRIANGLES, first, count, primcount);
+    }
+    void keyboard_four(float(*data), GLsizei* count, int(*indices)[30], int primcount, int len) {
+	   for (int i = 0; i < len; i = i + 2) {
+		  data[i] = ((data[i] - middlex) / startx);
+		  data[i + 1] = ((middley - data[i + 1]) / starty);
+	   }
+	   GLuint new_indices[PRICOUNT][30];
+	   GLvoid* point_to_indices[PRICOUNT];
+	   for (int i = 0; i < primcount; i++) {
+		  for (int j = 0; j < count[i]; j++) {
+			 new_indices[i][j] = indices[i][j];
+		  }
+		  point_to_indices[i] = new_indices[i];
+	   }
+	   glVertexPointer(2, GL_FLOAT, 0, data);
+	   glMultiDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, point_to_indices, primcount);
     }
     int check(int(*data)[2], int len) {
 	   int cross;
@@ -1096,12 +1123,45 @@ public:
     National(float width, float height) :NCHU_en(width, height) {
     }
     void display_en() {
+	   float alldata[LEN];
+	   GLint first[PRICOUNT];
+	   GLsizei count[PRICOUNT];
+	   int k = 0, primcount = 0;
 	   glColor3f(0.007, 0.4375, 0.589);
+	   first[primcount] = 0;
 	   for (int i = 0; i < 7;i++) {
-		  draw_en(N[i],0);
+		  if(global_key==3 || global_key==4) {
+			 count[primcount++] = 3;
+			 alldata[k++] = N[i][0][0];
+			 alldata[k++] = N[i][0][1];
+			 alldata[k++] = N[i][1][0];
+			 alldata[k++] = N[i][1][1];
+			 alldata[k++] = N[i][2][0];
+			 alldata[k++] = N[i][2][1];
+			 first[primcount] = first[primcount - 1] + 3;
+		  }
+		  draw_en(N[i], 0);  
 	   }
 	   for (int i = 0; i < 26; i++) {
-		  draw_en(a[i],0);
+		  if (global_key == 3 || global_key == 4) {
+			 count[primcount++] = 3;
+			 alldata[k++] = a[i][0][0];
+			 alldata[k++] = a[i][0][1];
+			 alldata[k++] = a[i][1][0];
+			 alldata[k++] = a[i][1][1];
+			 alldata[k++] = a[i][2][0];
+			 alldata[k++] = a[i][2][1];
+			 first[primcount] = first[primcount - 1] + 3;
+			 count[primcount++] = 3;
+			 alldata[k++] = a[i][0][0]+173;
+			 alldata[k++] = a[i][0][1];
+			 alldata[k++] = a[i][1][0] + 173;
+			 alldata[k++] = a[i][1][1];
+			 alldata[k++] = a[i][2][0] + 173;
+			 alldata[k++] =a[i][2][1];
+			 first[primcount] = first[primcount - 1] + 3;
+		  }
+		  draw_en(a[i], 0);
 		  draw_en(a[i], 173);
 	   }
 	   for (int i = 0; i < 7; i++) {
