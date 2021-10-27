@@ -18,15 +18,7 @@ using namespace std;
 int global_key;
 class NCHU {
 protected:
-    float startx, starty,middlex;
-
-    GLint MultiDrawPointsXY[814][2];
-    int countPointIndex = 0;
-    GLint MultiDrawStart[163];
-    GLsizei MultiDrawSize[163];
-    int countGraphIndex = 0;
-    GLuint* MultiDrawIndices[163];
-
+    float startx, starty,middlex, middley;
     int check(int(*data)[2],int len) {
 	   int cross;
 	   int Ax,Ay;
@@ -50,8 +42,8 @@ protected:
 	   int j=0;
 	   float newdata[LEN];
 	   for (int i = 0; i < len; i++) {
-		  newdata[j++] = ((data[i][0] - startx) / startx);
-		  newdata[j++] = ((starty - data[i][1]) / starty);
+		  newdata[j++] = ((data[i][0] - middlex) / startx);
+		  newdata[j++] = ((middley - data[i][1]) / starty);
 	   }
 	   switch (global_key) {
 	   case 1: 
@@ -70,8 +62,7 @@ protected:
 		  
 		  glBegin(GL_POLYGON);
 		  for (int i = 0; i < len; i++) {
-			 glVertex2f(((data[i][0] - startx) / startx), ((starty - data[i][1]) / starty));
-			 
+			 glVertex2f(((data[i][0] - middlex) / startx), ((middley - data[i][1]) / starty));
 		  }
 		  glEnd();
 		  break;
@@ -94,16 +85,16 @@ protected:
     }
     void keyboard_three(float(*data), GLint* first, GLsizei* count,int primcount,int len) {
 	   for (int i = 0; i < len; i=i+2) {
-		  data[i] = ((data[i] - startx) / startx);
-		  data[i+1] = ((starty - data[i+1]) / starty);
+		  data[i] = ((data[i] - middlex) / startx);
+		  data[i+1] = ((middley - data[i+1]) / starty);
 	   }
 	   glVertexPointer(2, GL_FLOAT, 0, data);
 	   glMultiDrawArrays(GL_POLYGON, first, count, primcount);
     }
     void keyboard_four(float(*data), GLsizei* count, int(*indices)[30], int primcount, int len) {
 	   for (int i = 0; i < len; i = i + 2) {
-		  data[i] = ((data[i] - startx) / startx);
-		  data[i + 1] = ((starty - data[i + 1]) / starty);
+		  data[i] = ((data[i] - middlex) / startx);
+		  data[i + 1] = ((middley - data[i + 1]) / starty);
 	   }
 	   GLuint new_indices[PRICOUNT][30];
 	   GLvoid* point_to_indices[PRICOUNT];
@@ -118,7 +109,8 @@ protected:
     }
 public:
     NCHU(float width, float height) {
-	   middlex= (width / 2) - 500;
+	   middlex = (width / 4)+200;
+	   middley = (height*3 / 4)-100;
 	   startx = (width / 2);
 	   starty = height / 2;
     }
@@ -633,7 +625,7 @@ public:
 			 alldata[k++] = a_eight[j][0];
 			 alldata[k++] = a_eight[j][1];
 		  }
-		  first[primcount] = first[primcount - 1] + 9;
+		  first[primcount] = first[primcount - 1] + 8;
 		  if (global_key == 3) {
 			 keyboard_three(alldata, first, count, primcount, k);
 		  }
@@ -726,20 +718,84 @@ public:
     }
     void display_ch() {
 	   glColor3f(0.007, 0.4375, 0.589);
-	   for (int i = 0; i < 7; i++) {
-		  draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
+	   if (global_key == 3) {
+		  float alldata[LEN];
+		  GLint first[PRICOUNT];
+		  GLsizei count[PRICOUNT];
+		  int k = 0, primcount = 0;
+
+		  first[primcount] = 0;
+		  for (int i = 0; i < 7; i++) {
+			 count[primcount++] = 3;
+			 for (int j = 0; j < 3; j++) {
+				alldata[k++] = a_three[i][j][0];
+				alldata[k++] = a_three[i][j][1];
+			 }
+			 first[primcount] = first[primcount - 1] + 3;
+		  }
+		  for (int i = 0; i < 22; i++) {
+			 count[primcount++] = 4;
+			 for (int j = 0; j < 4; j++) {
+				alldata[k++] = a_four[i][j][0];
+				alldata[k++] = a_four[i][j][1];
+			 }
+			 first[primcount] = first[primcount - 1] + 4;
+		  }
+		  for (int i = 0; i < 4; i++) {
+			 count[primcount++] = 5;
+			 for (int j = 0; j < 5; j++) {
+				alldata[k++] = a_five[i][j][0];
+				alldata[k++] = a_five[i][j][1];
+			 }
+			 first[primcount] = first[primcount - 1] + 5;
+		  }
+		  for (int i = 0; i < 2; i++) {
+			 count[primcount++] = 6;
+			 for (int j = 0; j < 6; j++) {
+				alldata[k++] = a_six[i][j][0];
+				alldata[k++] = a_six[i][j][1];
+			 }
+			 first[primcount] = first[primcount - 1] + 6;
+		  }
+		  for (int i = 0; i < 5; i++) {
+			 count[primcount++] = 7;
+			 for (int j = 0; j < 7; j++) {
+				alldata[k++] = a_seven[i][j][0];
+				alldata[k++] = a_seven[i][j][1];
+			 }
+			 first[primcount] = first[primcount - 1] + 7;
+		  }
+		  if (global_key == 3) {
+			 keyboard_three(alldata, first, count, primcount, k);
+		  }
+		  else if (global_key == 4) {
+			 int k = 0;
+			 int indices[PRICOUNT][30];
+			 for (int i = 0; i < primcount; i++) {
+				k = 0;
+				for (int j = first[i]; j < first[i + 1]; j++) {
+				    indices[i][k++] = j;
+				}
+			 }
+			 keyboard_four(alldata, count, indices, primcount, k);
+		  }
 	   }
-	   for (int i = 0; i < 22; i++) {
-		  draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
-	   }
-	   for (int i = 0; i < 4; i++) {
-		  draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
-	   }
-	   for (int i = 0; i < 2; i++) {
-		  draw_ch(a_six[i], sizeof(a_six[i]) / sizeof(a_six[i][0]));
-	   }
-	   for (int i = 0; i < 5; i++) {
-		  draw_ch(a_seven[i], sizeof(a_seven[i]) / sizeof(a_seven[i][0]));
+	   else {
+		  for (int i = 0; i < 7; i++) {
+			 draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
+		  }
+		  for (int i = 0; i < 22; i++) {
+			 draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
+		  }
+		  for (int i = 0; i < 4; i++) {
+			 draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
+		  }
+		  for (int i = 0; i < 2; i++) {
+			 draw_ch(a_six[i], sizeof(a_six[i]) / sizeof(a_six[i][0]));
+		  }
+		  for (int i = 0; i < 5; i++) {
+			 draw_ch(a_seven[i], sizeof(a_seven[i]) / sizeof(a_seven[i][0]));
+		  }
 	   }
     }
 };
@@ -853,13 +909,13 @@ public:
 };
 class NCHU_en {
 protected:
-    float startx, starty,s;
+    float startx, starty,s,middlex, middley;
     void keyboard_switch(int(*data)[2], int move) {
 	   int j = 0;
 	   float newdata[40];
 	   for (int i = 0; i < 3; i++) {
 		  newdata[j++] = ((data[i][0] - s + move) / startx);
-		  newdata[j++] = ((starty - data[i][1]) / starty);
+		  newdata[j++] = ((middley - data[i][1]) / starty);
 	   }
 	   switch (global_key) {
 	   case 1:
@@ -879,7 +935,7 @@ protected:
 	   default:
 		  glBegin(GL_POLYGON);
 		  for (int i = 0; i < 3; i++) {
-			 glVertex2f(((data[i][0] - s + move) / startx), ((starty - data[i][1]) / starty));
+			 glVertex2f(((data[i][0] - s + move) / startx), ((middley - data[i][1]) / starty));
 		  }
 		  glEnd();
 		  break;
@@ -923,7 +979,9 @@ public:
     NCHU_en(float width, float height) {
 	   startx = width / 2;
 	   starty = height / 2;
-	   s = startx + 40.0;
+	   middlex= width / 4 +200;
+	   middley = (height * 3 / 4) - 100;
+	   s = middlex + 40.0;
     }
 };
 class National :protected NCHU_en {
@@ -1384,10 +1442,17 @@ void display(void) {
 }
 
 void reshape(int Width, int Height) {
-    cout << "in reshape" << endl;
-    glViewport(0, 0, (GLsizei)WIDTH, (GLsizei)HEIGHT);
-    //glOrtho(0.0f, WIDTH, 0.0f, HEIGHT, 0.0f, 0.0f);
-    glOrtho(-WIDTH, WIDTH, -HEIGHT, HEIGHT, 1000.0, 1000.0);
+    /*glViewport(0, 0, (GLsizei)Width, (GLsizei)Height);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-WIDTH, WIDTH, -HEIGHT, HEIGHT, 1000.0, -1000.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();*/
+    
+    glViewport(0, 0, (GLsizei)Width, (GLsizei)Height);
+    glOrtho(0.0f, WIDTH, 0.0f, HEIGHT, 1000.0f, 1000.0f);
+    //glOrtho(-WIDTH, WIDTH, -HEIGHT, HEIGHT, 1000.0, 1000.0);
+    
 }
 void spinDisplay(void){
     spin = spin + 2.0;
@@ -1398,15 +1463,12 @@ void spinDisplay(void){
 void mouse(int button, int state, int x, int y){
     switch (button) {
     case GLUT_LEFT_BUTTON:
-	   cout << "mouse left" << endl;
 	   if (state == GLUT_DOWN)
-		  cout << "down" << endl;
 		  xyz = 0;
 		  glutIdleFunc(spinDisplay);
 	   break;
 
     case GLUT_MIDDLE_BUTTON:
-	   cout << "mouse middle" << endl;
 	   if (state == GLUT_DOWN)
 		  xyz = 1;
 		  glutIdleFunc(spinDisplay);
@@ -1421,7 +1483,7 @@ void mouse(int button, int state, int x, int y){
     }
 }
 void keyboard(unsigned char key, int x, int y){
-    cout << "keyboard" << endl;
+    //cout << "keyboard" << endl;
     
     switch (key) {
     case '1': 
