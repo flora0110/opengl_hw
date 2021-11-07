@@ -1,0 +1,16 @@
+﻿  Source.cpp
+D:\Junior\opengl\hw2\Project1\Source.cpp(61,1): warning C4305: '引數': 從 'double' 轉換為 'GLfloat'，是由較大的類型轉換為較小的類型，可能導致資料遺失
+D:\Junior\opengl\hw2\Project1\Source.cpp(98,1): warning C4305: '引數': 從 'double' 轉換為 'GLfloat'，是由較大的類型轉換為較小的類型，可能導致資料遺失
+D:\Junior\opengl\hw2\Project1\Source.cpp(137,1): warning C4305: '引數': 從 'double' 轉換為 'GLfloat'，是由較大的類型轉換為較小的類型，可能導致資料遺失
+D:\Junior\opengl\hw2\Project1\Source.cpp(192,1): warning C4305: '引數': 從 'double' 轉換為 'GLfloat'，是由較大的類型轉換為較小的類型，可能導致資料遺失
+D:\Junior\opengl\hw2\Project1\Source.cpp(243,1): warning C4305: '引數': 從 'double' 轉換為 'GLfloat'，是由較大的類型轉換為較小的類型，可能導致資料遺失
+D:\Junior\opengl\hw2\Project1\Source.cpp(317,1): warning C4305: '引數': 從 'double' 轉換為 'GLfloat'，是由較大的類型轉換為較小的類型，可能導致資料遺失
+D:\Junior\opengl\hw2\Project1\Source.cpp(410,1): warning C4305: '引數': 從 'double' 轉換為 'GLfloat'，是由較大的類型轉換為較小的類型，可能導致資料遺失
+D:\Junior\opengl\hw2\Project1\Source.cpp(425,1): warning C4305: '引數': 從 'double' 轉換為 'GLfloat'，是由較大的類型轉換為較小的類型，可能導致資料遺失
+D:\Junior\opengl\hw2\Project1\Source.cpp(433,1): warning C4305: '引數': 從 'double' 轉換為 'GLfloat'，是由較大的類型轉換為較小的類型，可能導致資料遺失
+D:\Junior\opengl\hw2\Project1\Source.cpp(466,16): warning C4244: '=': 將 'double' 轉換為 'float'，由於類型不同，可能導致資料遺失
+D:\Junior\opengl\hw2\Project1\Source.cpp(581,1): warning C4305: '引數': 從 'double' 轉換為 'GLfloat'，是由較大的類型轉換為較小的類型，可能導致資料遺失
+D:\Junior\opengl\hw2\Project1\Source.cpp(709,1): warning C4305: '引數': 從 'double' 轉換為 'GLfloat'，是由較大的類型轉換為較小的類型，可能導致資料遺失
+D:\Junior\opengl\hw2\Project1\Source.cpp(771,1): warning C4305: '引數': 從 'double' 轉換為 'GLfloat'，是由較大的類型轉換為較小的類型，可能導致資料遺失
+D:\Junior\opengl\hw2\Project1\Source.cpp(829,1): warning C4305: '引數': 從 'double' 轉換為 'GLfloat'，是由較大的類型轉換為較小的類型，可能導致資料遺失
+  Project1.vcxproj -> D:\Junior\opengl\hw2\Debug\Project1.exe
