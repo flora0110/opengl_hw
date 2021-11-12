@@ -1,6 +1,8 @@
-
-#include <GL/glut.h>
-#include <stdlib.h>
+Ôªø#include <GL/glut.h>
+//#include <stdlib.h>
+#include <iostream>
+#include <sstream>
+using namespace std;
 
 #define WIDTH 1920.0f
 #define HEIGHT 1080.0f
@@ -927,9 +929,9 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(1.0, 1.0, 1.0, 0.0);
 
-    //Æyº–
+    //¬Æy¬º√ê
     glPushMatrix();
-    gluLookAt(meX, meY, meZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    gluLookAt(meX, meY, meZ, meX, meY, (meZ-1), 0.0, 1.0, 0.0);
     glColor3f(1.0, 0.0, 0.0);
     glBegin(GL_LINES);
     glVertex2f(0.0, 0.0);
@@ -960,7 +962,7 @@ void display(void)
     Hsing hsing(WIDTH, HEIGHT);
     University university(WIDTH, HEIGHT);
     glPushMatrix();
-    gluLookAt(meX, meY, meZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    gluLookAt(meX, meY, meZ, meX, meY, (meZ-1), 0.0, 1.0, 0.0);
     a.display_ch();
     b.display_ch();
     c.display_ch();
@@ -987,7 +989,6 @@ void display(void)
 	   gluLookAt(2.0, 2.0, 2.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 	   glScalef(1.0, 2.0, 1.0);      // modeling transformation
 	   glutWireCube(1.0);
-
     glPopMatrix();*/
     //glFlush();
 
@@ -1010,21 +1011,37 @@ void spinDisplay(void) {
 	   spin = spin - 360.0;
     glutPostRedisplay();
 }
+//static GLint m = 0;
 void move(int m) {
     if (m == 1) {
-	   meX = meX + 2.0;
+	   meZ = meZ - 0.01;
     }
     else if (m == 2) {
-	   meY = meY + 2.0;
+	   meZ = meZ + 0.01;
     }
     else if (m == 3) {
-	   meZ = meZ + 2.0;
+	   meX = meX + 0.01;
+    }
+    else if (m == 4) {
+	   meX = meX - 0.01;
     }
     glutPostRedisplay();
 }
 void keyboard(unsigned char key, int x, int y)
 {
     switch (key) {
+    case 'w':
+	   move(1);
+	   break;
+    case 's':
+	   move(2);
+	   break;
+    case 'a':
+	   move(4);
+	   break;
+    case 'd':
+	   move(3);
+	   break;
     case 27:
 	   exit(0);
 	   break;
@@ -1047,4 +1064,3 @@ int main(int argc, char** argv)
     glutMainLoop();
     return 0;
 }
-
