@@ -1,31 +1,19 @@
-/***************************
-4108056029 王傳馨 第三次作業10/27
-***************************/
 
-#include <Windows.h>
-#include <GL\glew.h>
-#include <GL\freeglut.h>
-#include <iostream>
-#include <sstream>
-using namespace std;
-
+#include <GL/glut.h>
+#include <stdlib.h>
 
 #define WIDTH 1920.0f
 #define HEIGHT 1080.0f
-#define LEN 400
-#define PRICOUNT 100
-
-int global_key;
 class NCHU {
 protected:
-    float startx, starty,middlex, middley;
-    int check(int(*data)[2],int len) {
+    float startx, starty, middlex, middley;
+    int check(int(*data)[2], int len) {
 	   int cross;
-	   int Ax,Ay;
-	   int Bx,By;
+	   int Ax, Ay;
+	   int Bx, By;
 	   for (int i = 2; i < len; i++) {
-		  Ax = data[i-1][0] - data[i - 2][0];
-		  Ay = data[i-1][1] - data[i - 2][1];
+		  Ax = data[i - 1][0] - data[i - 2][0];
+		  Ay = data[i - 1][1] - data[i - 2][1];
 		  Bx = data[i][0] - data[i - 1][0];
 		  By = data[i][1] - data[i - 1][1];
 		  cross = Ax * By - Ay * Bx;
@@ -39,15 +27,16 @@ protected:
 	   return 0;
     }
     void draw_ch(int(*data)[2], int len) {
-	   int cross = check(data,len);
+	   int cross = check(data, len);
 	   if (cross == 1) {
 		  glBegin(GL_POLYGON);
 		  for (int i = 0; i < len; i++) {
-			 glVertex2f(((data[i][0] - middlex) / startx), ((middley - data[i][1]) / starty));
+			 //glVertex2f(((data[i][0] - middlex) / startx), ((middley - data[i][1]) / starty));
+			 glVertex3f(((data[i][0] - middlex) / startx), ((middley - data[i][1]) / starty), 0.0);
 		  }
 		  glEnd();
 	   }
-	   else if (cross==-1) {
+	   else if (cross == -1) {
 		  int reverse_data[20][2];
 		  int j = 0;
 		  for (int i = len - 1; i >= 0; i--) {
@@ -56,67 +45,68 @@ protected:
 		  }
 		  glBegin(GL_POLYGON);
 		  for (int i = 0; i < len; i++) {
-			 glVertex2f(((data[i][0] - middlex) / startx), ((middley - data[i][1]) / starty));
+			 //glVertex2f(((data[i][0] - middlex) / startx), ((middley - data[i][1]) / starty));
+			 glVertex3f(((data[i][0] - middlex) / startx), ((middley - data[i][1]) / starty), 0.0);
 		  }
 		  glEnd();
 	   }
     }
-    
+
 public:
     NCHU(float width, float height) {
-	   middlex = (width / 4)+200;
-	   middley = (height*3 / 4)-100;
+	   middlex = (width / 4) + 200;
+	   middley = (height * 3 / 4) - 100;
 	   startx = (width / 2);
 	   starty = height / 2;
     }
 };
-class A:protected NCHU{
-    private:
-	   //A
-	   int a_5[8][2] = {{73, 629},{86, 611},{120,607},{139,605},{171,606}, {170,617},{138,618},{119,619},};
-	   int a_4[7][2] = {{94,601},{142,579},{143,567},{125,572},{103,580},{89,589},{87,597} ,};
-	   int a_3[8][2] = { {129,541},{144,537},{153,554},{161,576},{173,591},{169,602},{155,587} ,{148,577} };
-	   int a_three[2][3][2] = {
-		  {{178,621},{178,645},{168,622},},
-		  {{119,558},{125,572},{103,580}, },
-	   };
-	   int a_four[10][4][2] = {
-		  {{73, 519},{92, 532},{86, 611},{73, 629},},
-		  {{92,532},{83,566},{98,555},{99,542}},
-		  {{98,555},{99,542},{128,534},{129,541}},
-		  {{128,534},{129,541},{144,537},{140,529}},
-		  {{144,537},{140,529},{149,527},{166,535}},
-		  {{128,534},{140,529},{140,518},{127,522}},
-		  {{112,559},{119,558,},{103,580},{99,575}},
-		  {{119,558},{135,542},{139,554},{125,572}},
-		  {{158,541},{167,553},{161,576},{153,554}},
-		  {{148,577},{155,587},{138,605},{115,606}},
-	   };
-	   int a_five[4][5][2] = {
-		  {{161,499},{180,498},{176,511},{92, 532},{73, 519},},
-		  {{180,498},{176,511},{178,621},{178,645},{189,628},},
-		  {{149,527},{166,535},{166,529},{158,512},{146,516}},
-		  {{84,584},{109,550},{129,540},{112,559},{99,575}},
-	   };
+class A :protected NCHU {
+private:
+    //A
+    int a_5[8][2] = { {73, 629},{86, 611},{120,607},{139,605},{171,606}, {170,617},{138,618},{119,619}, };
+    int a_4[7][2] = { {94,601},{142,579},{143,567},{125,572},{103,580},{89,589},{87,597} , };
+    int a_3[8][2] = { {129,541},{144,537},{153,554},{161,576},{173,591},{169,602},{155,587} ,{148,577} };
+    int a_three[2][3][2] = {
+	   {{178,621},{178,645},{168,622},},
+	   {{119,558},{125,572},{103,580}, },
+    };
+    int a_four[10][4][2] = {
+	   {{73, 519},{92, 532},{86, 611},{73, 629},},
+	   {{92,532},{83,566},{98,555},{99,542}},
+	   {{98,555},{99,542},{128,534},{129,541}},
+	   {{128,534},{129,541},{144,537},{140,529}},
+	   {{144,537},{140,529},{149,527},{166,535}},
+	   {{128,534},{140,529},{140,518},{127,522}},
+	   {{112,559},{119,558,},{103,580},{99,575}},
+	   {{119,558},{135,542},{139,554},{125,572}},
+	   {{158,541},{167,553},{161,576},{153,554}},
+	   {{148,577},{155,587},{138,605},{115,606}},
+    };
+    int a_five[4][5][2] = {
+	   {{161,499},{180,498},{176,511},{92, 532},{73, 519},},
+	   {{180,498},{176,511},{178,621},{178,645},{189,628},},
+	   {{149,527},{166,535},{166,529},{158,512},{146,516}},
+	   {{84,584},{109,550},{129,540},{112,559},{99,575}},
+    };
 
 public:
-	   A(float width, float height):NCHU(width, height){
+    A(float width, float height) :NCHU(width, height) {
+    }
+    void display_ch() {
+	   glColor3f(0.007, 0.4375, 0.589);
+	   draw_ch(a_3, sizeof(a_3) / sizeof(a_3[0]));
+	   draw_ch(a_4, sizeof(a_4) / sizeof(a_4[0]));
+	   draw_ch(a_5, sizeof(a_5) / sizeof(a_5[0]));
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
 	   }
-	   void display_ch() {
-		  glColor3f(0.007, 0.4375, 0.589);
-			 draw_ch(a_3, sizeof(a_3) / sizeof(a_3[0]));
-			 draw_ch(a_4, sizeof(a_4) / sizeof(a_4[0]));
-			 draw_ch(a_5, sizeof(a_5) / sizeof(a_5[0]));
-			 for (int i = 0; i < 2; i++) {
-				draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
-			 }
-			 for (int i = 0; i < 10; i++) {
-				draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
-			 }
-			 for (int i = 0; i < 4; i++) {
-				draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
-			 }
+	   for (int i = 0; i < 10; i++) {
+		  draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
 	   }
+	   for (int i = 0; i < 4; i++) {
+		  draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
+	   }
+    }
 };
 class B :protected NCHU {
 private:
@@ -141,19 +131,19 @@ public:
     }
     void display_ch() {
 	   glColor3f(0.007, 0.4375, 0.589);
-		  for (int i = 0; i < 2; i++) {
-			 draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
-		  }
-		  for (int i = 0; i < 2; i++) {
-			 draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
-		  }
-		  for (int i = 0; i < 1; i++) {
-			 draw_ch(a_six[i], sizeof(a_six[i]) / sizeof(a_six[i][0]));
-		  }
-		  for (int i = 0; i < 2; i++) {
-			 draw_ch(a_seven[i], sizeof(a_seven[i]) / sizeof(a_seven[i][0]));
-		  }
-	   
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
+	   }
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
+	   }
+	   for (int i = 0; i < 1; i++) {
+		  draw_ch(a_six[i], sizeof(a_six[i]) / sizeof(a_six[i][0]));
+	   }
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_seven[i], sizeof(a_seven[i]) / sizeof(a_seven[i][0]));
+	   }
+
     }
 };
 class C :protected NCHU {
@@ -181,15 +171,15 @@ public:
     }
     void display_ch() {
 	   glColor3f(0.007, 0.4375, 0.589);
-		  for (int i = 0; i < 4; i++) {
-			 draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
-		  }
-		  for (int i = 0; i < 2; i++) {
-			 draw_ch(a_six[i], sizeof(a_six[i]) / sizeof(a_six[i][0]));
-		  }
-		  for (int i = 0; i < 2; i++) {
-			 draw_ch(a_seven[i], sizeof(a_seven[i]) / sizeof(a_seven[i][0]));
-		  }
+	   for (int i = 0; i < 4; i++) {
+		  draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
+	   }
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_six[i], sizeof(a_six[i]) / sizeof(a_six[i][0]));
+	   }
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_seven[i], sizeof(a_seven[i]) / sizeof(a_seven[i][0]));
+	   }
     }
 };
 class D :protected NCHU {
@@ -229,29 +219,29 @@ private:
 	   {{574,541},{574,533},{588,524},{596,522},{608,527},{596,536},{584,538}},
 	   {{626,538},{620,534},{607,527},{602,530},{622,552},{627,551},{631,542}},
     };
-    int a_nine[9][2] = { {547,577},{506,586},{495,586},{493,601},{499,607},{504,607},{523,595},{570,579},{584,568}};
+    int a_nine[9][2] = { {547,577},{506,586},{495,586},{493,601},{499,607},{504,607},{523,595},{570,579},{584,568} };
 
 public:
     D(float width, float height) :NCHU(width, height) {
     }
     void display_ch() {
 	   glColor3f(0.007, 0.4375, 0.589);
-		  for (int i = 0; i < 2; i++) {
-			 draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
-		  }
-		  for (int i = 0; i < 13; i++) {
-			 draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
-		  }
-		  for (int i = 0; i < 6; i++) {
-			 draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
-		  }
-		  for (int i = 0; i < 2; i++) {
-			 draw_ch(a_six[i], sizeof(a_six[i]) / sizeof(a_six[i][0]));
-		  }
-		  for (int i = 0; i < 2; i++) {
-			 draw_ch(a_seven[i], sizeof(a_seven[i]) / sizeof(a_seven[i][0]));
-		  }
-		  draw_ch(a_nine, sizeof(a_nine) / sizeof(a_nine[0]));
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
+	   }
+	   for (int i = 0; i < 13; i++) {
+		  draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
+	   }
+	   for (int i = 0; i < 6; i++) {
+		  draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
+	   }
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_six[i], sizeof(a_six[i]) / sizeof(a_six[i][0]));
+	   }
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_seven[i], sizeof(a_seven[i]) / sizeof(a_seven[i][0]));
+	   }
+	   draw_ch(a_nine, sizeof(a_nine) / sizeof(a_nine[0]));
     }
 };
 class E :protected NCHU {
@@ -287,19 +277,19 @@ public:
     }
     void display_ch() {
 	   glColor3f(0.007, 0.4375, 0.589);
-		  for (int i = 0; i < 1; i++) {
-			 draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
-		  }
-		  for (int i = 0; i < 10; i++) {
-			 draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
-		  }
-		  for (int i = 0; i < 1; i++) {
-			 draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
-		  }
-		  for (int i = 0; i < 2; i++) {
-			 draw_ch(a_six[i], sizeof(a_six[i]) / sizeof(a_six[i][0]));
-		  }
-		  draw_ch(a_eight, sizeof(a_eight) / sizeof(a_eight[0]));
+	   for (int i = 0; i < 1; i++) {
+		  draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
+	   }
+	   for (int i = 0; i < 10; i++) {
+		  draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
+	   }
+	   for (int i = 0; i < 1; i++) {
+		  draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
+	   }
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_six[i], sizeof(a_six[i]) / sizeof(a_six[i][0]));
+	   }
+	   draw_ch(a_eight, sizeof(a_eight) / sizeof(a_eight[0]));
     }
 };
 class F :protected NCHU {
@@ -336,7 +326,7 @@ private:
 	   {{911,644},{896,638},{873,658},{893,660}},
 	   {{873,658},{893,660},{871,672},{848,669}},
 	   {{873,658},{871,672},{843,674},{848,669}},
-    }; 
+    };
     int a_five[4][5][2] = {
 	   {{909,521},{907,530},{902,525},{901,522},{904,515}},
 	   {{832,607},{840,602},{840,593},{826,590},{826,599}},
@@ -361,21 +351,21 @@ public:
     }
     void display_ch() {
 	   glColor3f(0.007, 0.4375, 0.589);
-		  for (int i = 0; i < 7; i++) {
-			 draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
-		  }
-		  for (int i = 0; i < 22; i++) {
-			 draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
-		  }
-		  for (int i = 0; i < 4; i++) {
-			 draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
-		  }
-		  for (int i = 0; i < 2; i++) {
-			 draw_ch(a_six[i], sizeof(a_six[i]) / sizeof(a_six[i][0]));
-		  }
-		  for (int i = 0; i < 5; i++) {
-			 draw_ch(a_seven[i], sizeof(a_seven[i]) / sizeof(a_seven[i][0]));
-		  }
+	   for (int i = 0; i < 7; i++) {
+		  draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
+	   }
+	   for (int i = 0; i < 22; i++) {
+		  draw_ch(a_four[i], sizeof(a_four[i]) / sizeof(a_four[i][0]));
+	   }
+	   for (int i = 0; i < 4; i++) {
+		  draw_ch(a_five[i], sizeof(a_five[i]) / sizeof(a_five[i][0]));
+	   }
+	   for (int i = 0; i < 2; i++) {
+		  draw_ch(a_six[i], sizeof(a_six[i]) / sizeof(a_six[i][0]));
+	   }
+	   for (int i = 0; i < 5; i++) {
+		  draw_ch(a_seven[i], sizeof(a_seven[i]) / sizeof(a_seven[i][0]));
+	   }
     }
 };
 class Logo :protected NCHU {
@@ -442,7 +432,7 @@ private:
 	   {{1144,527},{1142,550},{1134,540},{1125,530},{1118,525},{1132,523}},
     };
 
-    int ball_3[9][2] = { 
+    int ball_3[9][2] = {
 	   {1106,529}, {1114,536},{1124,545},{1133,554},{1136,559},{1125,561},{1114,560},{1105,552},{1101,541}
     };
     int r_ball_3[7][2] = {
@@ -454,7 +444,7 @@ public:
     }
     void display_ch() {
 	   glColor3f(0.007, 0.4375, 0.589);
-	   
+
 	   for (int i = 0; i < 5; i++) {
 		  draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
 	   }
@@ -488,8 +478,8 @@ public:
 };
 class NCHU_en {
 protected:
-    float startx, starty,s,middlex, middley;
-    
+    float startx, starty, s, middlex, middley;
+
     int check(int(*data)[2], int len) {
 	   int cross;
 	   int Ax, Ay;
@@ -509,8 +499,8 @@ protected:
 	   }
 	   return 0;
     }
-    void draw_en(int(*data)[2],int move) {
-	   int cross = check(data,3);
+    void draw_en(int(*data)[2], int move) {
+	   int cross = check(data, 3);
 	   if (cross == 1) {
 		  glBegin(GL_TRIANGLES);
 		  for (int i = 0; i < 3; i++) {
@@ -536,7 +526,7 @@ public:
     NCHU_en(float width, float height) {
 	   startx = width / 2;
 	   starty = height / 2;
-	   middlex= width / 4 +200;
+	   middlex = width / 4 + 200;
 	   middley = (height * 3 / 4) - 100;
 	   s = middlex + 40.0;
     }
@@ -653,44 +643,18 @@ public:
     National(float width, float height) :NCHU_en(width, height) {
     }
     void display_en() {
-	   float alldata[LEN];
-	   GLint first[PRICOUNT];
-	   GLsizei count[PRICOUNT];
+	   //float alldata[LEN];
+	   //GLint first[PRICOUNT];
+	   //GLsizei count[PRICOUNT];
 	   int k = 0, primcount = 0;
 	   glColor3f(0.007, 0.4375, 0.589);
-	   first[primcount] = 0;
-	   for (int i = 0; i < 7;i++) {
-		  if(global_key==3 || global_key==4) {
-			 count[primcount++] = 3;
-			 alldata[k++] = N[i][0][0];
-			 alldata[k++] = N[i][0][1];
-			 alldata[k++] = N[i][1][0];
-			 alldata[k++] = N[i][1][1];
-			 alldata[k++] = N[i][2][0];
-			 alldata[k++] = N[i][2][1];
-			 first[primcount] = first[primcount - 1] + 3;
-		  }
-		  draw_en(N[i], 0);  
+	   //first[primcount] = 0;
+	   for (int i = 0; i < 7; i++) {
+
+		  draw_en(N[i], 0);
 	   }
 	   for (int i = 0; i < 26; i++) {
-		  if (global_key == 3 || global_key == 4) {
-			 count[primcount++] = 3;
-			 alldata[k++] = a[i][0][0];
-			 alldata[k++] = a[i][0][1];
-			 alldata[k++] = a[i][1][0];
-			 alldata[k++] = a[i][1][1];
-			 alldata[k++] = a[i][2][0];
-			 alldata[k++] = a[i][2][1];
-			 first[primcount] = first[primcount - 1] + 3;
-			 count[primcount++] = 3;
-			 alldata[k++] = a[i][0][0]+173;
-			 alldata[k++] = a[i][0][1];
-			 alldata[k++] = a[i][1][0] + 173;
-			 alldata[k++] = a[i][1][1];
-			 alldata[k++] = a[i][2][0] + 173;
-			 alldata[k++] =a[i][2][1];
-			 first[primcount] = first[primcount - 1] + 3;
-		  }
+
 		  draw_en(a[i], 0);
 		  draw_en(a[i], 173);
 	   }
@@ -698,12 +662,12 @@ public:
 		  draw_en(t[i], 0);
 		  draw_en(t[i], 957);
 	   }
-	   for (int i = 0; i < 2;i++) {
+	   for (int i = 0; i < 2; i++) {
 		  draw_en(i_n_u_r[i], 0);//i
 		  draw_en(I[i], 0);
 		  draw_en(i_n_u_r[i], 63);//n
 		  draw_en(i_n_u_r[i], 306);//u
-		  draw_en(i_n_u_r[i], 317+8);//n
+		  draw_en(i_n_u_r[i], 317 + 8);//n
 		  draw_en(i_n_u_r[i], 393);//g
 		  draw_en(i_n_u_r[i], 523);//i
 		  draw_en(I[i], 523);
@@ -728,9 +692,9 @@ public:
 	   for (int i = 0; i < 8; i++) {
 		  draw_en(n[i], 0);
 		  //draw_en(n[i], 63-63);//n
-		  draw_en(n[i], 317-63+8);//n
-		  draw_en(n[i], 543-63);//n
-		  draw_en(n[i], 701-63);//n
+		  draw_en(n[i], 317 - 63 + 8);//n
+		  draw_en(n[i], 543 - 63);//n
+		  draw_en(n[i], 701 - 63);//n
 		  draw_en(n[i], 177);//n
 	   }
     }
@@ -880,8 +844,8 @@ public:
 	   for (int i = 0; i < 2; i++) {
 		  draw_en(H[i], 0);
 	   }
-	   for (int i = 0; i < 26;i++) {
-		  draw_en(s[i],0);
+	   for (int i = 0; i < 26; i++) {
+		  draw_en(s[i], 0);
 		  draw_en(s[i], 389);
 	   }
     }
@@ -953,18 +917,37 @@ public:
 };
 void init(void)
 {
-    glewInit();
-    glClearColor(1.0, 1.0, 1.0, 0.0);
-    //glShadeModel(GL_FLAT);
-    //glClearColor(0, 0, 0, 0);
-    //開啟頂點，顏色陣列
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnable(GL_COLOR_ARRAY);
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glShadeModel(GL_FLAT);
 }
-
 static GLfloat spin = 0.0;
-static int xyz = 0;
-void display(void) {
+static GLfloat meX = 0.0, meY = 0.0, meZ = 2.0;
+void display(void)
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(1.0, 1.0, 1.0, 0.0);
+
+    //座標
+    glPushMatrix();
+    gluLookAt(meX, meY, meZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    glColor3f(1.0, 0.0, 0.0);
+    glBegin(GL_LINES);
+    glVertex2f(0.0, 0.0);
+    glVertex2f(0.0, 10.0);
+    glEnd();
+    glColor3f(0.0, 1.0, 0.0);
+    glBegin(GL_LINES);
+    glVertex3f(0.0, 0.0, 0.0);
+    glVertex3f(10.0, 0.0, 0.0);
+    glEnd();
+    glColor3f(0.0, 0.0, 1.0);
+    glBegin(GL_LINES);
+    glVertex3f(0.0, 0.0, 0.0);
+    glVertex3f(0.0, 0.0, 10.0);
+    glEnd();
+    glPopMatrix();
+
+    //logo
     A a(WIDTH, HEIGHT);
     B b(WIDTH, HEIGHT);
     C c(WIDTH, HEIGHT);
@@ -976,121 +959,92 @@ void display(void) {
     Chung chung(WIDTH, HEIGHT);
     Hsing hsing(WIDTH, HEIGHT);
     University university(WIDTH, HEIGHT);
-    glClearColor(1.0, 1.0, 1.0, 0.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glPushMatrix();
+    gluLookAt(meX, meY, meZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    a.display_ch();
+    b.display_ch();
+    c.display_ch();
+    d.display_ch();
+    e.display_ch();
+    f.display_ch();
+    glPushMatrix();
+    glTranslatef((1125 - (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
+    glRotatef(spin, 0.0, 1.0, 0.0);
+    glTranslatef((-1125 + (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
+    logo.display_ch();
+    glPopMatrix();
+    national.display_en();
+    chung.display_en();
+    hsing.display_en();
+    university.display_en();
+    glPopMatrix();
 
-	   glPushMatrix();
-	   if (xyz == 2) {
-		  glRotatef(spin, 0.0, 0.0, 1.0);
-	   }
-	   if (xyz == 1) {
-		  glRotatef(spin, 0.0, 1.0, 0.0);
-	   }
-	   if (xyz == 0) {
-		  glRotatef(spin, 1.0, 0.0, 0.0);
-	   }
-	   a.display_ch();
-	   b.display_ch();
-	   c.display_ch();
-	   d.display_ch();
-	   e.display_ch();
-	   f.display_ch();
-	   logo.display_ch();
-	   national.display_en();
-	   chung.display_en();
-	   hsing.display_en();
-	   university.display_en();
-	   glPopMatrix();
-	   /*
-	   glColor3f(0.0, 0.0, 0.0);
-	   glPushMatrix();
-		  //glTranslatef(-1.0, 0.0, 0.0);
-		  //glRotatef(10, 0.0, 0.0, 1.0);
-		  //glTranslatef(1.0, 0.0, 0.0);
-		  glPushMatrix();
-			 glScalef(2.0,0.4,1.0);
-			 glutWireCube(1.0);
-		  glPopMatrix();
-	   glPopMatrix();*/
-	   glutSwapBuffers();
+    /*glColor3f(0.0, 1.0, 1.0);
+    glPushMatrix();
+	   glLoadIdentity();            //clear the matrix
+	   //viewing transformation
+	   //gluLookAt(meX, meY, meZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	   gluLookAt(2.0, 2.0, 2.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	   glScalef(1.0, 2.0, 1.0);      // modeling transformation
+	   glutWireCube(1.0);
+
+    glPopMatrix();*/
+    //glFlush();
+
+
+    glutSwapBuffers();
 }
 
-void reshape(int Width, int Height) {
-    /*glViewport(0, 0, (GLsizei)Width, (GLsizei)Height);
+void reshape(int w, int h)
+{
+    glViewport(0, 0, (GLsizei)w, (GLsizei)h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-WIDTH, WIDTH, -HEIGHT, HEIGHT, 1000.0, -1000.0);
+    glFrustum(-1.0, 1.0, -1.0, 1.0, 1.5, 20.0);
     glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();*/
-    
-    glViewport(0, 0, (GLsizei)Width, (GLsizei)Height);
-    glOrtho(0.0f, WIDTH, 0.0f, HEIGHT, 1000.0f, 1000.0f);
-    //glOrtho(-WIDTH, WIDTH, -HEIGHT, HEIGHT, 1000.0, 1000.0);
-    
 }
-void spinDisplay(void){
+
+void spinDisplay(void) {
     spin = spin + 2.0;
     if (spin > 360.0)
 	   spin = spin - 360.0;
     glutPostRedisplay();
 }
-void mouse(int button, int state, int x, int y){
-    switch (button) {
-    case GLUT_LEFT_BUTTON:
-	   if (state == GLUT_DOWN)
-		  xyz = 0;
-		  glutIdleFunc(spinDisplay);
-	   break;
-
-    case GLUT_MIDDLE_BUTTON:
-	   if (state == GLUT_DOWN)
-		  xyz = 1;
-		  glutIdleFunc(spinDisplay);
-	   break;
-    case GLUT_RIGHT_BUTTON:
-	   if (state == GLUT_DOWN)
-		  xyz = 2;
-		  glutIdleFunc(spinDisplay);
-	   break;
-    default:
+void move(int m) {
+    if (m == 1) {
+	   meX = meX + 2.0;
+    }
+    else if (m == 2) {
+	   meY = meY + 2.0;
+    }
+    else if (m == 3) {
+	   meZ = meZ + 2.0;
+    }
+    glutPostRedisplay();
+}
+void keyboard(unsigned char key, int x, int y)
+{
+    switch (key) {
+    case 27:
+	   exit(0);
 	   break;
     }
 }
-void keyboard(unsigned char key, int x, int y){
-    //switch (key) {
-    //}
-}
-int main(int argc, char* argv[]) {
-    global_key = 0;
+
+int main(int argc, char** argv)
+{
     glutInit(&argc, argv);
+    //glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
     glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-    glutInitWindowPosition(0, 0);	//set the position of Window
-    glutInitWindowSize(1920, 1080);		//set the size of Window
-    glutCreateWindow("NCHU");
+    glutInitWindowSize(WIDTH, HEIGHT);
+    glutInitWindowPosition(100, 100);
+    glutCreateWindow(argv[0]);
     init();
-    //cout << "keyboard" << endl;
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutKeyboardFunc(keyboard);
-    glutMouseFunc(mouse);
-    //cout << "over" << endl;
-    
-   
+    glutIdleFunc(spinDisplay);
     glutMainLoop();
     return 0;
-    /*
-    glutInit(&argc, (char**)argv);
-    glutInitWindowSize(500, 500);
-    glutInitWindowPosition(100, 100);
-    glutCreateWindow("vertexArray");
-    //printGlInfo();
-    init();
-    glutDisplayFunc(display);
-    glutMainLoop();
-    return 0;*/
 }
-
-
-
-
-
+
