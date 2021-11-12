@@ -370,6 +370,7 @@ public:
 	   }
     }
 };
+static GLfloat color[3] = { 0.007, 0.4375, 0.589 };
 class Logo :protected NCHU {
 private:
     int a_three[5][3][2] = {
@@ -442,11 +443,14 @@ private:
     };
 
 public:
+    
     Logo(float width, float height) :NCHU(width, height) {
     }
     void display_ch() {
-	   glColor3f(0.007, 0.4375, 0.589);
-
+	   //cout << "dis" << endl;
+	   //cout << color[1] << endl;
+	   //glColor3f(0.007, 0.4375, 0.589);
+	   glColor3f(color[0],color[1],color[2]);
 	   for (int i = 0; i < 5; i++) {
 		  draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
 	   }
@@ -924,6 +928,7 @@ void init(void)
 }
 static GLfloat spin = 0.0;
 static GLfloat meX = 0.0, meY = 0.0, meZ = 2.0;
+static GLfloat seeX = 0.0, seeY = 0.0, seeZ = -1.0;
 void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -931,7 +936,7 @@ void display(void)
 
     //®y¼Ð
     glPushMatrix();
-    gluLookAt(meX, meY, meZ, meX, meY, (meZ-1), 0.0, 1.0, 0.0);
+    gluLookAt(meX, meY, meZ, seeX, seeY, seeZ, 0.0, 1.0, 0.0);
     glColor3f(1.0, 0.0, 0.0);
     glBegin(GL_LINES);
     glVertex2f(0.0, 0.0);
@@ -962,7 +967,7 @@ void display(void)
     Hsing hsing(WIDTH, HEIGHT);
     University university(WIDTH, HEIGHT);
     glPushMatrix();
-    gluLookAt(meX, meY, meZ, meX, meY, (meZ-1), 0.0, 1.0, 0.0);
+    gluLookAt(meX, meY, meZ, seeX, seeY, seeZ, 0.0, 1.0, 0.0);
     a.display_ch();
     b.display_ch();
     c.display_ch();
@@ -970,10 +975,10 @@ void display(void)
     e.display_ch();
     f.display_ch();
     glPushMatrix();
-    glTranslatef((1125 - (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
-    glRotatef(spin, 0.0, 1.0, 0.0);
-    glTranslatef((-1125 + (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
-    logo.display_ch();
+	   glTranslatef((1125 - (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
+	   glRotatef(spin, 0.0, 1.0, 0.0);
+	   glTranslatef((-1125 + (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
+	   logo.display_ch();
     glPopMatrix();
     national.display_en();
     chung.display_en();
@@ -981,15 +986,82 @@ void display(void)
     university.display_en();
     glPopMatrix();
 
-    /*glColor3f(0.0, 1.0, 1.0);
+    glColor3f(0.0, 0.0, 0.0);
     glPushMatrix();
 	   glLoadIdentity();            //clear the matrix
-	   //viewing transformation
-	   //gluLookAt(meX, meY, meZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-	   gluLookAt(2.0, 2.0, 2.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-	   glScalef(1.0, 2.0, 1.0);      // modeling transformation
-	   glutWireCube(1.0);
-    glPopMatrix();*/
+	   gluLookAt(meX, meY, meZ, seeX, seeY, seeZ, 0.0, 1.0, 0.0);
+	   glPushMatrix();
+		  glTranslatef(meX, meY, meZ-2);
+		  glTranslatef(1.2, 0, 0);
+		  glRotatef(310, 0.0, 1.0, 0.0);
+		  //arm
+		  glPushMatrix();
+			 glTranslatef(0.5, 0, 0.8);
+			 glRotatef(30, 0.0, 0.0, 1.0);
+			 glScalef(0.4, 0.15, 0.15);      // modeling transformation
+			 glutWireCube(1.0);
+		  glPopMatrix();
+			 glPushMatrix();
+			 glTranslatef(0.1, 0, 0.8);
+			 glRotatef(330, 0.0, 0.0, 1.0);
+			 glScalef(0.4, 0.15, 0.15);      // modeling transformation
+			 glutWireCube(1.0);
+		  glPopMatrix();
+
+		  
+		  glPushMatrix();
+			 glTranslatef(-0.06, 0.23, 0.87);
+			 glRotatef(270, 0.0, 0.0, 1.0);
+			 glScalef(0.12, 0.03,0.03);
+			 glutWireCube(1.0);
+		  glPopMatrix();
+		  glPushMatrix();
+			 glTranslatef(-0.13, 0.27, 0.87);
+			 glRotatef(0, 0.0, 0.0, 1.0);
+			 glScalef(0.12, 0.03, 0.03);
+			 glutWireCube(1.0);
+		  glPopMatrix();
+
+		  glPushMatrix();
+			 glTranslatef(-0.07, 0.23, 0.81);
+			 glRotatef(300, 0.0, 0.0, 1.0);
+			 glScalef(0.12, 0.03, 0.03);
+			 glutWireCube(1.0);
+		  glPopMatrix();
+		  glPushMatrix();
+			 glTranslatef(-0.13, 0.23, 0.81);
+			 glRotatef(30, 0.0, 0.0, 1.0);
+			 glScalef(0.12, 0.03, 0.03);
+			 glutWireCube(1.0);
+		  glPopMatrix();
+
+		  glPushMatrix();
+			 glTranslatef(-0.07, 0.23, 0.75);
+			 glRotatef(300, 0.0, 0.0, 1.0);
+			 glScalef(0.12, 0.03, 0.03);
+			 glutWireCube(1.0);
+		  glPopMatrix();
+		  glPushMatrix();
+			 glTranslatef(-0.13, 0.23, 0.75);
+			 glRotatef(30, 0.0, 0.0, 1.0);
+			 glScalef(0.12, 0.03, 0.03);
+			 glutWireCube(1.0);
+		  glPopMatrix();
+
+		  glPushMatrix();
+			 glTranslatef(-0.12, 0, 0.81);
+			 glRotatef(30, 0.0, 0.0, 1.0);
+			 glScalef(0.12, 0.03, 0.03);
+			 glutWireCube(1.0);
+		  glPopMatrix();
+		  glPushMatrix();
+			 glTranslatef(-0.21, 0, 0.81);
+			 glRotatef(300, 0.0, 0.0, 1.0);
+			 glScalef(0.12, 0.03, 0.03);
+			 glutWireCube(1.0);
+		  glPopMatrix();
+	   glPopMatrix();
+    glPopMatrix();
     //glFlush();
 
 
@@ -1001,12 +1073,26 @@ void reshape(int w, int h)
     glViewport(0, 0, (GLsizei)w, (GLsizei)h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glFrustum(-1.0, 1.0, -1.0, 1.0, 1.5, 20.0);
+    glFrustum(-1.0, 1.0, -1.0, 1.0, 1.0, 20.0);
     glMatrixMode(GL_MODELVIEW);
 }
-
+static GLfloat R[9] = { 54,22,15,12,11,9,8 ,5,3};
+static GLfloat G[9] = { 235,240,240,215,202,184,167,141,110 };
+static GLfloat B[9] = { 129,156,179,186,190,195,200,207,217 };
+static GLint a = -1,u=1;
 void spinDisplay(void) {
     spin = spin + 2.0;
+    if (a <= 9 && a>=-1) {
+	   a = a + u;
+	   color[0] = R[a]/255.0;
+	   color[1] = G[a] / 255.0;
+	   color[2] = B[a] / 255.0;
+	   
+    }
+    else {
+	   u = -u;
+	   a = a + u;
+    }
     if (spin > 360.0)
 	   spin = spin - 360.0;
     glutPostRedisplay();
@@ -1015,15 +1101,21 @@ void spinDisplay(void) {
 void move(int m) {
     if (m == 1) {
 	   meZ = meZ - 0.01;
+	   seeZ = seeZ - 0.01;
     }
     else if (m == 2) {
 	   meZ = meZ + 0.01;
+	   seeZ = seeZ + 0.01;
+
     }
     else if (m == 3) {
 	   meX = meX + 0.01;
+	   seeX = seeX + 0.01;
+
     }
     else if (m == 4) {
 	   meX = meX - 0.01;
+	   seeX = seeX - 0.01;
     }
     glutPostRedisplay();
 }
@@ -1047,7 +1139,17 @@ void keyboard(unsigned char key, int x, int y)
 	   break;
     }
 }
-
+void catchKey(int key, int x, int y)
+{
+    if (key == GLUT_KEY_LEFT)
+	   seeX = seeX - 0.02;
+    else if (key == GLUT_KEY_RIGHT)
+	   seeX = seeX + 0.02;
+    else if (key == GLUT_KEY_DOWN)
+	   seeY = seeY - 0.02;
+    else if (key == GLUT_KEY_UP)
+	   seeY = seeY + 0.02;
+}
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
@@ -1060,6 +1162,7 @@ int main(int argc, char** argv)
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutKeyboardFunc(keyboard);
+    glutSpecialFunc(catchKey);
     glutIdleFunc(spinDisplay);
     glutMainLoop();
     return 0;
