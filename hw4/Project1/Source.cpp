@@ -928,9 +928,23 @@ public:
 void init(void)
 {
     glClearColor(0.0, 0.0, 0.0, 0.0);
+    //glClearColor(1.0, 1.0, 1.0, 0.0);
     //glShadeModel(GL_FLAT);
     glShadeModel(GL_SMOOTH);
     glEnable(GL_DEPTH_TEST);
+
+    //
+    GLfloat ambient[] = { 0.0, 0.0, 0.0, 1.0 };
+    GLfloat diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat position[] = { 0.0, 3.0, 2.0, 0.0 };
+    GLfloat lmodel_ambient[] = { 0.4, 0.4, 0.4, 1.0 };
+    GLfloat local_view[] = { 0.0 };
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+    glLightfv(GL_LIGHT0, GL_POSITION, position);
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+    glLightModelfv(GL_LIGHT_MODEL_LOCAL_VIEWER, local_view);
+    //
 }
 static GLfloat spin = 0.0;
 static GLfloat meX = 0.0, meY = 0.0, meZ = 2.0;
@@ -940,7 +954,8 @@ static int year = 0, day = 0;
 void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glClearColor(1.0, 1.0, 1.0, 0.0);
+    //glClearColor(1.0, 1.0, 1.0, 0.0);
+    //glClearColor(0.0, 0.0, 0.0, 0.0);
 
     //®y¼Ð
     glPushMatrix();
@@ -974,6 +989,19 @@ void display(void)
     Chung chung(WIDTH, HEIGHT);
     Hsing hsing(WIDTH, HEIGHT);
     University university(WIDTH, HEIGHT);
+    //*****************************
+    GLfloat no_mat[] = { 0.0, 0.0, 0.0, 1.0 };
+    GLfloat mat_ambient[] = { 0.7, 0.7, 0.7, 1.0 };
+    GLfloat mat_ambient_color[] = { 0.8, 0.8, 0.2, 1.0 };
+    GLfloat mat_diffuse[] = { 0.1, 0.5, 0.8, 1.0 };
+    GLfloat mat_diffuse_test[]={51.0 / 255.0, 52.0 / 255.0, 54.0 / 255.0};
+    GLfloat mat_diffuse_black[] = { 0.04,0.04,0.04};
+    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat no_shininess[] = { 0.0 };
+    GLfloat low_shininess[] = { 5.0 };
+    GLfloat high_shininess[] = { 100.0 };
+    GLfloat mat_emission[] = { 0.3, 0.2, 0.2, 0.0 };
+    //*****************************
 
     glColor3f(0.0, 0.0, 0.0);
     glPushMatrix();
@@ -1001,10 +1029,20 @@ void display(void)
 	   university.display_en();
     glPopMatrix();
 
+    //walk
     glTranslatef(meX, meY, meZ - 2);
     glPushMatrix();
-    glEnable(GL_DEPTH_TEST);
-    glColor3f(176.0 / 255.0, 178.0 / 255.0, 181.0 / 255.0);
+	   glPushMatrix();
+	   glEnable(GL_DEPTH_TEST);
+	   glEnable(GL_LIGHTING);
+	   glEnable(GL_LIGHT0);
+
+	   glMaterialfv(GL_FRONT, GL_AMBIENT, no_mat);
+	   glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse_test);
+	   glMaterialfv(GL_FRONT, GL_SPECULAR, no_mat);
+	   glMaterialfv(GL_FRONT, GL_SHININESS, no_shininess);
+	   glMaterialfv(GL_FRONT, GL_EMISSION, no_mat);
+	   glColor3f(176.0 / 255.0, 178.0 / 255.0, 181.0 / 255.0);
 	   //glTranslatef(meX, meY, meZ - 2);
 	   glTranslatef(1.2, 0, 0);
 	   glRotatef(310, 0.0, 1.0, 0.0);
@@ -1017,65 +1055,72 @@ void display(void)
 		  
 	   glPopMatrix();
 	   glPushMatrix();
+		  
 		  glTranslatef(0.1, 0, 0.8);
 		  glRotatef(330, 0.0, 0.0, 1.0);
 		  glScalef(0.4, 0.15, 0.15);      // modeling transformation
 		  glutSolidCube(1.0);
-		 
+		  
 	   glPopMatrix();
 
 	   //finger1
+	   glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse_black);
 	   glPushMatrix();
 		  glTranslatef(-0.06, 0.23, 0.87);
 		  glRotatef(270, 0.0, 0.0, 1.0);
 		  glScalef(0.12, 0.03, 0.03);
-		  glutWireCube(1.0);
+		  glutSolidCube(1.0);
 	   glPopMatrix();
 	   glPushMatrix();
 		  glTranslatef(-0.13, 0.27, 0.87);
 		  glRotatef(0, 0.0, 0.0, 1.0);
 		  glScalef(0.12, 0.03, 0.03);
-		  glutWireCube(1.0);
+		  glutSolidCube(1.0);
 	   glPopMatrix();
 	   //finger2
 	   glPushMatrix();
 		  glTranslatef(-0.07, 0.23, 0.81);
 		  glRotatef(300, 0.0, 0.0, 1.0);
 		  glScalef(0.12, 0.03, 0.03);
-		  glutWireCube(1.0);
+		  glutSolidCube(1.0);
 	   glPopMatrix();
 	   glPushMatrix();
 	   glTranslatef(-0.13, 0.23, 0.81);
 		  glRotatef(30, 0.0, 0.0, 1.0);
 		  glScalef(0.12, 0.03, 0.03);
-		  glutWireCube(1.0);
+		  glutSolidCube(1.0);
 	   glPopMatrix();
 	   //finger3
 	   glPushMatrix();
 		  glTranslatef(-0.07, 0.23, 0.75);
 		  glRotatef(300, 0.0, 0.0, 1.0);
 		  glScalef(0.12, 0.03, 0.03);
-		  glutWireCube(1.0);
+		  glutSolidCube(1.0);
+		  
 	   glPopMatrix();
 	   glPushMatrix();
 		  glTranslatef(-0.13, 0.23, 0.75);
 		  glRotatef(30, 0.0, 0.0, 1.0);
 		  glScalef(0.12, 0.03, 0.03);
-		  glutWireCube(1.0);
+		  glutSolidCube(1.0);
+		  
 	   glPopMatrix();
 	   //finger down
 	   glPushMatrix();
 		  glTranslatef(-0.12, 0, 0.81);
 		  glRotatef(30, 0.0, 0.0, 1.0);
 		  glScalef(0.12, 0.03, 0.03);
-		  glutWireCube(1.0);
+		  glutSolidCube(1.0);
 	   glPopMatrix();
 	   glPushMatrix();
 		  glTranslatef(-0.21, 0, 0.81);
 		  glRotatef(300, 0.0, 0.0, 1.0);
 		  glScalef(0.12, 0.03, 0.03);
-		  glutWireCube(1.0);
+		  glutSolidCube(1.0);
 	   glPopMatrix();
+    glPopMatrix();
+    glDisable(GL_LIGHTING);
+    glDisable(GL_LIGHT0);
     glPopMatrix();
     //planet
     glPushMatrix();
@@ -1096,11 +1141,8 @@ void display(void)
 	   glutSolidSphere(0.01, 16, 16);
     glPopMatrix();
     glPopMatrix();
-    //glFlush();
-
-    //
-
-    //
+    
+    
     glutSwapBuffers();
 }
 
