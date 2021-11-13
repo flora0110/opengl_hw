@@ -973,19 +973,12 @@ void display(void)
     University university(WIDTH, HEIGHT);
     //*****************************
     GLfloat no_mat[] = { 0.0, 0.0, 0.0, 1.0 };
-    GLfloat mat_ambient[] = { 0.7, 0.7, 0.7, 1.0 };
-    GLfloat mat_ambient_color[] = { 0.8, 0.8, 0.2, 1.0 };
     GLfloat sun_color[] = { 245.0 / 255.0, 118.0 / 255.0, 39.0 / 255.0 };
     GLfloat earth_color[] = { 3.0 / 255.0, 139.0 / 255.0, 217.0 / 255.0 };
     GLfloat island_color[] = { 100.0 / 255.0, 227.0 / 255.0, 27.0 / 255.0 };
-    GLfloat mat_diffuse[] = { 0.1, 0.5, 0.8, 1.0 };
     GLfloat mat_diffuse_test[]={51.0 / 255.0, 52.0 / 255.0, 54.0 / 255.0};
     GLfloat mat_diffuse_black[] = { 0.04,0.04,0.04};
-    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
     GLfloat no_shininess[] = { 0.0 };
-    GLfloat low_shininess[] = { 5.0 };
-    GLfloat high_shininess[] = { 100.0 };
-    GLfloat mat_emission[] = { 0.3, 0.2, 0.2, 0.0 };
     GLfloat mat_emission_test[] = { 51.0 / 255.0, 52.0 / 255.0, 54.0 / 255.0 };
     GLfloat mat_emission_black[] = {0,0,0};
     //*****************************
