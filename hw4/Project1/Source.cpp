@@ -928,7 +928,9 @@ public:
 void init(void)
 {
     glClearColor(0.0, 0.0, 0.0, 0.0);
-    glShadeModel(GL_FLAT);
+    //glShadeModel(GL_FLAT);
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_DEPTH_TEST);
 }
 static GLfloat spin = 0.0;
 static GLfloat meX = 0.0, meY = 0.0, meZ = 2.0;
@@ -937,7 +939,7 @@ static GLfloat seeX = 0.0, seeY = 0.0, seeZ = -1.0;
 static int year = 0, day = 0;
 void display(void)
 {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(1.0, 1.0, 1.0, 0.0);
 
     //®y¼Ð
@@ -962,7 +964,6 @@ void display(void)
 
     //logo
     A a(WIDTH, HEIGHT);
-    //B b(WIDTH, HEIGHT);
     C c(WIDTH, HEIGHT);
     D d(WIDTH, HEIGHT);
     E e(WIDTH, HEIGHT);
@@ -973,33 +974,37 @@ void display(void)
     Chung chung(WIDTH, HEIGHT);
     Hsing hsing(WIDTH, HEIGHT);
     University university(WIDTH, HEIGHT);
-    glPushMatrix();
-    gluLookAt(meX, meY, meZ, seeX, seeY, seeZ, 0.0, 1.0, 0.0);
-    a.display_ch();
-    //b.display_ch();
-    c.display_ch();
-    d.display_ch();
-    e.display_ch();
-    f.display_ch();
-    b.display_ch();
-    glPushMatrix();
-	   glTranslatef((1125 - (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
-	   glRotatef(spin, 0.0, 1.0, 0.0);
-	   glTranslatef((-1125 + (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
-	   logo.display_ch();
-    glPopMatrix();
-    national.display_en();
-    chung.display_en();
-    hsing.display_en();
-    university.display_en();
-    glPopMatrix();
 
     glColor3f(0.0, 0.0, 0.0);
     glPushMatrix();
     glLoadIdentity();            //clear the matrix
     gluLookAt(meX, meY, meZ, seeX, seeY, seeZ, 0.0, 1.0, 0.0);
+    glPushMatrix();
+	   //gluLookAt(meX, meY, meZ, seeX, seeY, seeZ, 0.0, 1.0, 0.0);
+	   a.display_ch();
+	   c.display_ch();
+	   d.display_ch();
+	   e.display_ch();
+	   f.display_ch();
+	   b.display_ch();
+	   glPushMatrix();
+		  glDisable(GL_DEPTH_TEST);
+		  glTranslatef((1125 - (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
+		  glRotatef(spin, 0.0, 1.0, 0.0);
+		  glTranslatef((-1125 + (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
+		  logo.display_ch();
+		  glEnable(GL_DEPTH_TEST);
+	   glPopMatrix();
+	   national.display_en();
+	   chung.display_en();
+	   hsing.display_en();
+	   university.display_en();
+    glPopMatrix();
+
     glTranslatef(meX, meY, meZ - 2);
     glPushMatrix();
+    glEnable(GL_DEPTH_TEST);
+    glColor3f(176.0 / 255.0, 178.0 / 255.0, 181.0 / 255.0);
 	   //glTranslatef(meX, meY, meZ - 2);
 	   glTranslatef(1.2, 0, 0);
 	   glRotatef(310, 0.0, 1.0, 0.0);
@@ -1008,13 +1013,15 @@ void display(void)
 		  glTranslatef(0.5, 0, 0.8);
 		  glRotatef(30, 0.0, 0.0, 1.0);
 		  glScalef(0.4, 0.15, 0.15);      // modeling transformation
-		  glutWireCube(1.0);
+		  glutSolidCube(1.0);
+		  
 	   glPopMatrix();
 	   glPushMatrix();
 		  glTranslatef(0.1, 0, 0.8);
 		  glRotatef(330, 0.0, 0.0, 1.0);
 		  glScalef(0.4, 0.15, 0.15);      // modeling transformation
-		  glutWireCube(1.0);
+		  glutSolidCube(1.0);
+		 
 	   glPopMatrix();
 
 	   //finger1
@@ -1070,23 +1077,30 @@ void display(void)
 		  glutWireCube(1.0);
 	   glPopMatrix();
     glPopMatrix();
+    //planet
     glPushMatrix();
-	   //glTranslatef(meX, meY, meZ - 2);
-	   //glTranslatef(0.0, 0.3, 0.0);
 	   glTranslatef(0.4, 0.15, 0.35);
-	   glColor3f(1.0, 0.0, 0.0);
-	   glutWireSphere(0.05, 10, 8);   /* draw sun */
-	   glColor3f(0.0, 0.0, 1.0);
+	   glColor3f(245.0/255.0, 162.0/255.0, 49.0/255.0);
+	   //glutWireSphere(0.05, 10, 8);   /* draw sun */
+	   glutSolidSphere(0.05, 16,16 );
+	   //glColor3f(0.0, 0.0, 1.0);
+	   glColor3f(3.0 / 255.0, 139.0 / 255.0, 217.0 / 255.0);
 	   glRotatef((GLfloat)year, 0.0, 1.0, 0.0);
-	   glTranslatef(0.05, 0.0, 0.0);
+	   glTranslatef(0.1, 0.0, 0.0);
 	   glRotatef((GLfloat)day, 0.0, 1.0, 0.0);
-	   glutWireSphere(0.015, 5, 4);    /* draw smaller planet */
+	   //glutWireSphere(0.015, 5, 4);    /* draw smaller planet */
+	   glutSolidSphere(0.015,16,16);
+
+	   glTranslatef(0.006, 0.0, 0.0);
+	   glColor3f(2.0 / 255.0, 235.0 / 255.0, 111.0 / 255.0);
+	   glutSolidSphere(0.01, 16, 16);
     glPopMatrix();
     glPopMatrix();
     //glFlush();
 
+    //
 
-
+    //
     glutSwapBuffers();
 }
 
