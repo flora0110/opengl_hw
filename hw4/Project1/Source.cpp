@@ -1,4 +1,8 @@
-﻿#include <GL/glut.h>
+﻿/***************************
+4108056029 王傳馨 第IV次作業11/10
+***************************/
+
+#include <GL/glut.h>
 //#include <stdlib.h>
 #include <iostream>
 #include <sstream>
@@ -443,14 +447,14 @@ private:
     };
 
 public:
-    
+
     Logo(float width, float height) :NCHU(width, height) {
     }
     void display_ch() {
 	   //cout << "dis" << endl;
 	   //cout << color[1] << endl;
 	   //glColor3f(0.007, 0.4375, 0.589);
-	   glColor3f(color[0],color[1],color[2]);
+	   glColor3f(color[0], color[1], color[2]);
 	   for (int i = 0; i < 5; i++) {
 		  draw_ch(a_three[i], sizeof(a_three[i]) / sizeof(a_three[i][0]));
 	   }
@@ -928,7 +932,9 @@ void init(void)
 }
 static GLfloat spin = 0.0;
 static GLfloat meX = 0.0, meY = 0.0, meZ = 2.0;
+//static GLfloat meX =-2.0, meY = 0.0, meZ = 0.0;
 static GLfloat seeX = 0.0, seeY = 0.0, seeZ = -1.0;
+static int year = 0, day = 0;
 void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -956,11 +962,12 @@ void display(void)
 
     //logo
     A a(WIDTH, HEIGHT);
-    B b(WIDTH, HEIGHT);
+    //B b(WIDTH, HEIGHT);
     C c(WIDTH, HEIGHT);
     D d(WIDTH, HEIGHT);
     E e(WIDTH, HEIGHT);
     F f(WIDTH, HEIGHT);
+    B b(WIDTH, HEIGHT);
     Logo logo(WIDTH, HEIGHT);
     National national(WIDTH, HEIGHT);
     Chung chung(WIDTH, HEIGHT);
@@ -969,11 +976,12 @@ void display(void)
     glPushMatrix();
     gluLookAt(meX, meY, meZ, seeX, seeY, seeZ, 0.0, 1.0, 0.0);
     a.display_ch();
-    b.display_ch();
+    //b.display_ch();
     c.display_ch();
     d.display_ch();
     e.display_ch();
     f.display_ch();
+    b.display_ch();
     glPushMatrix();
 	   glTranslatef((1125 - (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
 	   glRotatef(spin, 0.0, 1.0, 0.0);
@@ -988,81 +996,95 @@ void display(void)
 
     glColor3f(0.0, 0.0, 0.0);
     glPushMatrix();
-	   glLoadIdentity();            //clear the matrix
-	   gluLookAt(meX, meY, meZ, seeX, seeY, seeZ, 0.0, 1.0, 0.0);
+    glLoadIdentity();            //clear the matrix
+    gluLookAt(meX, meY, meZ, seeX, seeY, seeZ, 0.0, 1.0, 0.0);
+    glTranslatef(meX, meY, meZ - 2);
+    glPushMatrix();
+	   //glTranslatef(meX, meY, meZ - 2);
+	   glTranslatef(1.2, 0, 0);
+	   glRotatef(310, 0.0, 1.0, 0.0);
+	   //arm
 	   glPushMatrix();
-		  glTranslatef(meX, meY, meZ-2);
-		  glTranslatef(1.2, 0, 0);
-		  glRotatef(310, 0.0, 1.0, 0.0);
-		  //arm
-		  glPushMatrix();
-			 glTranslatef(0.5, 0, 0.8);
-			 glRotatef(30, 0.0, 0.0, 1.0);
-			 glScalef(0.4, 0.15, 0.15);      // modeling transformation
-			 glutWireCube(1.0);
-		  glPopMatrix();
-			 glPushMatrix();
-			 glTranslatef(0.1, 0, 0.8);
-			 glRotatef(330, 0.0, 0.0, 1.0);
-			 glScalef(0.4, 0.15, 0.15);      // modeling transformation
-			 glutWireCube(1.0);
-		  glPopMatrix();
+		  glTranslatef(0.5, 0, 0.8);
+		  glRotatef(30, 0.0, 0.0, 1.0);
+		  glScalef(0.4, 0.15, 0.15);      // modeling transformation
+		  glutWireCube(1.0);
+	   glPopMatrix();
+	   glPushMatrix();
+		  glTranslatef(0.1, 0, 0.8);
+		  glRotatef(330, 0.0, 0.0, 1.0);
+		  glScalef(0.4, 0.15, 0.15);      // modeling transformation
+		  glutWireCube(1.0);
+	   glPopMatrix();
 
-		  
-		  glPushMatrix();
-			 glTranslatef(-0.06, 0.23, 0.87);
-			 glRotatef(270, 0.0, 0.0, 1.0);
-			 glScalef(0.12, 0.03,0.03);
-			 glutWireCube(1.0);
-		  glPopMatrix();
-		  glPushMatrix();
-			 glTranslatef(-0.13, 0.27, 0.87);
-			 glRotatef(0, 0.0, 0.0, 1.0);
-			 glScalef(0.12, 0.03, 0.03);
-			 glutWireCube(1.0);
-		  glPopMatrix();
-
-		  glPushMatrix();
-			 glTranslatef(-0.07, 0.23, 0.81);
-			 glRotatef(300, 0.0, 0.0, 1.0);
-			 glScalef(0.12, 0.03, 0.03);
-			 glutWireCube(1.0);
-		  glPopMatrix();
-		  glPushMatrix();
-			 glTranslatef(-0.13, 0.23, 0.81);
-			 glRotatef(30, 0.0, 0.0, 1.0);
-			 glScalef(0.12, 0.03, 0.03);
-			 glutWireCube(1.0);
-		  glPopMatrix();
-
-		  glPushMatrix();
-			 glTranslatef(-0.07, 0.23, 0.75);
-			 glRotatef(300, 0.0, 0.0, 1.0);
-			 glScalef(0.12, 0.03, 0.03);
-			 glutWireCube(1.0);
-		  glPopMatrix();
-		  glPushMatrix();
-			 glTranslatef(-0.13, 0.23, 0.75);
-			 glRotatef(30, 0.0, 0.0, 1.0);
-			 glScalef(0.12, 0.03, 0.03);
-			 glutWireCube(1.0);
-		  glPopMatrix();
-
-		  glPushMatrix();
-			 glTranslatef(-0.12, 0, 0.81);
-			 glRotatef(30, 0.0, 0.0, 1.0);
-			 glScalef(0.12, 0.03, 0.03);
-			 glutWireCube(1.0);
-		  glPopMatrix();
-		  glPushMatrix();
-			 glTranslatef(-0.21, 0, 0.81);
-			 glRotatef(300, 0.0, 0.0, 1.0);
-			 glScalef(0.12, 0.03, 0.03);
-			 glutWireCube(1.0);
-		  glPopMatrix();
+	   //finger1
+	   glPushMatrix();
+		  glTranslatef(-0.06, 0.23, 0.87);
+		  glRotatef(270, 0.0, 0.0, 1.0);
+		  glScalef(0.12, 0.03, 0.03);
+		  glutWireCube(1.0);
+	   glPopMatrix();
+	   glPushMatrix();
+		  glTranslatef(-0.13, 0.27, 0.87);
+		  glRotatef(0, 0.0, 0.0, 1.0);
+		  glScalef(0.12, 0.03, 0.03);
+		  glutWireCube(1.0);
+	   glPopMatrix();
+	   //finger2
+	   glPushMatrix();
+		  glTranslatef(-0.07, 0.23, 0.81);
+		  glRotatef(300, 0.0, 0.0, 1.0);
+		  glScalef(0.12, 0.03, 0.03);
+		  glutWireCube(1.0);
+	   glPopMatrix();
+	   glPushMatrix();
+	   glTranslatef(-0.13, 0.23, 0.81);
+		  glRotatef(30, 0.0, 0.0, 1.0);
+		  glScalef(0.12, 0.03, 0.03);
+		  glutWireCube(1.0);
+	   glPopMatrix();
+	   //finger3
+	   glPushMatrix();
+		  glTranslatef(-0.07, 0.23, 0.75);
+		  glRotatef(300, 0.0, 0.0, 1.0);
+		  glScalef(0.12, 0.03, 0.03);
+		  glutWireCube(1.0);
+	   glPopMatrix();
+	   glPushMatrix();
+		  glTranslatef(-0.13, 0.23, 0.75);
+		  glRotatef(30, 0.0, 0.0, 1.0);
+		  glScalef(0.12, 0.03, 0.03);
+		  glutWireCube(1.0);
+	   glPopMatrix();
+	   //finger down
+	   glPushMatrix();
+		  glTranslatef(-0.12, 0, 0.81);
+		  glRotatef(30, 0.0, 0.0, 1.0);
+		  glScalef(0.12, 0.03, 0.03);
+		  glutWireCube(1.0);
+	   glPopMatrix();
+	   glPushMatrix();
+		  glTranslatef(-0.21, 0, 0.81);
+		  glRotatef(300, 0.0, 0.0, 1.0);
+		  glScalef(0.12, 0.03, 0.03);
+		  glutWireCube(1.0);
 	   glPopMatrix();
     glPopMatrix();
+    glPushMatrix();
+	   //glTranslatef(meX, meY, meZ - 2);
+	   //glTranslatef(0.0, 0.3, 0.0);
+	   glTranslatef(0.4, 0.15, 0.35);
+	   glColor3f(1.0, 0.0, 0.0);
+	   glutWireSphere(0.05, 10, 8);   /* draw sun */
+	   glColor3f(0.0, 0.0, 1.0);
+	   glRotatef((GLfloat)year, 0.0, 1.0, 0.0);
+	   glTranslatef(0.05, 0.0, 0.0);
+	   glRotatef((GLfloat)day, 0.0, 1.0, 0.0);
+	   glutWireSphere(0.015, 5, 4);    /* draw smaller planet */
+    glPopMatrix();
+    glPopMatrix();
     //glFlush();
+
 
 
     glutSwapBuffers();
@@ -1076,18 +1098,25 @@ void reshape(int w, int h)
     glFrustum(-1.0, 1.0, -1.0, 1.0, 1.0, 20.0);
     glMatrixMode(GL_MODELVIEW);
 }
-static GLfloat R[9] = { 54,22,15,12,11,9,8 ,5,3};
+static GLfloat R[9] = { 54,22,15,12,11,9,8 ,5,3 };
 static GLfloat G[9] = { 235,240,240,215,202,184,167,141,110 };
-static GLfloat B[9] = { 129,156,179,186,190,195,200,207,217 };
-static GLint a = -1,u=1;
+static GLfloat Blu[9] = { 129,156,179,186,190,195,200,207,217 };
+static GLint a = 0, u = 1,c=0;
 void spinDisplay(void) {
+    //logo
     spin = spin + 2.0;
-    if (a <= 9 && a>=-1) {
-	   a = a + u;
-	   color[0] = R[a]/255.0;
-	   color[1] = G[a] / 255.0;
-	   color[2] = B[a] / 255.0;
-	   
+    if (a <= 8 && a >= 0) {
+	   if (c == 5) {
+		  c = 0;
+		  color[0] = R[a] / 255.0;
+		  color[1] = G[a] / 255.0;
+		  color[2] = Blu[a] / 255.0;
+		  //cout << a << endl;
+		  a = a + u;
+	   }
+	   else {
+		  c = c + 1;
+	   }
     }
     else {
 	   u = -u;
@@ -1095,27 +1124,30 @@ void spinDisplay(void) {
     }
     if (spin > 360.0)
 	   spin = spin - 360.0;
+    //planet
+    day = (day + 4) % 360;
+    year = (year + 2) % 360;
     glutPostRedisplay();
 }
 //static GLint m = 0;
 void move(int m) {
     if (m == 1) {
-	   meZ = meZ - 0.01;
-	   seeZ = seeZ - 0.01;
+	   meZ = meZ - 0.02;
+	   seeZ = seeZ - 0.02;
     }
     else if (m == 2) {
-	   meZ = meZ + 0.01;
-	   seeZ = seeZ + 0.01;
+	   meZ = meZ + 0.02;
+	   seeZ = seeZ + 0.02;
 
     }
     else if (m == 3) {
-	   meX = meX + 0.01;
-	   seeX = seeX + 0.01;
+	   meX = meX + 0.02;
+	   seeX = seeX + 0.02;
 
     }
     else if (m == 4) {
-	   meX = meX - 0.01;
-	   seeX = seeX - 0.01;
+	   meX = meX - 0.02;
+	   seeX = seeX - 0.02;
     }
     glutPostRedisplay();
 }
