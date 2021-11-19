@@ -2,7 +2,7 @@
 #include <GL\glew.h>
 #include <GL\freeglut.h>
 #include <iostream>
-
+#include <GL/glut.h>
 using namespace std;
 
 
@@ -29,7 +29,7 @@ void reshape(int w, int h)
 {
     //glViewport(0, 0, (GLsizei)w, (GLsizei)h);
 
-    int x = 0;
+    /*int x = 0;
     int y = 0;
     int ViewWidth = w;
     int ViewHeight = h;
@@ -47,9 +47,15 @@ void reshape(int w, int h)
     }
     glViewport(x, y, ViewWidth, ViewHeight);
 
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glFrustum(-1.0, 1.0, -1.0, 1.0, 1.0, 20.0);
+    glMatrixMode(GL_MODELVIEW);*/
+    glViewport(0, 0, (GLsizei)w, (GLsizei)h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(90.0, (GLfloat)w / (GLfloat)h, 1.0, 700.0);
     glMatrixMode(GL_MODELVIEW);
 }
 void DrawTree(float cx, float cy, float r, int num_segments) {
@@ -87,6 +93,7 @@ static GLfloat seeX = 0.0, seeY = 0.0, seeZ = -1.0;
 //static int year = 0, day = 0;
 static int spin = 0.0;
 static int spin2 = 0.0;
+float rotateX = 0.0, rotateY = 0.0;
 void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -109,6 +116,28 @@ void display()
 	glPushMatrix();//lookat
 	glLoadIdentity();            //clear the matrix
 	gluLookAt(meX, meY, meZ, seeX, seeY, seeZ, 0.0, 1.0, 0.0);
+	glRotatef(rotateX, 0.0, 1.0, 0.0);
+	glRotatef(rotateY, 0.0, 0.0, 1.0);
+
+	glPushMatrix();
+	gluLookAt(meX, meY, meZ, seeX, seeY, seeZ, 0.0, 1.0, 0.0);
+	glColor3f(1.0, 0.0, 0.0);
+	glBegin(GL_LINES);
+	glVertex2f(0.0, 0.0);
+	glVertex2f(0.0, 10.0);
+	glEnd();
+	glColor3f(0.0, 1.0, 0.0);
+	glBegin(GL_LINES);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(10.0, 0.0, 0.0);
+	glEnd();
+	glColor3f(0.0, 0.0, 1.0);
+	glBegin(GL_LINES);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(0.0, 0.0, 10.0);
+	glEnd();
+	glPopMatrix();
+
 	glPushMatrix();
 	    glPushMatrix();//tree1
 		  glTranslatef(0.5, 0.0, 0.0);
@@ -277,14 +306,22 @@ void catchKey(int key, int x, int y)
 {
     if (key == GLUT_KEY_LEFT) {
 	   seeX = seeX - 0.02;
-	   
+	   rotateX--;
     }
-    else if (key == GLUT_KEY_RIGHT)
+    else if (key == GLUT_KEY_RIGHT) {
 	   seeX = seeX + 0.02;
-    else if (key == GLUT_KEY_DOWN)
+	   rotateX++;
+    }
+	  
+    else if (key == GLUT_KEY_DOWN) {
 	   seeY = seeY - 0.02;
-    else if (key == GLUT_KEY_UP)
+	   rotateY--;
+    }
+	   
+    else if (key == GLUT_KEY_UP) {
 	   seeY = seeY + 0.02;
+	   rotateY++;
+    }
 }
 
 
@@ -316,18 +353,22 @@ void onMouseMove(int x, int y) //·Æ¹«©ì°Ê
 {
     if (x > oldmx) {
 	   seeX = seeX + 0.01;
+	   rotateX = rotateX+0.5;
 	   oldmx = x;
     }
     else if (x < oldmx) {
 	   seeX = seeX - 0.01;
+	   rotateX = rotateX - 0.5;
 	   oldmx = x;
     }
     if (y > oldmy) {
 	   seeY = seeY - 0.01;
+	   rotateY = rotateY - 0.5;
 	   oldmy = y;
     }
     else if (y < oldmy) {
 	   seeY = seeY + 0.01;
+	   rotateY = rotateY + 0.5;
 	   oldmy = y;
     }
     glutPostRedisplay();
