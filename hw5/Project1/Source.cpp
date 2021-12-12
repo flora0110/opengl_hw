@@ -10,7 +10,7 @@ using namespace std;
 
 #define WIDTH 1600.0f
 #define HEIGHT 1024.0f
-static GLfloat meX = 0.0, meY = 0.0, meZ = 2.0, fly = 0;
+static GLfloat meX = 0.0, meY = 0.0, meZ = 3.0, fly = 0;
 float sX, sY, mX, mY;
 int arrive_logo = 0;
 class NCHU {
@@ -941,7 +941,7 @@ void init(void)
 
     //
     GLfloat ambient[] = { 0.0, 0.0, 0.0, 1.0 };
-    GLfloat diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat diffuse[] = { 0.5, 0.5, 0.5, 1.0 };
     GLfloat position[] = { 0.0, 3.0, 2.0, 0.0 };
     GLfloat lmodel_ambient[] = { 0.4, 0.4, 0.4, 1.0 };
     GLfloat local_view[] = { 0.0 };
@@ -956,7 +956,7 @@ static GLfloat spin = 0.0;
 
 //static GLfloat meX =-2.0, meY = 0.0, meZ = 0.0;
 static GLfloat seeX = 0.0, seeY = 0.0, seeZ = -1.0;
-static int year = 0, day = 0,arm_swing=0;
+static int year = 0, day = 0,arm_swing=0, shootstate = 0;
 int ch[7];
 
 void display(void)
@@ -981,12 +981,14 @@ void display(void)
     University university(WIDTH, HEIGHT);
     //*****************************
     GLfloat no_mat[] = { 0.0, 0.0, 0.0, 1.0 };
-    GLfloat sun_color[] = { 245.0 / 255.0, 118.0 / 255.0, 39.0 / 255.0 };
+    GLfloat sun_color[] = { 245.0 / 255.0, 118.0 / 255.0, 39.0 / 255,0.0 };
     GLfloat earth_color[] = { 3.0 / 255.0, 139.0 / 255.0, 217.0 / 255.0 };
     GLfloat island_color[] = { 100.0 / 255.0, 227.0 / 255.0, 27.0 / 255.0 };
     GLfloat mat_diffuse_test[] = { 51.0 / 255.0, 52.0 / 255.0, 54.0 / 255.0 };
     GLfloat mat_diffuse_black[] = { 0.04,0.04,0.04 };
     GLfloat no_shininess[] = { 0.0 };
+    GLfloat low_shininess[] = { 50.0 };
+    GLfloat high_shininess[] = { 100.0 };
     GLfloat mat_emission_test[] = { 51.0 / 255.0, 52.0 / 255.0, 54.0 / 255.0 };
     GLfloat mat_emission_black[] = { 0,0,0 };
     //*****************************
@@ -1000,6 +1002,7 @@ void display(void)
     glPushMatrix();//lookat and walk 4
 	   glLoadIdentity();            //clear the matrix
 	   gluLookAt(meX, meY, meZ, seeX, seeY, seeZ, 0.0, 1.0, 0.0);
+	   //gluLookAt(0,-5,0, 0,1,0, 0.0, 1.0, 0.0);
 	   glPushMatrix();//latter 8
 		  //gluLookAt(meX, meY, meZ, seeX, seeY, seeZ, 0.0, 1.0, 0.0);
 		  if (arrive_logo == 1) {
@@ -1007,52 +1010,46 @@ void display(void)
 			// cout << "sunX :" << sunX << " sumY :" << sunY << endl;
 			 //((data[i][0] - middlex) / startx)
 			 //(middley - data[i][1]) / starty)
-			 if ((sunX > ((220 - mX) / sX) || sunX<((110 - mX) / sX) || sunY<((mY-622)/sY) || sunY > ((mY-500)/sY))&& ch[0]==0) {
+			 if ((sunX > ((220 - mX) / sX) || sunX<((90 - mX) / sX) || sunY<((mY-622)/sY) || sunY > ((mY-500)/sY))&& ch[0]==0) {
 				a.display_ch();
 			 }
 			 else {
+				if(ch[0]==0) shootstate = 2;
 				ch[0] = 1; 
 			 }
 			 if ((sunX > ((360 - mX) / sX) || sunX<((280 - mX) / sX) || sunY<((mY - 610) / sY) || sunY > ((mY - 530) / sY)) && ch[1] == 0) {
 				b.display_ch();
 			 }
 			 else {
+				if (ch[1] == 0) shootstate = 2;
 				ch[1] = 1;
 			 }
 			 if ((sunX < ((409 - mX) / sX) || sunX > ((512 - mX) / sX) || sunY<((mY - 650) / sY) || sunY >((mY - 470) / sY)) && ch[2] == 0) {
 				c.display_ch();
 			 }
 			 else {
+				if (ch[2] == 0) shootstate = 2;
 				ch[2] = 1;
 			 }
 			 if ((sunX < ((523 - mX) / sX) || sunX > ((667 - mX) / sX) || sunY<((mY - 600) / sY) || sunY >((mY - 500) / sY)) && ch[3] == 0) {
 				d.display_ch();
 			 }
 			 else {
-				ch[3] = 1;
-			 }
-			 if ((sunX < ((523 - mX) / sX) || sunX >((667 - mX) / sX) || sunY<((mY - 600) / sY) || sunY >((mY - 500) / sY)) && ch[3] == 0) {
-				d.display_ch();
-			 }
-			 else {
-				ch[3] = 1;
-			 }
-			 if ((sunX < ((523 - mX) / sX) || sunX >((667 - mX) / sX) || sunY<((mY - 600) / sY) || sunY >((mY - 500) / sY)) && ch[3] == 0) {
-				d.display_ch();
-			 }
-			 else {
+				if (ch[3] == 0) shootstate = 2;
 				ch[3] = 1;
 			 }
 			 if ((sunX < ((710 - mX) / sX) || sunX >((800 - mX) / sX) || sunY<((mY - 600) / sY) || sunY >((mY - 500) / sY)) && ch[4] == 0) {
 				e.display_ch();
 			 }
 			 else {
+				if (ch[4] == 0) shootstate = 2;
 				ch[4] = 1;
 			 }
 			 if ((sunX < ((830 - mX) / sX) || sunX >((950 - mX) / sX) || sunY<((mY - 650) / sY) || sunY >((mY - 500) / sY)) && ch[5] == 0) {
 				f.display_ch();
 			 }
 			 else {
+				if (ch[5] == 0) shootstate = 2;
 				ch[5] = 1;
 			 }
 			 if ((sunX < ((1059 - mX) / sX) || sunX >((1195- mX) / sX) || sunY<((mY - 622) / sY) || sunY >((mY - 500) / sY)) && ch[6] == 0) {
@@ -1066,6 +1063,7 @@ void display(void)
 				glPopMatrix();
 			 }
 			 else {
+				if (ch[6] == 0) shootstate = 2;
 				ch[6] = 1;
 			 }
 			 arrive_logo = 2;
@@ -1125,7 +1123,7 @@ void display(void)
 		  hsing.display_en();
 		  university.display_en();
 	   glPopMatrix();//latter 8
-	   //xyz-------------------------
+	   /*//xyz-------------------------
 	   glPushMatrix();
 		 glColor3f(1.0, 0.0, 0.0);
 		  glBegin(GL_LINES);
@@ -1143,7 +1141,7 @@ void display(void)
 		  glVertex3f(0.0, 0.0, 10.0);
 		  glEnd();
 	   glPopMatrix();
-	   // ------------------------xyz
+	   // ------------------------xyz*/
 	   /* Floor */
 	   glColor3f(0.8, 0.9, 1.0);
 	   glBegin(GL_QUADS);
@@ -1152,6 +1150,9 @@ void display(void)
 	   glVertex3f(15, -1, 15);
 	   glVertex3f(15, -1, -15);
 	   glEnd();
+
+	   
+	   
 	   // 
 	   //walk
 	   glTranslatef(meX, meY, meZ - 2);
@@ -1179,14 +1180,106 @@ void display(void)
 			 glPushMatrix();
 				glTranslatef(0.5, 0, 0.8);
 				glRotatef(30, 0.0, 0.0, 1.0);
-				glScalef(0.4, 0.15, 0.15);      // modeling transformation
-				glutSolidCube(1.0);
+				glScalef(0.3, 0.12, 0.12);      // modeling transformation
+				glutSolidSphere(0.8, 16, 16);
 			 glPopMatrix();
 			 glPushMatrix();
 				glTranslatef(0.1, 0, 0.8);
 				glRotatef(330, 0.0, 0.0, 1.0);
-				glScalef(0.4, 0.15, 0.15);      // modeling transformation
-				glutSolidCube(1.0);
+				glScalef(0.3, 0.12, 0.12);      // modeling transformation
+				glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+
+
+			 //finger1
+			 glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse_black);
+			 glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission_black);
+			 glMaterialfv(GL_FRONT, GL_SHININESS, no_shininess);
+			 glPushMatrix();
+				glTranslatef(-0.06, 0.23, 0.87);
+				glRotatef(270, 0.0, 0.0, 1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
+				glPopMatrix();
+				glPushMatrix();
+				glTranslatef(-0.13, 0.27, 0.87);
+				glRotatef(0, 0.0, 0.0, 1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8,16,16);
+			 glPopMatrix();
+			 //finger2
+			 glMaterialfv(GL_FRONT, GL_DIFFUSE, earth_color);
+			 glMaterialfv(GL_FRONT, GL_EMISSION, earth_color);
+			 //glMaterialfv(GL_FRONT, GL_SHININESS, low_shininess);
+			 glPushMatrix();
+				glTranslatef(-0.07, 0.23, 0.81);
+				glRotatef(300, 0.0, 0.0, 1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(-0.13, 0.23, 0.81);
+				glRotatef(30, 0.0, 0.0, 1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 //finger3
+			 glMaterialfv(GL_FRONT, GL_DIFFUSE, island_color);
+			 glMaterialfv(GL_FRONT, GL_EMISSION, island_color);
+			 //glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess);
+			 glPushMatrix();
+				glTranslatef(-0.07, 0.23, 0.75);
+				glRotatef(300, 0.0, 0.0, 1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 glPushMatrix();
+				glTranslatef(-0.13, 0.23, 0.75);
+				glRotatef(30, 0.0, 0.0, 1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 //finger down
+			 glMaterialfv(GL_FRONT, GL_AMBIENT, no_mat);
+			 glMaterialfv(GL_FRONT, GL_DIFFUSE, sun_color);
+			 glMaterialfv(GL_FRONT, GL_SPECULAR, no_mat);
+			 glMaterialfv(GL_FRONT, GL_SHININESS, no_shininess);
+			 glMaterialfv(GL_FRONT, GL_EMISSION, sun_color);
+			 glPushMatrix();
+				glTranslatef(-0.12, 0, 0.81);
+				glRotatef(30, 0.0, 0.0, 1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 glPushMatrix();
+				glTranslatef(-0.21, 0, 0.81);
+				glRotatef(300, 0.0, 0.0, 1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 
+		  glPopMatrix();//right hand move
+		  glMaterialfv(GL_FRONT, GL_AMBIENT, no_mat);
+		  glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse_test);
+		  glMaterialfv(GL_FRONT, GL_SPECULAR, no_mat);
+		  glMaterialfv(GL_FRONT, GL_SHININESS, no_shininess);
+		  glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission_test);
+		  
+		  glPushMatrix();//left hand move
+			 glTranslatef(0, 0, 1.2);
+			 glRotatef(220, 0.0, 1.0, 0.0);
+			//arm
+			 glPushMatrix();
+				glTranslatef(0.5, 0, 0.8);
+				glRotatef(30, 0.0, 0.0, 1.0);
+				glScalef(0.3, 0.12, 0.12);      // modeling transformation
+				glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 glPushMatrix();
+				glTranslatef(0.1, 0, 0.8);
+				glRotatef(330, 0.0, 0.0, 1.0);
+				glScalef(0.3, 0.12, 0.12);      // modeling transformation
+				glutSolidSphere(0.8, 16, 16);
 			 glPopMatrix();
 
 
@@ -1196,130 +1289,62 @@ void display(void)
 			 glPushMatrix();
 				glTranslatef(-0.06, 0.23, 0.87);
 				glRotatef(270, 0.0, 0.0, 1.0);
-				glScalef(0.12, 0.03, 0.03);
-				glutSolidCube(1.0);
-				glPopMatrix();
-				glPushMatrix();
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 glPushMatrix();
 				glTranslatef(-0.13, 0.27, 0.87);
 				glRotatef(0, 0.0, 0.0, 1.0);
-				glScalef(0.12, 0.03, 0.03);
-				glutSolidCube(1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
 			 glPopMatrix();
 			 //finger2
+			 glMaterialfv(GL_FRONT, GL_DIFFUSE, island_color);
+			 glMaterialfv(GL_FRONT, GL_EMISSION, island_color);
+			 glMaterialfv(GL_FRONT, GL_SHININESS,low_shininess);
 			 glPushMatrix();
 				glTranslatef(-0.07, 0.23, 0.81);
 				glRotatef(300, 0.0, 0.0, 1.0);
-				glScalef(0.12, 0.03, 0.03);
-				glutSolidCube(1.0);
-				glPopMatrix();
-				glPushMatrix();
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 glPushMatrix();
 				glTranslatef(-0.13, 0.23, 0.81);
 				glRotatef(30, 0.0, 0.0, 1.0);
-				glScalef(0.12, 0.03, 0.03);
-				glutSolidCube(1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
 			 glPopMatrix();
 			 //finger3
+			 glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse_test);
+			 glMaterialfv(GL_FRONT, GL_EMISSION, sun_color);
+			 glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess);
 			 glPushMatrix();
 				glTranslatef(-0.07, 0.23, 0.75);
 				glRotatef(300, 0.0, 0.0, 1.0);
-				glScalef(0.12, 0.03, 0.03);
-				glutSolidCube(1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
 			 glPopMatrix();
 			 glPushMatrix();
 				glTranslatef(-0.13, 0.23, 0.75);
 				glRotatef(30, 0.0, 0.0, 1.0);
-				glScalef(0.12, 0.03, 0.03);
-				glutSolidCube(1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
 			 glPopMatrix();
 			 //finger down
+			 glMaterialfv(GL_FRONT, GL_DIFFUSE, earth_color);
+			 glMaterialfv(GL_FRONT, GL_EMISSION,earth_color);
+			 glMaterialfv(GL_FRONT, GL_SHININESS, no_mat);
 			 glPushMatrix();
 				glTranslatef(-0.12, 0, 0.81);
 				glRotatef(30, 0.0, 0.0, 1.0);
-				glScalef(0.12, 0.03, 0.03);
-				glutSolidCube(1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
 			 glPopMatrix();
 			 glPushMatrix();
 				glTranslatef(-0.21, 0, 0.81);
 				glRotatef(300, 0.0, 0.0, 1.0);
-				glScalef(0.12, 0.03, 0.03);
-				glutSolidCube(1.0);
-			 glPopMatrix();
-			 
-		  glPopMatrix();//right hand move
-
-		  glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse_test);
-		  glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission_test);
-		  glPushMatrix();//left hand move
-			 glTranslatef(0, 0, 1.2);
-			 glRotatef(220, 0.0, 1.0, 0.0);
-			//arm
-			 glPushMatrix();
-			 glTranslatef(0.5, 0, 0.8);
-			 glRotatef(30, 0.0, 0.0, 1.0);
-			 glScalef(0.4, 0.15, 0.15);      // modeling transformation
-			 glutSolidCube(1.0);
-			 glPopMatrix();
-			 glPushMatrix();
-			 glTranslatef(0.1, 0, 0.8);
-			 glRotatef(330, 0.0, 0.0, 1.0);
-			 glScalef(0.4, 0.15, 0.15);      // modeling transformation
-			 glutSolidCube(1.0);
-			 glPopMatrix();
-
-
-			 //finger1
-			 glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse_black);
-			 glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission_black);
-			 glPushMatrix();
-			 glTranslatef(-0.06, 0.23, 0.87);
-			 glRotatef(270, 0.0, 0.0, 1.0);
-			 glScalef(0.12, 0.03, 0.03);
-			 glutSolidCube(1.0);
-			 glPopMatrix();
-			 glPushMatrix();
-			 glTranslatef(-0.13, 0.27, 0.87);
-			 glRotatef(0, 0.0, 0.0, 1.0);
-			 glScalef(0.12, 0.03, 0.03);
-			 glutSolidCube(1.0);
-			 glPopMatrix();
-			 //finger2
-			 glPushMatrix();
-			 glTranslatef(-0.07, 0.23, 0.81);
-			 glRotatef(300, 0.0, 0.0, 1.0);
-			 glScalef(0.12, 0.03, 0.03);
-			 glutSolidCube(1.0);
-			 glPopMatrix();
-			 glPushMatrix();
-			 glTranslatef(-0.13, 0.23, 0.81);
-			 glRotatef(30, 0.0, 0.0, 1.0);
-			 glScalef(0.12, 0.03, 0.03);
-			 glutSolidCube(1.0);
-			 glPopMatrix();
-			 //finger3
-			 glPushMatrix();
-			 glTranslatef(-0.07, 0.23, 0.75);
-			 glRotatef(300, 0.0, 0.0, 1.0);
-			 glScalef(0.12, 0.03, 0.03);
-			 glutSolidCube(1.0);
-			 glPopMatrix();
-			 glPushMatrix();
-			 glTranslatef(-0.13, 0.23, 0.75);
-			 glRotatef(30, 0.0, 0.0, 1.0);
-			 glScalef(0.12, 0.03, 0.03);
-			 glutSolidCube(1.0);
-			 glPopMatrix();
-			 //finger down
-			 glPushMatrix();
-			 glTranslatef(-0.12, 0, 0.81);
-			 glRotatef(30, 0.0, 0.0, 1.0);
-			 glScalef(0.12, 0.03, 0.03);
-			 glutSolidCube(1.0);
-			 glPopMatrix();
-			 glPushMatrix();
-			 glTranslatef(-0.21, 0, 0.81);
-			 glRotatef(300, 0.0, 0.0, 1.0);
-			 glScalef(0.12, 0.03, 0.03);
-			 glutSolidCube(1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
 			 glPopMatrix();
 		  glPopMatrix();//left hand move
 		  glDisable(GL_LIGHTING);
@@ -1350,12 +1375,15 @@ void display(void)
 		  //glutWireSphere(0.015, 5, 4);    /* draw smaller planet */
 		  glMaterialfv(GL_FRONT, GL_DIFFUSE, earth_color);
 		  glMaterialfv(GL_FRONT, GL_EMISSION, earth_color);
+		  glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess);
 		  glutSolidSphere(0.019, 16, 16);
 
 		  glTranslatef(0.004, 0.0, 0.0);
 		  //glColor3f(2.0 / 255.0, 235.0 / 255.0, 111.0 / 255.0);
 		  glMaterialfv(GL_FRONT, GL_DIFFUSE, island_color);
 		  glMaterialfv(GL_FRONT, GL_EMISSION, island_color);
+		  glMaterialfv(GL_FRONT, GL_SHININESS, no_mat);
+
 		  glutSolidSphere(0.016, 16, 16);
 		  glDisable(GL_LIGHTING);
 		  glDisable(GL_LIGHT0);
@@ -1380,7 +1408,7 @@ static GLfloat R[9] = { 54,22,15,12,11,9,8 ,5,3 };
 static GLfloat G[9] = { 235,240,240,215,202,184,167,141,110 };
 static GLfloat Blu[9] = { 129,156,179,186,190,195,200,207,217 };
 static GLint a = 0, u = 1, c = 0;
-static int state = 0,shootstate = 0;
+static int state = 0;
 void spinDisplay(void) {
     //logo
     spin = spin + 2.0;
@@ -1429,13 +1457,15 @@ void spinDisplay(void) {
     //shoot
     if (shootstate == 1) {
 	   //cout << "up" << endl;
-	   fly=fly + 0.3;
+	   fly=fly + 0.1;
 	   //cout << fly << endl;
-	   if (0.35 -0.1 - fly<0) {
+	   
+	   if (meZ-2+0.35 -0.1 - fly<0) {
+		  //cout << "at " << (meZ - 2 + 0.35 - 0.1) << endl;
 		  //cout << "?????????????????????????????????????????????" <<endl ;
 		  arrive_logo = 1;
 	   }
-	   if (fly > 20) {
+	   if (fly > 10) {
 		  shootstate = 2;//jump down
 	   }
     }
@@ -1473,6 +1503,7 @@ void move(int m) {
 void recover() {
     fly = 0;
     arrive_logo = 0;
+    shootstate = 0;
 }
 void keyboard(unsigned char key, int x, int y)
 {
@@ -1526,7 +1557,7 @@ void catchKey(int key, int x, int y)
 }
 int main(int argc, char** argv)
 {
-    cout << "reset!!!!!!!!!!!!!" << endl;
+    //cout << "reset!!!!!!!!!!!!!" << endl;
     for (int i = 0; i < 7; i++) {
 	   ch[i] = 0;
     }
