@@ -11,7 +11,7 @@ using namespace std;
 #define WIDTH 1600.0f
 #define HEIGHT 1024.0f
 static GLfloat meX = 0.0, meY = 0.0, meZ = 2.0, fly = 0;
-
+float sX, sY, mX, mY;
 int arrive_logo = 0;
 class NCHU {
 protected:
@@ -35,70 +35,13 @@ protected:
 	   }
 	   return 0;
     }
-    int collisions_detect(int(*data)[2], int len) {
-	   //cout << "collisions_detect" << endl;
-	   float ball_x = 0.4 - 0.78 + meX, ball_y = 0.15 + meY;
-	   int positive = 0;
-	   //cout << "meX: " << meX << " meY: " << meY << endl;
-	   
-	   float vx1, vy1, vx2, vy2;
-	   vx1 =((data[0][0] - middlex) / startx) - ball_x;
-	   vy1 = ((data[0][1] - middley) / starty) - ball_y;
-	   vx2 = ((data[1][0] - middlex) / startx) - ball_x;
-	   vy2 = ((data[1][1] - middley) / starty) - ball_y;
-	   if (((vx1 * vy2) - (vx2 * vy1)) > 0) {
-		  positive = 1;
-		  //cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!positive " << positive << endl;
-	   }
-	   for (int i = 2; i < len - 1; i = i + 2) {
-		  vx1 = ((data[i][0] - middlex) / startx) - ball_x;
-		  vy1 = ((middley - data[i][1]) / starty) - ball_y;
-		  vx2 = ((data[i+1][0] - middlex) / startx) - ball_x;
-		  vy2 = ((middley - data[i+1][1]) / starty) - ball_y;
-		  if (positive == 1) {
-			 if (((vx1 * vy2) - (vx2 * vy1)) < 0) {
-				//cout << "positive " << positive << endl;
-				return -1;
-			 }
-		  }
-		  else {
-			 if (((vx1 * vy2) - (vx2 * vy1)) > 0) {
-				//cout << "positive " << positive << endl;
-				return -1;
-			 }
-		  }
-	   }
-	   cout << "ball_x: " << ball_x << " ball_y: " << ball_y << endl;
-	   glPushMatrix();
-	   glColor3f(1, 0,0);
-	   glBegin(GL_POLYGON);
-	   for (int i = 0; i < len; i++) {
-		  glVertex3f(((data[i][0] - middlex) / startx), ((middley - data[i][1]) / starty), 0.0);
-	   }
-	   glEnd();
-	   
-	   glColor3f(0, 0, 1);
-	   glBegin(GL_POLYGON);
-		  glVertex3f(ball_x-0.01,ball_y-0.01,0);
-		  glVertex3f(ball_x-0.01, ball_y+0.01, 0);
-		  glVertex3f(ball_x+0.01, ball_y+0.01, 0);
-		  glVertex3f(ball_x + 0.01, ball_y-0.01, 0);
-	   glEnd();
-	   glPopMatrix();
-	   //cout << "++++++++++++++++++++++++" << endl;
-	   return 1;
-    }
     void draw_ch(int(*data)[2], int len) {
-	   cout <<" arrive_logo " << arrive_logo << endl;
+	   //cout <<" arrive_logo " << arrive_logo << endl;
 	   int cross = check(data, len);
 	   if (cross == 1) {
 		  glBegin(GL_POLYGON);
 		  for (int i = 0; i < len; i++) {
-			 if (arrive_logo == 0 || collisions_detect(data, len) == -1) {
-				glVertex3f(((data[i][0] - middlex) / startx), ((middley - data[i][1]) / starty), 0.0);
-			 }
-			 else { cout << arrive_logo <<" " << collisions_detect(data, len) << " no" << endl; }
-			 //glVertex3f(((data[i][0] - middlex) / startx), ((middley - data[i][1]) / starty), 0.0);
+			 glVertex3f(((data[i][0] - middlex) / startx), ((middley - data[i][1]) / starty), 0.0);
 		  }
 		  glEnd();
 	   }
@@ -111,11 +54,7 @@ protected:
 		  }
 		  glBegin(GL_POLYGON);
 		  for (int i = 0; i < len; i++) {
-			 if (arrive_logo == 0 || collisions_detect(data, len) == -1) {
-				glVertex3f(((data[i][0] - middlex) / startx), ((middley - data[i][1]) / starty), 0.0);
-			 }
-			 else { cout << arrive_logo << " " << collisions_detect(data, len) << " no" << endl; }
-			 //glVertex3f(((data[i][0] - middlex) / startx), ((middley - data[i][1]) / starty), 0.0);
+			 glVertex3f(((data[i][0] - middlex) / startx), ((middley - data[i][1]) / starty), 0.0);
 		  }
 		  glEnd();
 	   }
@@ -127,6 +66,10 @@ public:
 	   middley = (height * 3 / 4) - 100;
 	   startx = (width / 2);
 	   starty = height / 2;
+	   mX = (width / 4) + 200;
+	   mY = (height * 3 / 4) - 100;
+	   sX = (width / 2);
+	   sY = height / 2;
     }
 };
 class A :protected NCHU {
@@ -1014,6 +957,8 @@ static GLfloat spin = 0.0;
 //static GLfloat meX =-2.0, meY = 0.0, meZ = 0.0;
 static GLfloat seeX = 0.0, seeY = 0.0, seeZ = -1.0;
 static int year = 0, day = 0,arm_swing=0;
+int ch[7];
+
 void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1045,27 +990,136 @@ void display(void)
     GLfloat mat_emission_test[] = { 51.0 / 255.0, 52.0 / 255.0, 54.0 / 255.0 };
     GLfloat mat_emission_black[] = { 0,0,0 };
     //*****************************
-
+    
+    //cout << " arrive_logo " << arrive_logo << endl;
+    //for (int i = 0; i < 6; i++) {
+	//   cout << ch[i] << endl;
+    //}
+    
     glColor3f(0.0, 0.0, 0.0);
     glPushMatrix();//lookat and walk 4
 	   glLoadIdentity();            //clear the matrix
 	   gluLookAt(meX, meY, meZ, seeX, seeY, seeZ, 0.0, 1.0, 0.0);
 	   glPushMatrix();//latter 8
 		  //gluLookAt(meX, meY, meZ, seeX, seeY, seeZ, 0.0, 1.0, 0.0);
-		  a.display_ch();
-		  c.display_ch();
-		  d.display_ch();
-		  e.display_ch();
-		  f.display_ch();
-		  b.display_ch();
-		  glPushMatrix();
-			 glDisable(GL_DEPTH_TEST);
-			 glTranslatef((1125 - (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
-			 glRotatef(spin, 0.0, 1.0, 0.0);
-			 glTranslatef((-1125 + (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
-			 logo.display_ch();
-			 glEnable(GL_DEPTH_TEST);
-		  glPopMatrix();
+		  if (arrive_logo == 1) {
+			 float sunX = -0.78 + 0.4 + meX,sunY=0.15+meY;
+			// cout << "sunX :" << sunX << " sumY :" << sunY << endl;
+			 //((data[i][0] - middlex) / startx)
+			 //(middley - data[i][1]) / starty)
+			 if ((sunX > ((220 - mX) / sX) || sunX<((110 - mX) / sX) || sunY<((mY-622)/sY) || sunY > ((mY-500)/sY))&& ch[0]==0) {
+				a.display_ch();
+			 }
+			 else {
+				ch[0] = 1; 
+			 }
+			 if ((sunX > ((360 - mX) / sX) || sunX<((280 - mX) / sX) || sunY<((mY - 610) / sY) || sunY > ((mY - 530) / sY)) && ch[1] == 0) {
+				b.display_ch();
+			 }
+			 else {
+				ch[1] = 1;
+			 }
+			 if ((sunX < ((409 - mX) / sX) || sunX > ((512 - mX) / sX) || sunY<((mY - 650) / sY) || sunY >((mY - 470) / sY)) && ch[2] == 0) {
+				c.display_ch();
+			 }
+			 else {
+				ch[2] = 1;
+			 }
+			 if ((sunX < ((523 - mX) / sX) || sunX > ((667 - mX) / sX) || sunY<((mY - 600) / sY) || sunY >((mY - 500) / sY)) && ch[3] == 0) {
+				d.display_ch();
+			 }
+			 else {
+				ch[3] = 1;
+			 }
+			 if ((sunX < ((523 - mX) / sX) || sunX >((667 - mX) / sX) || sunY<((mY - 600) / sY) || sunY >((mY - 500) / sY)) && ch[3] == 0) {
+				d.display_ch();
+			 }
+			 else {
+				ch[3] = 1;
+			 }
+			 if ((sunX < ((523 - mX) / sX) || sunX >((667 - mX) / sX) || sunY<((mY - 600) / sY) || sunY >((mY - 500) / sY)) && ch[3] == 0) {
+				d.display_ch();
+			 }
+			 else {
+				ch[3] = 1;
+			 }
+			 if ((sunX < ((710 - mX) / sX) || sunX >((800 - mX) / sX) || sunY<((mY - 600) / sY) || sunY >((mY - 500) / sY)) && ch[4] == 0) {
+				e.display_ch();
+			 }
+			 else {
+				ch[4] = 1;
+			 }
+			 if ((sunX < ((830 - mX) / sX) || sunX >((950 - mX) / sX) || sunY<((mY - 650) / sY) || sunY >((mY - 500) / sY)) && ch[5] == 0) {
+				f.display_ch();
+			 }
+			 else {
+				ch[5] = 1;
+			 }
+			 if ((sunX < ((1059 - mX) / sX) || sunX >((1195- mX) / sX) || sunY<((mY - 622) / sY) || sunY >((mY - 500) / sY)) && ch[6] == 0) {
+				glPushMatrix();
+				    glDisable(GL_DEPTH_TEST);
+				    glTranslatef((1125 - (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
+				    glRotatef(spin, 0.0, 1.0, 0.0);
+				    glTranslatef((-1125 + (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
+				    logo.display_ch();
+				    glEnable(GL_DEPTH_TEST);
+				glPopMatrix();
+			 }
+			 else {
+				ch[6] = 1;
+			 }
+			 arrive_logo = 2;
+		  }
+		  else if(arrive_logo==0){
+			 for (int i = 0; i < 6;i++) {
+				ch[i] = 0;
+			 }
+			 a.display_ch();
+			 c.display_ch();
+			 d.display_ch();
+			 e.display_ch();
+			 f.display_ch();
+			 b.display_ch();
+			 glPushMatrix();
+				glDisable(GL_DEPTH_TEST);
+				glTranslatef((1125 - (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
+				glRotatef(spin, 0.0, 1.0, 0.0);
+				glTranslatef((-1125 + (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
+				logo.display_ch();
+				glEnable(GL_DEPTH_TEST);
+			 glPopMatrix();
+		  }
+		  else if (arrive_logo == 2) {
+			 if (ch[0] == 0) {
+				a.display_ch();
+			 }
+			 if (ch[1] == 0) {
+				b.display_ch();
+			 }
+			 if (ch[2] == 0) {
+				c.display_ch();
+			 }
+			 if (ch[3] == 0) {
+				d.display_ch();
+			 }
+			 if (ch[4] == 0) {
+				e.display_ch();
+			 }
+			 if (ch[5] == 0) {
+				f.display_ch();
+			 }
+			 if (ch[6]==0) {
+				glPushMatrix();
+				    glDisable(GL_DEPTH_TEST);
+				    glTranslatef((1125 - (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
+				    glRotatef(spin, 0.0, 1.0, 0.0);
+				    glTranslatef((-1125 + (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
+				    logo.display_ch();
+				    glEnable(GL_DEPTH_TEST);
+				glPopMatrix();
+			 }
+		  }
+		  
 		  national.display_en();
 		  chung.display_en();
 		  hsing.display_en();
@@ -1378,7 +1432,7 @@ void spinDisplay(void) {
 	   fly=fly + 0.3;
 	   //cout << fly << endl;
 	   if (0.35 -0.1 - fly<0) {
-		  cout << "?????????????????????????????????????????????" <<endl ;
+		  //cout << "?????????????????????????????????????????????" <<endl ;
 		  arrive_logo = 1;
 	   }
 	   if (fly > 20) {
@@ -1388,7 +1442,7 @@ void spinDisplay(void) {
     if (shootstate == 2) {
 	   //cout << "ok" << endl;
 	   fly = 0;
-	   shootstate = 0;
+	   //shootstate = 0;
     }
     glutPostRedisplay();
 }
@@ -1472,6 +1526,10 @@ void catchKey(int key, int x, int y)
 }
 int main(int argc, char** argv)
 {
+    cout << "reset!!!!!!!!!!!!!" << endl;
+    for (int i = 0; i < 7; i++) {
+	   ch[i] = 0;
+    }
     glutInit(&argc, argv);
     //glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
     glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
