@@ -355,7 +355,35 @@ static void drawBody(GLfloat size, GLenum type)
         glEnd();
     }
 }
+static void drawBody_girl(GLfloat size, GLenum type)
+{
+    GLfloat v[8][3];
+    GLint i;
+    v[0][0] = v[1][0] = v[2][0] = v[3][0] = -size / 2; //left width
+    v[4][0] = v[5][0] = v[6][0] = v[7][0] = size / 2; //right width
+    v[0][1] = v[1][1] = v[4][1] = v[5][1] = -size / 1.3; //bottom height
+    v[2][1] = v[3][1] = v[6][1] = v[7][1] = size / 2; //upper height
+    v[0][2] = v[3][2] = v[4][2] = v[7][2] = -size / 4; //back thickness
+    v[1][2] = v[2][2] = v[5][2] = v[6][2] = size / 4; //front thickness
 
+    for (i = 5; i >= 0; i--) {
+        switch (i) {
+        case 4:
+            glBindTexture(GL_TEXTURE_2D, texture[19]); //front body
+            break;
+        default:
+            glBindTexture(GL_TEXTURE_2D, texture[20]); //back body
+            break;
+        }
+        glBegin(type);
+        glNormal3fv(&n[i][0]);
+        glTexCoord2d(0.0, 0.0); glVertex3fv(&v[faces[i][0]][0]);
+        glTexCoord2d(0.0, 1.0); glVertex3fv(&v[faces[i][1]][0]);
+        glTexCoord2d(1.0, 1.0); glVertex3fv(&v[faces[i][2]][0]);
+        glTexCoord2d(1.0, 0.0); glVertex3fv(&v[faces[i][3]][0]);
+        glEnd();
+    }
+}
 /* 畫手臂 */
 static void drawArm(GLfloat size, GLenum type)
 {
@@ -398,6 +426,58 @@ static void drawArm(GLfloat size, GLenum type)
         glEnd();
     }
 }
+static void drawArm_girl(GLfloat size, GLenum type)
+{
+    GLfloat v[8][3];
+    GLint i;
+    v[0][0] = v[1][0] = v[2][0] = v[3][0] = -size / 6; //left width
+    v[4][0] = v[5][0] = v[6][0] = v[7][0] = size / 6; //right width
+    v[0][1] = v[1][1] = v[4][1] = v[5][1] = -size / 1.3; //bottom height
+    v[2][1] = v[3][1] = v[6][1] = v[7][1] = size / 2; //upper height
+    v[0][2] = v[3][2] = v[4][2] = v[7][2] = -size / 4; //back thickness
+    v[1][2] = v[2][2] = v[5][2] = v[6][2] = size / 4; //front thickness
+    glBindTexture(GL_TEXTURE_2D, texture[21]); //back arm
+    glTexCoord2d(0.0, 0.0); glVertex3fv(&v[faces[5][0]][0]);
+    glTexCoord2d(1.0, 0.0); glVertex3fv(&v[faces[5][1]][0]);
+    glTexCoord2d(1.0, 1.0); glVertex3fv(&v[faces[5][2]][0]);
+    glTexCoord2d(0.0, 1.0); glVertex3fv(&v[faces[5][3]][0]);
+    for (i = 4; i >= 1; i--) {
+        switch (i) {
+        case 0:
+            glBindTexture(GL_TEXTURE_2D, texture[21]); //side arm
+            break;
+        case 1:
+            glBindTexture(GL_TEXTURE_2D, texture[21]); //shoulder
+            break;
+        case 3:
+            glBindTexture(GL_TEXTURE_2D, texture[12]); //手掌
+            break;
+        case 4:
+            glBindTexture(GL_TEXTURE_2D, texture[22]); //front arm
+            break;
+        
+        default:
+            glBindTexture(GL_TEXTURE_2D, texture[21]); //others
+            break;
+        }
+        glBegin(type);
+        glNormal3fv(&n[i][0]);
+        glTexCoord2d(0.0, 0.0); glVertex3fv(&v[faces[i][0]][0]);
+        glTexCoord2d(0.0, 1.0); glVertex3fv(&v[faces[i][1]][0]);
+        glTexCoord2d(1.0, 1.0); glVertex3fv(&v[faces[i][2]][0]);
+        glTexCoord2d(1.0, 0.0); glVertex3fv(&v[faces[i][3]][0]);
+        glEnd();
+    }
+   
+    glBindTexture(GL_TEXTURE_2D, texture[21]); //back arm
+    glBegin(type);
+    glNormal3fv(&n[i][0]);
+    glTexCoord2d(0.0, 0.0); glVertex3fv(&v[faces[0][0]][0]);
+    glTexCoord2d(1.0, 0.0); glVertex3fv(&v[faces[0][1]][0]);
+    glTexCoord2d(1.0, 1.0); glVertex3fv(&v[faces[0][2]][0]);
+    glTexCoord2d(0.0, 1.0); glVertex3fv(&v[faces[0][3]][0]);
+    glEnd();
+}
 
 /* 畫腿 */
 static void drawLeg(GLfloat size, GLenum type)
@@ -427,6 +507,49 @@ static void drawLeg(GLfloat size, GLenum type)
             break;
         default:
             glBindTexture(GL_TEXTURE_2D, texture[5]); //others
+            break;
+        }
+        glBegin(type);
+        glNormal3fv(&n[i][0]);
+        glTexCoord2d(0.0, 0.0); glVertex3fv(&v[faces[i][0]][0]);
+        glTexCoord2d(0.0, 1.0); glVertex3fv(&v[faces[i][1]][0]);
+        glTexCoord2d(1.0, 1.0); glVertex3fv(&v[faces[i][2]][0]);
+        glTexCoord2d(1.0, 0.0); glVertex3fv(&v[faces[i][3]][0]);
+        glEnd();
+    }
+}
+static void drawLeg_girl(GLfloat size, GLenum type)
+{
+    GLfloat v[8][3];
+    GLint i;
+    v[0][0] = v[1][0] = v[2][0] = v[3][0] = -size / 6; //left width
+    v[4][0] = v[5][0] = v[6][0] = v[7][0] = size / 6; //right width
+    v[0][1] = v[1][1] = v[4][1] = v[5][1] = -size / 1.3; //bottom height
+    v[2][1] = v[3][1] = v[6][1] = v[7][1] = size / 2; //upper height
+    v[0][2] = v[3][2] = v[4][2] = v[7][2] = -size / 4; //back thickness
+    v[1][2] = v[2][2] = v[5][2] = v[6][2] = size / 4; //front thickness
+    glBindTexture(GL_TEXTURE_2D, texture[21]); //back arm
+    glTexCoord2d(0.0, 0.0); glVertex3fv(&v[faces[5][0]][0]);
+    glTexCoord2d(1.0, 0.0); glVertex3fv(&v[faces[5][1]][0]);
+    glTexCoord2d(1.0, 1.0); glVertex3fv(&v[faces[5][2]][0]);
+    glTexCoord2d(0.0, 1.0); glVertex3fv(&v[faces[5][3]][0]);
+    for (i = 4; i >= 0; i--) {
+        switch (i) {
+        case 0:
+            glBindTexture(GL_TEXTURE_2D, texture[23]); //side arm
+            break;
+        case 1:
+            glBindTexture(GL_TEXTURE_2D, texture[23]); //shoulder
+            break;
+        case 3:
+            //glBindTexture(GL_TEXTURE_2D, texture[14]); //手掌
+            break;
+        case 4:
+            glBindTexture(GL_TEXTURE_2D, texture[23]); //front arm
+            break;
+
+        default:
+            glBindTexture(GL_TEXTURE_2D, texture[23]); //others
             break;
         }
         glBegin(type);
@@ -492,6 +615,17 @@ void setBody(void) {
     strcpy(file_name, "back_body_new.bmp");
     loadTexture(file_name, image2, 5); //textureNo 5  
 }
+void setBody_girl(void) {
+    char* file_name = (char*)malloc(100 * sizeof(char));
+    Image* image1 = (Image*)malloc(sizeof(Image));
+    Image* image2 = (Image*)malloc(sizeof(Image));
+
+    strcpy(file_name, "girl_front_body.bmp");
+    loadTexture(file_name, image1, 19); //textureNo 4
+
+    strcpy(file_name, "girl_back_body.bmp");
+    loadTexture(file_name, image2, 20); //textureNo 5  
+}
 
 /* 指定bmp，載入手臂texture */
 void setArm(void) {
@@ -517,6 +651,30 @@ void setArm(void) {
     strcpy(file_name, "hand_new.bmp");
     loadTexture(file_name, image5, 10); //textureNo 10
 }
+/* 指定bmp，載入手臂texture */
+void setArm_girl(void) {
+    char* file_name = (char*)malloc(100 * sizeof(char));
+    Image* image1 = (Image*)malloc(sizeof(Image));
+    Image* image2 = (Image*)malloc(sizeof(Image));
+    Image* image3 = (Image*)malloc(sizeof(Image));
+    Image* image4 = (Image*)malloc(sizeof(Image));
+    Image* image5 = (Image*)malloc(sizeof(Image));
+
+    strcpy(file_name, "girl_front_hand.bmp");
+    loadTexture(file_name, image1, 21); //textureNo 6
+
+    //strcpy(file_name, "shoulder_new.bmp");
+    //loadTexture(file_name, image2, 22); //textureNo 7
+
+    strcpy(file_name, "girl_front_hand.bmp");
+    loadTexture(file_name, image3, 22); //textureNo 8
+
+    //strcpy(file_name, "girl_side_hand.bmp");
+    //loadTexture(file_name, image4, 24); //textureNo 9
+
+    //strcpy(file_name, "hand_new.bmp");
+    //loadTexture(file_name, image5, 25); //textureNo 10
+}
 
 /* 指定bmp，載入腿texture */
 void setLeg(void) {
@@ -538,6 +696,25 @@ void setLeg(void) {
     strcpy(file_name, "feet_new.bmp");
     loadTexture(file_name, image4, 14); //textureNo 14
 }
+void setLeg_girl(void) {
+    char* file_name = (char*)malloc(100 * sizeof(char));
+    Image* image1 = (Image*)malloc(sizeof(Image));
+    //Image* image2 = (Image*)malloc(sizeof(Image));
+    //Image* image3 = (Image*)malloc(sizeof(Image));
+    //Image* image4 = (Image*)malloc(sizeof(Image));
+
+    strcpy(file_name, "girl_leg.bmp");
+    loadTexture(file_name, image1, 23); //textureNo 11
+    /*
+    strcpy(file_name, "back_leg_new.bmp");
+    loadTexture(file_name, image2, 27); //textureNo 12
+
+    strcpy(file_name, "side_leg_new.bmp");
+    loadTexture(file_name, image3, 28); //textureNo 13
+
+    strcpy(file_name, "feet_new.bmp");
+    loadTexture(file_name, image4, 29); //textureNo 14*/
+}
 
 void myinit(void)
 {
@@ -553,6 +730,8 @@ void myinit(void)
     setArm();
     setLeg();
     setHead_girl();
+    setBody_girl();
+    setArm_girl();
 
     glShadeModel(GL_SMOOTH);
     glEnable(GL_NORMALIZE); //不要讓glScalef()改到我的法向量
@@ -613,11 +792,9 @@ void auto_rotate(void) {
         kill_time++;
     }
     else {
-        girl_face_angle = (girl_face_angle + 20);
-        if (girl_face_angle >= 350 && kill == 0) { kill = 1; kill_time = 0; cout << "a" << kill_time << " " << girl_face_angle << " " << kill << endl;
-        }
-        else if (girl_face_angle >= 170 && kill == 1) { kill = 0; kill_time = 0; cout <<"b" << kill_time << " " << girl_face_angle << " " << kill << endl;
-        }
+        girl_face_angle = (girl_face_angle + 30);
+        if (girl_face_angle >= 350 && kill == 0) { kill = 1; kill_time = 0; }
+        else if (girl_face_angle >= 170 && kill == 1) { kill = 0; kill_time = 0; }
         girl_face_angle = (girl_face_angle )%360;
     }
     
@@ -792,7 +969,7 @@ void draw_view(int length, int width, int sky_height, int floor_height) {
     glEnable(GL_TEXTURE_2D);
     glPopMatrix();
 }
-static int length = 100, width = 50, sky_height = 50, floor_height = -2;
+static int length = 100, width = 50, sky_height = 70, floor_height = -2;
 static GLfloat meX = 0.0, meY = 3.0, meZ = length * 2 - 3;
 static GLfloat seeX = 0.0, seeY = 0.0, seeZ = -1.0;
 void display(void) {
@@ -846,9 +1023,35 @@ void display(void) {
             glRotatef(girl_face_angle, 0.0, 1.0, 0.0);
             //head
             glPushMatrix();
-            glTranslatef(0, 20, 0);
-                glTranslatef(0, 20, 0);
+            //glTranslatef(0, 40, 0);
+                glTranslatef(0, 50, 0);
                 drawHead_girl(20.0, GL_QUADS);
+            glPopMatrix();
+            //body
+            glPushMatrix();
+                glTranslatef(0, 30, 0);
+                drawBody_girl(20.0, GL_QUADS);
+            glPopMatrix();
+            //arm
+            glPushMatrix();
+                glTranslatef(-12, 30.0, 0.0);
+                drawArm_girl(20.0, GL_QUADS);
+            glPopMatrix();
+            //arm
+            glPushMatrix();
+                glTranslatef(12, 30.0, 0.0);
+                drawArm_girl(20.0, GL_QUADS);
+            glPopMatrix();
+            //left leg
+            glPushMatrix();
+                glTranslatef(-6.0,4.0, 0.0);
+                drawLeg_girl(20.0, GL_QUADS);
+                //drawArm_girl(20.0, GL_QUADS);
+            glPopMatrix();
+            glPushMatrix();
+            glTranslatef(6.0, 4.0, 0.0);
+            drawLeg_girl(20.0, GL_QUADS);
+            //drawArm_girl(20.0, GL_QUADS);
             glPopMatrix();
         glPopMatrix();
 
@@ -997,6 +1200,7 @@ void keyboardUp(unsigned char key, int x, int y) {
         case 'a':
         case 's':
         case 'd':
+            cout <<"B" << endl;
             walk = false; //釋放鍵盤時，停止走路
             break;
         case 27: // “esc” on keyboard
@@ -1030,8 +1234,8 @@ void keyboard(unsigned char key, int x, int y) {
         move(3);
         if (die == false) walk = true;
         break;
-
-    case'r': //死掉後重生
+    case 'R':
+    case 'r': //死掉後重生
         if (die) {
             die = false;
             die_angle = 0;
