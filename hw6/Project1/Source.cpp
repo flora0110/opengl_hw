@@ -1900,8 +1900,9 @@ static GLfloat M1_X = 0.0, M1_Y = 0.0, M1_Z = 0.0;
 static GLfloat M2_X = 1.0, M2_Y = 0.0, M2_Z = 0.0;
 static GLfloat M3_X = -1.0, M3_Y = 0.0, M3_Z = 0.0;
 static GLfloat bullet_X = 0.0, bullet_Y = 0.0, bullet_Z = 3.5,zoom=0.0;
-int shootstate = 0, M1_die = 0,M2_die=0,M3_die=0,fog_open=0;
+int shootstate = 0, M1_die = 0,M2_die=0,M3_die=0,fog_open=0,attack_light=0, antialiasing=0,offset=0;
 float hurt_a = 0.0,hurt_b=0.0,hurt_c=0.0;
+
 class NCHU {
 protected:
     float startx, starty, middlex, middley;
@@ -2864,6 +2865,7 @@ void init(void)
     glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess);
+
     
 }
 void drawHealth(float health) {
@@ -2911,7 +2913,7 @@ void hurt(float a,int color) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE); 
     //glColor4f(0.9, 0.4, 0.4,0.8);
     if(color==0) glColor4f(0.8,0,0, a);
-    else if(color==1) glColor4f(0.8, 0.5, 0, a);
+    else if(color==1) glColor4f(0.7, 0.4, 0, a);
     else  glColor4f(0.6, 0.6, 0, a);
     //if (hurt == 1) {
 	   glBegin(GL_POLYGON);
@@ -2947,6 +2949,41 @@ void display()
 	   glDisable(GL_FOG);
 	   glClearColor(0.109, 0.188, 0.078, 0.0);
     }
+    if (antialiasing == 0) {
+	   //cout << "off" << endl;
+	   glEnable(GL_MULTISAMPLE);
+	   glEnable(GL_POINT_SMOOTH);
+	   glEnable(GL_LINE_SMOOTH);
+	   //glEnable(GL_POLYGON_SMOOTH);
+	   glEnable(GL_BLEND);
+	   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	   glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
+    }
+    else {
+	   //cout << "ON" << endl;
+	   glDisable(GL_MULTISAMPLE);
+	   glDisable(GL_POINT_SMOOTH);
+	   glDisable(GL_LINE_SMOOTH);
+	   //glDisable(GL_POLYGON_SMOOTH);
+	   glDisable(GL_BLEND);
+    }
+    if (offset == 1) {
+	   //cout << "on" << endl;
+	   
+	   glEnable(GL_POLYGON_OFFSET_FILL);
+	   glPolygonOffset(10.0f,10.0f);
+	   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	   //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	   
+
+    }
+    else {
+	  // cout << "off" << endl;
+	   
+	   glDisable(GL_POLYGON_OFFSET_FILL);
+	   
+    }
+    
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     A a(WIDTH, HEIGHT);
     C c(WIDTH, HEIGHT);
@@ -3004,9 +3041,12 @@ void display()
 		  glVertex3f(0.0, 0.0, 10.0);
 		  glEnd();
 	   glPopMatrix();
-	   hurt(hurt_a,0);
-	   hurt(hurt_b,1);
-	   hurt(hurt_c,2);
+	   if (attack_light == 1) {
+		  hurt(hurt_a,0);
+		  hurt(hurt_b,1);
+		  hurt(hurt_c,2);
+	   }
+	   
 	   // ------------------------xyz
 	   //std::cout << "x hi: " << ((523 - mX) / sX) << "	x low: " << ((667 - mX) / sX) << "	y hi: " << ((mY - 600) / sY) << "  y low: " << ((mY - 500) / sY) << std::endl;
 	   /*glPushMatrix();
@@ -3033,7 +3073,7 @@ void display()
 	   glPopMatrix();*/
 
 	   glPushMatrix();
-		  glTranslatef(2, 1.5, 0.0);
+		  glTranslatef(2, 2, 0.0);
 		  drawHealth(myHP);
 	   glPopMatrix();
 		  
@@ -3105,7 +3145,7 @@ void display()
 	   }
 	   glPopMatrix();//monster 2
 	   glPushMatrix();//monster 3
-	   if (M2_die == 0) {
+	   if (M3_die == 0) {
 		  //glTranslatef(1,0,0);
 		  glTranslatef(M3_X, M3_Y, M3_Z);
 		  glPushMatrix();
@@ -3171,42 +3211,59 @@ void reshape(int w, int h)
     gluPerspective(90.0, (GLfloat)w / (GLfloat)h, 1.0, 700.0);
     glMatrixMode(GL_MODELVIEW);
 }
-int c = 0,c2=0,c3=0;
+int c = -100,c2=-200,c3=-400;
 void Idle_function(void) {
     if (myHP <= 0) {
 	   return;
     }
     //shoot
     if (shootstate == 1) {
-	   
+
 	   fly = fly + 0.1;
 	   //std::cout << "x hi: " << ((420 - mX) / sX) << "	x low: " << ((770 - mX) / sX) << "	y hi: " << ((mY - 800) / sY)<<"  y low: "<< ((mY - 500) / sY) << std::endl;
+	   //std::cout << "M3_X: " << M3_X << "	M3_Y: " << M3_Y << "	M3_Z: " << M3_Z << std::endl;
 	   //std::cout << "x: " <<bullet_X<<"    y: "<<bullet_Y<<"   y: "<< (bullet_Z - fly) << std::endl;
+	   //bool a = (M3_X > ((420 - mX) / sX) && M3_X < ((770 - mX) / sX)), b = (M3_Y > ((mY - 800) / sY) && M3_Y < ((mY - 500) / sY)), c = ((((bullet_Z - fly) > (M3_Z - 0.12)) && ((bullet_Z - fly) < (M3_Z + 0.12))));
+	   //std::cout << "a: " << a << "    b: " << b<< "   c: " << c << std::endl;
+	   //std::cout << "(bullet_Z - fly): " << (bullet_Z - fly) << "    (M3_Z - 0.12): " << (M3_Z - 0.12) << "   (M3_Z + 0.12): " << (M3_Z + 0.12) << std::endl;
 	   //momster die
-	   if (M1_die = 0 &&(M1_X > ((420 - mX) / sX) && M1_X <((770 - mX) / sX) && M2_Y>((mY - 800) / sY) && M2_Y < ((mY - 500) / sY)) && (((bullet_Z-fly) > M1_Z-0.05)&&((bullet_Z - fly) < M1_Z+0.05))) {
+	   if (M1_die == 0 && (M1_X > ((420 - mX) / sX) && M1_X <((770 - mX) / sX) && M2_Y>((mY - 800) / sY) && M2_Y < ((mY - 500) / sY)) && (((bullet_Z - fly) > M1_Z - 0.05) && ((bullet_Z - fly) < M1_Z + 0.05))) {
 		  M1_HP -= 0.1;
 		  //std::cout << "kill" << std::endl;
-		  if (M1_HP <= 0) M1_die = 1;
+		  if (M1_HP <= 0.01) M1_die = 1;
+		  shootstate = 2;
+		  fly = 0;
 	   }
-	   if (M2_die = 0 && (M2_X > ((420 - mX) / sX) && M2_X <((770 - mX) / sX) && M2_Y>((mY - 800) / sY) && M2_Y < ((mY - 500) / sY)) && (((bullet_Z - fly) > M2_Z - 0.05) && ((bullet_Z - fly) < M2_Z + 0.05))) {
+	   if (M2_die == 0 && (M2_X > ((420 - mX) / sX) && M2_X <((770 - mX) / sX) && M2_Y>((mY - 800) / sY) && M2_Y < ((mY - 500) / sY)) && (((bullet_Z - fly) > M2_Z - 0.1) && ((bullet_Z - fly) < M2_Z + 0.1))) {
 		  M2_HP -= 0.1;
 		  //std::cout << "kill" << std::endl;
-		  if (M2_HP <= 0) M2_die = 1;
+		  if (M2_HP <= 0.01) M2_die = 1;
+		  shootstate = 2;
+		  fly = 0;
+	   }
+	   if (M3_die == 0 && (M3_X > ((420 - mX) / sX) && M3_X <((770 - mX) / sX) && M3_Y>((mY - 800) / sY) && M3_Y < ((mY - 500) / sY)) && (((bullet_Z - fly) > (M3_Z - 0.12)) && ((bullet_Z - fly) < (M3_Z + 0.12)))) {
+		  M3_HP -= 0.1;
+		  //std::cout << "kill" << std::endl;
+		  //cout << "M3_HP " << M3_HP << endl;
+		  if (M3_HP <= 0.01) { M3_die = 1; std::cout << "die" << std::endl;
+		  }
+		  shootstate = 2;
+		  fly = 0;
 	   }
 	   if (fly > 10) {
 		  shootstate = 2;
 		  //cout << "arrive" << endl;
 		  fly = 0;
-		  
+
 	   }
     }
     if (shootstate == 2) {
 	   //cout << "shootstate == 2" << endl;
 	   //fly = 0;
-	   
+
     }
-    
-    
+
+
     /* 固定亂數種子 */
     srand(time(NULL));
 
@@ -3219,108 +3276,120 @@ void Idle_function(void) {
     /* 產生 [min , max) 的浮點數亂數 */
     //double x = (max - min) * rand() / (RAND_MAX + 1.0) + min;
     double z3 = (0.1) * rand() / (RAND_MAX + 1.0) + min_z;
-    double x3 = (0.2) * rand() / (RAND_MAX + 1.0) -0.1;
-    double y3 = (0.2) * rand() / (RAND_MAX + 1.0) -0.1;
+    double x3 = (0.2) * rand() / (RAND_MAX + 1.0) - 0.1;
+    double y3 = (0.2) * rand() / (RAND_MAX + 1.0) - 0.1;
     double z2 = (0.05) * rand() / (RAND_MAX + 1.0) + min_z;
-    double x2 = (0.1) * rand() / (RAND_MAX + 1.0) -0.05;
-    double y2 = (0.1) * rand() / (RAND_MAX + 1.0) -0.05;
+    double x2 = (0.1) * rand() / (RAND_MAX + 1.0) - 0.05;
+    double y2 = (0.1) * rand() / (RAND_MAX + 1.0) - 0.05;
     double z = (0.025) * rand() / (RAND_MAX + 1.0) + min_z;
-    double x = (0.5) * rand() / (RAND_MAX + 1.0) - 0.025;
-    double y = (0.5) * rand() / (RAND_MAX + 1.0) - 0.025;
+    double x = (0.05) * rand() / (RAND_MAX + 1.0) - 0.025;
+    double y = (0.05) * rand() / (RAND_MAX + 1.0) - 0.025;
     //double z2 = (max - min_z) * rand() / (RAND_MAX + 1.0) + min_z;
     //double x2 = (max - min) * rand() / (RAND_MAX + 1.0) + min;
     //double y2 = (max - min) * rand() / (RAND_MAX + 1.0) + min;
     //double x =0;
     //double y = 0;
     //std::cout << "x: " << x << "	y: " << y << "	z: " << z << std::endl;
-    if ((M1_X > -2.0 && x < 0) || (M1_X < 2.0 && x > 0) && M1_die==0) {
+    if ((M1_X > -2.0 && x < 0) || (M1_X < 2.0 && x > 0) && M1_die == 0) {
 	   M1_X += x;
     }
     if ((M1_Y > -1.0 && y < 0) || (M1_Y < 1.0 && y > 0) && M1_die == 0) {
 	   M1_Y += y;
     }
-    if ((M1_Z > -3.5 && z < 0) || (M1_Z < 1.8 && z > 0) && M1_die == 0) {
-	   M1_Z += z;
+    if (c2 < 0) c2++;
+    else {
+	   if ((M1_Z > -3.5 && z < 0) || (M1_Z < 1.8 && z > 0) && M1_die == 0) {
+		  M1_Z += z;
+	   }
     }
-    if (M1_Z > 1.6 && M1_die == 0 && c2==0 && c3==0) {
-	   
-	   if (c==0) {
-		  
-		  if (hurt_a < 0.9) hurt_a += 0.1;
+    if (M1_Z > 1.6 && M1_die == 0) {
+
+	   if (c == 0) {
+
+		  if (hurt_a < 0.6) hurt_a += 0.05;
 		  else c = 1;
 	   }
-	   else { 
-		  if (hurt_a > 0.0) hurt_a -= 0.1;
+	   else {
+		  if (hurt_a > 0.0) hurt_a -= 0.05;
 		  else {
 			 myHP = myHP - 0.1;
 			 M1_Z -= 2;
 			 c = 0;
 		  }
-		  
-		  
+
+
 	   }
     }
-    
+   
     if ((M2_X > -2.0 && x2 < 0) || (M2_X < 2.0 && x2 > 0) && M2_die == 0) {
 	   M2_X += x2;
     }
     if ((M2_Y > -1.0 && y2 < 0) || (M2_Y < 1.0 && y2 > 0) && M2_die == 0) {
 	   M2_Y += y2;
     }
-    if ((M2_Z > -3.5 && z2 < 0) || (M2_Z < 1.4 && z2 > 0) && M2_die == 0) {
-	   M2_Z += z2;
+    if (c2 < 0) c2++;
+    else {
+	   if ((M2_Z > -3.5 && z2 < 0) || (M2_Z < 1.4 && z2 > 0) && M2_die == 0) {
+		  M2_Z += z2;
+	   }
     }
-    if (M2_Z > 1.2 && M2_die == 0 &&c==0 && c3==0) {
-
+    if (M2_Z > 1.2 && M2_die == 0) {
+	  // cout << "hurt 2" << endl;
 	   if (c2 == 0) {
 		  //cout << "hurt start" << endl;
-		  if (hurt_b < 0.9) hurt_b += 0.1;
+		  if (hurt_b < 0.6) hurt_b += 0.05;
 		  else c2 = 1;
 	   }
 	   else {
 		  //cout << "hurt end" << endl;
-		  if (hurt_b > 0.0) hurt_b -= 0.1;
+		  if (hurt_b > 0.0) hurt_b -= 0.07;
 		  else {
-			// cout << "back" << endl;
-			 myHP = myHP - 0.02;
+			 //cout << "back 2" << endl;
+			 myHP = myHP - 0.04;
 			 M2_Z -= 3;
-			 M3_Z -= 5;
-			 c2 = 0;
+			 //M3_Z -= 5;
+			 c2 = -200;
 		  }
 
 
 	   }
     }
-    if ((M3_X > -0.05 && x3< 0) || (M3_X < 0.05 && x3 > 0) && M3_die == 0) {
+    
+    
+    if ((M3_X > -0.05 && x3 < 0) || (M3_X < 0.05 && x3 > 0) && M3_die == 0) {
 	   M3_X += x3;
     }
     if ((M3_Y > -0.05 && y3 < 0) || (M3_Y < 0.05 && y3 > 0) && M3_die == 0) {
 	   M3_Y += y3;
     }
-    if ((M3_Z > -3.5 && z3 < 0) || (M3_Z < 1.4 && z3 > 0) && M3_die == 0) {
-	   M3_Z += z3;
+    if (c3 < 0) c3++;
+    else {
+	   if ((M3_Z > -3.5 && z3 < 0) || (M3_Z < 1.4 && z3 > 0) && M3_die == 0) {
+		  M3_Z += z3;
+	   }
     }
-    if (M3_Z > 1.2 && M3_die == 0 && c==0 && c2==0) {
+    if (M3_Z > 1.2 && M3_die == 0 && c == 0 && c2 == 0) {
 
 	   if (c3 == 0) {
 		  //cout << "hurt start" << endl;
-		  if (hurt_c < 0.9) hurt_c += 0.1;
+		  if (hurt_c < 0.6) hurt_c += 0.05;
 		  else c3 = 1;
 	   }
 	   else {
 		  //cout << "hurt end" << endl;
-		  if (hurt_c > 0.0) hurt_c -= 0.1;
-		  else {
-			 // cout << "back" << endl;
-			 myHP = myHP - 0.02;
+		  if (hurt_c > 0.0) hurt_c -= 0.05;
+		  else if (c3 == 1) {
+				//cout << "back" << endl;
+			 myHP = myHP - 0.04;
 			 M3_Z -= 5;
-			 M2_Z -= 3;
-			 c3 = 0;
+			 //M2_Z -= 3;
+			 c3 = -200;
 		  }
 
 
 	   }
     }
+   
     //std::cout << "M2_X: " << M2_X << "	M2_Y: " << M2_Y << "	M2_Z: " << M2_Z << std::endl;
     //std::cout << "M1_X: " << M1_X << "	M1_Y: " << M1_Y << "	M1_Z: " << M1_Z << std::endl;
     
@@ -3350,9 +3419,13 @@ void keyboard(unsigned char key, int x, int y){
     switch (key) {
     case 'r':
     case 'R':
-	   myHP = 1.0;
+	   myHP = 2.0;
 	   M1_HP = 0.5;
 	   M1_die=0;
+	   M2_HP = 0.5;
+	   M2_die = 0;
+	   M3_HP = 0.5;
+	   M3_die = 0;
 	   break;
     case 'b':
     case 'B':
@@ -3362,11 +3435,24 @@ void keyboard(unsigned char key, int x, int y){
 	   break;
     case 'c':
     case 'C':
+	   if (antialiasing == 0) antialiasing = 1;
+	   else antialiasing = 0;
+	   break;
+    case 'p':
+    case 'P':
+	   if (offset == 0) offset = 1;
+	   else offset = 0;
 	   break;
     case 'f':
     case 'F':
 	   if (fog_open == 0) fog_open = 1;
 	   else fog_open = 0;
+	   //cout << fog_open << endl;
+	   break;
+    case 'l':
+    case 'L':
+	   if (attack_light == 0) attack_light = 1;
+	   else attack_light = 0;
 	   //cout << fog_open << endl;
 	   break;
     case 27:
