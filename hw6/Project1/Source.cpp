@@ -1,4 +1,6 @@
-//Jeff Chastine
+/***************************
+4108056029 王傳馨 第6-VI次作業12/22
+***************************/
 #include <Windows.h>
 #include <GL\glew.h>
 #include <GL\freeglut.h>
@@ -1891,6 +1893,10 @@ GLfloat mat_diffuse_black[] = { 0.04,0.04,0.04 };
 GLfloat no_shininess[] = { 0.0 };
 GLfloat mat_emission_test[] = { 51.0 / 255.0, 52.0 / 255.0, 54.0 / 255.0 };
 GLfloat mat_emission_black[] = { 0,0,0 };
+GLfloat earth_color[] = { 3.0 / 255.0, 139.0 / 255.0, 217.0 / 255.0 };
+GLfloat island_color[] = { 100.0 / 255.0, 227.0 / 255.0, 27.0 / 255.0 };
+GLfloat sun_color[] = { 245.0 / 255.0, 118.0 / 255.0, 39.0 / 255,0.0 };
+GLfloat low_shininess[] = { 50.0 };
 //*****************************
 float sX, sY, mX, mY;
 static GLfloat meX = 0.0, meY = 0.0, meZ = 3.0, fly = 0;
@@ -1900,8 +1906,14 @@ static GLfloat M1_X = 0.0, M1_Y = 0.0, M1_Z = 0.0;
 static GLfloat M2_X = 1.0, M2_Y = 0.0, M2_Z = 0.0;
 static GLfloat M3_X = -1.0, M3_Y = 0.0, M3_Z = 0.0;
 static GLfloat bullet_X = 0.0, bullet_Y = 0.0, bullet_Z = 3.5,zoom=0.0;
+static GLfloat p_X = -0.38, p_Y = 0.15, p_Z = 0.25;
 int shootstate = 0, M1_die = 0,M2_die=0,M3_die=0,fog_open=0,attack_light=0, antialiasing=0,offset=0;
 float hurt_a = 0.0,hurt_b=0.0,hurt_c=0.0;
+static int year = 0, day = 0, arm_swing = 0,a=0,u=1;
+static GLfloat spin = 0.0;
+static GLfloat R[9] = { 54,22,15,12,11,9,8 ,5,3 };
+static GLfloat G[9] = { 235,240,240,215,202,184,167,141,110 };
+static GLfloat Blu[9] = { 129,156,179,186,190,195,200,207,217 };
 
 class NCHU {
 protected:
@@ -3014,6 +3026,9 @@ void display()
 		  b.display_ch();
 		  glPushMatrix();
 			 glDisable(GL_DEPTH_TEST);
+			 glTranslatef((1125 - (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
+			 glRotatef(spin, 0.0, 1.0, 0.0);
+			 glTranslatef((-1125 + (WIDTH / 4 + 200)) / (WIDTH / 2), 0, 0);
 			 logo.display_ch();
 			 glEnable(GL_DEPTH_TEST);
 		  glPopMatrix();
@@ -3193,13 +3208,243 @@ void display()
 		  glEnable(GL_COLOR_MATERIAL);
 		  glEnable(GL_LIGHTING);
 	   glPopMatrix();//blend
+
 	   glPushMatrix();//bullet
 		  //glTranslatef(0,0, - fly);
-		  glTranslatef(bullet_X,bullet_Y,bullet_Z-fly);
-		  glColor3f(1, 1, 1);
-		  glutSolidSphere(0.03, 16, 16);
+		  //glTranslatef(bullet_X,bullet_Y,bullet_Z-fly);
+		  //glColor3f(1, 1, 1);
+		  //glutSolidSphere(0.03, 16, 16);
 	   glPopMatrix();//bullet
-    glPopMatrix();
+
+	   glPushMatrix();//hand's light&trans 8
+	   glColor3f(1, 1, 1);
+		  glEnable(GL_DEPTH_TEST);
+		  glEnable(GL_LIGHTING);
+		  glEnable(GL_LIGHT0);
+
+		  glMaterialfv(GL_FRONT, GL_AMBIENT, no_mat);
+		  glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse_test);
+		  glMaterialfv(GL_FRONT, GL_SPECULAR, no_mat);
+		  glMaterialfv(GL_FRONT, GL_SHININESS, no_shininess);
+		  glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission_test);
+		  //glColor3f(176.0 / 255.0, 178.0 / 255.0, 181.0 / 255.0);
+
+		  glPushMatrix();//right hand move
+			 glTranslatef(1.2, 0, 1);
+			 glRotatef(310, 0.0, 1.0, 0.0);
+			 //arm
+			 glPushMatrix();
+				glTranslatef(0.5, 0, 0.8);
+				glRotatef(30, 0.0, 0.0, 1.0);
+				glScalef(0.3, 0.12, 0.12);      // modeling transformation
+				glutSolidSphere(0.8, 16, 16);
+				glPopMatrix();
+				glPushMatrix();
+				glTranslatef(0.1, 0, 0.8);
+				glRotatef(330, 0.0, 0.0, 1.0);
+				glScalef(0.3, 0.12, 0.12);      // modeling transformation
+				glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 //finger1
+			 glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse_black);
+			 glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission_black);
+			 glMaterialfv(GL_FRONT, GL_SHININESS, no_shininess);
+			 glPushMatrix();
+				glTranslatef(-0.06, 0.23, 0.87);
+				glRotatef(270, 0.0, 0.0, 1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
+				glPopMatrix();
+				glPushMatrix();
+				glTranslatef(-0.13, 0.27, 0.87);
+				glRotatef(0, 0.0, 0.0, 1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 //finger2
+			 glMaterialfv(GL_FRONT, GL_DIFFUSE, earth_color);
+			 glMaterialfv(GL_FRONT, GL_EMISSION, earth_color);
+			 //glMaterialfv(GL_FRONT, GL_SHININESS, low_shininess);
+			 glPushMatrix();
+				glTranslatef(-0.07, 0.23, 0.81);
+				glRotatef(300, 0.0, 0.0, 1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
+				glPopMatrix();
+				glPushMatrix();
+				glTranslatef(-0.13, 0.23, 0.81);
+				glRotatef(30, 0.0, 0.0, 1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 //finger3
+			 glMaterialfv(GL_FRONT, GL_DIFFUSE, island_color);
+			 glMaterialfv(GL_FRONT, GL_EMISSION, island_color);
+			 //glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess);
+			 glPushMatrix();
+				glTranslatef(-0.07, 0.23, 0.75);
+				glRotatef(300, 0.0, 0.0, 1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
+				glPopMatrix();
+				glPushMatrix();
+				glTranslatef(-0.13, 0.23, 0.75);
+				glRotatef(30, 0.0, 0.0, 1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 //finger down
+			 glMaterialfv(GL_FRONT, GL_AMBIENT, no_mat);
+			 glMaterialfv(GL_FRONT, GL_DIFFUSE, sun_color);
+			 glMaterialfv(GL_FRONT, GL_SPECULAR, no_mat);
+			 glMaterialfv(GL_FRONT, GL_SHININESS, no_shininess);
+			 glMaterialfv(GL_FRONT, GL_EMISSION, sun_color);
+			 glPushMatrix();
+				glTranslatef(-0.12, 0, 0.81);
+				glRotatef(30, 0.0, 0.0, 1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
+				glPopMatrix();
+				glPushMatrix();
+				glTranslatef(-0.21, 0, 0.81);
+				glRotatef(300, 0.0, 0.0, 1.0);
+				glScalef(0.1, 0.03, 0.03);
+				glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+		  glPopMatrix();//right hand move
+		  
+		  glPushMatrix();//left hand move
+			 glTranslatef(0, 0, 2.2);
+			 glRotatef(220, 0.0, 1.0, 0.0);
+			 //arm
+			 glPushMatrix();
+			 glTranslatef(0.5, 0, 0.8);
+			 glRotatef(30, 0.0, 0.0, 1.0);
+			 glScalef(0.3, 0.12, 0.12);      // modeling transformation
+			 glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 glPushMatrix();
+			 glTranslatef(0.1, 0, 0.8);
+			 glRotatef(330, 0.0, 0.0, 1.0);
+			 glScalef(0.3, 0.12, 0.12);      // modeling transformation
+			 glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+
+
+			 //finger1
+			 glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse_black);
+			 glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission_black);
+			 glPushMatrix();
+			 glTranslatef(-0.06, 0.23, 0.87);
+			 glRotatef(270, 0.0, 0.0, 1.0);
+			 glScalef(0.1, 0.03, 0.03);
+			 glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 glPushMatrix();
+			 glTranslatef(-0.13, 0.27, 0.87);
+			 glRotatef(0, 0.0, 0.0, 1.0);
+			 glScalef(0.1, 0.03, 0.03);
+			 glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 //finger2
+			 glMaterialfv(GL_FRONT, GL_DIFFUSE, island_color);
+			 glMaterialfv(GL_FRONT, GL_EMISSION, island_color);
+			 glMaterialfv(GL_FRONT, GL_SHININESS, low_shininess);
+			 glPushMatrix();
+			 glTranslatef(-0.07, 0.23, 0.81);
+			 glRotatef(300, 0.0, 0.0, 1.0);
+			 glScalef(0.1, 0.03, 0.03);
+			 glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 glPushMatrix();
+			 glTranslatef(-0.13, 0.23, 0.81);
+			 glRotatef(30, 0.0, 0.0, 1.0);
+			 glScalef(0.1, 0.03, 0.03);
+			 glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 //finger3
+			 glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse_test);
+			 glMaterialfv(GL_FRONT, GL_EMISSION, sun_color);
+			 glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess);
+			 glPushMatrix();
+			 glTranslatef(-0.07, 0.23, 0.75);
+			 glRotatef(300, 0.0, 0.0, 1.0);
+			 glScalef(0.1, 0.03, 0.03);
+			 glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 glPushMatrix();
+			 glTranslatef(-0.13, 0.23, 0.75);
+			 glRotatef(30, 0.0, 0.0, 1.0);
+			 glScalef(0.1, 0.03, 0.03);
+			 glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 //finger down
+			 glMaterialfv(GL_FRONT, GL_DIFFUSE, earth_color);
+			 glMaterialfv(GL_FRONT, GL_EMISSION, earth_color);
+			 glMaterialfv(GL_FRONT, GL_SHININESS, no_mat);
+			 glPushMatrix();
+			 glTranslatef(-0.12, 0, 0.81);
+			 glRotatef(30, 0.0, 0.0, 1.0);
+			 glScalef(0.1, 0.03, 0.03);
+			 glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+			 glPushMatrix();
+			 glTranslatef(-0.21, 0, 0.81);
+			 glRotatef(300, 0.0, 0.0, 1.0);
+			 glScalef(0.1, 0.03, 0.03);
+			 glutSolidSphere(0.8, 16, 16);
+			 glPopMatrix();
+		  glPopMatrix();//left hand move
+		  
+		  glDisable(GL_LIGHTING);
+		  glDisable(GL_LIGHT0);
+	   glPopMatrix();//hand's light&trans
+
+	   glPushMatrix();//planet
+	  
+		  //glTranslatef(0, 0, -0.1);
+		  //glutSolidCube(0.1);
+	   //glTranslatef(-0.78, 0, -0.1 - fly);
+	   //glTranslatef(0, 0, -0.1 - fly);
+	   //glTranslatef(-0.78, 0, -0.1 - fly);
+	   if(shootstate == 1 || zoom>0) glTranslatef(bullet_X, bullet_Y, bullet_Z - fly);
+	   else glTranslatef(p_X, p_Y, p_Z - fly);
+
+	   glEnable(GL_LIGHTING);
+	   glEnable(GL_LIGHT0);
+	   glMaterialfv(GL_FRONT, GL_AMBIENT, no_mat);
+	   glMaterialfv(GL_FRONT, GL_DIFFUSE, sun_color);
+	   glMaterialfv(GL_FRONT, GL_SPECULAR, no_mat);
+	   glMaterialfv(GL_FRONT, GL_SHININESS, no_shininess);
+	   glMaterialfv(GL_FRONT, GL_EMISSION, sun_color);
+	   //glTranslatef(0.4, 0.15, 0.35);
+	  // glTranslatef(0, 0.15, 0.35);
+	   
+	   //glColor3f(245.0/255.0, 162.0/255.0, 49.0/255.0);
+	   //glutWireSphere(0.05, 10, 8);   /* draw sun */
+	   glutSolidSphere(0.05, 16, 16);
+	   //glColor3f(0.0, 0.0, 1.0);
+	   //glColor3f(3.0 / 255.0, 139.0 / 255.0, 217.0 / 255.0);
+	   glRotatef((GLfloat)year, 0.0, 1.0, 0.0);
+	   glTranslatef(0.1, 0.0, 0.0);
+	   glRotatef((GLfloat)day, 0.0, 1.0, 0.0);
+	   //glutWireSphere(0.015, 5, 4);    /* draw smaller planet */
+	   glMaterialfv(GL_FRONT, GL_DIFFUSE, earth_color);
+	   glMaterialfv(GL_FRONT, GL_EMISSION, earth_color);
+	   glMaterialfv(GL_FRONT, GL_SHININESS, high_shininess);
+	   glutSolidSphere(0.019, 16, 16);
+
+	   glTranslatef(0.004, 0.0, 0.0);
+	   //glColor3f(2.0 / 255.0, 235.0 / 255.0, 111.0 / 255.0);
+	   glMaterialfv(GL_FRONT, GL_DIFFUSE, island_color);
+	   glMaterialfv(GL_FRONT, GL_EMISSION, island_color);
+	   glMaterialfv(GL_FRONT, GL_SHININESS, no_mat);
+
+	   glutSolidSphere(0.016, 16, 16);
+	   glDisable(GL_LIGHTING);
+	   glDisable(GL_LIGHT0);
+	   glPopMatrix();//planet
+    glPopMatrix();//
     glutSwapBuffers();
 }
 void reshape(int w, int h)
@@ -3213,6 +3458,28 @@ void reshape(int w, int h)
 }
 int c = -100,c2=-200,c3=-400;
 void Idle_function(void) {
+    spin = spin + 2.0;
+    if (a <= 8 && a >= 0) {
+	   if (c == 5) {
+		  c = 0;
+		  color[0] = R[a] / 255.0;
+		  color[1] = G[a] / 255.0;
+		  color[2] = Blu[a] / 255.0;
+		  //cout << a << endl;
+		  a = a + u;
+	   }
+	   else {
+		  c = c + 1;
+	   }
+    }
+    else {
+	   u = -u;
+	   a = a + u;
+    }
+    if (spin > 360.0)
+	   spin = spin - 360.0;
+     day = (day + 4) % 360;
+    year = (year + 2) % 360;
     if (myHP <= 0) {
 	   return;
     }
