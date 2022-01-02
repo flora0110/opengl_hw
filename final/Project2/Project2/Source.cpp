@@ -21,21 +21,24 @@
 //#include <stdio.h>
 //#include <math.h>
 #include "string"
-
+#include <irrKlang.h>
+#pragma comment(lib, "irrKlang.lib")
 using namespace std;
 #define WIDTH 1600.0f
 #define HEIGHT 1024.0f 
 #define REDISPLAYTIMERID 1
 //********************************************
+using namespace irrklang;
 
 
 
 
-bool walk = false, swing_down=false, first_part=true, die=false; 
+bool walk = false, swing_down = false, first_part = true, die = false;
 //swing_down: 擺動時是否在下墜, first_part: 擺動時前半部分, die: 死掉動畫
-int swing = 0, die_angle=0,face_angle=180, girl_face_angle = 180;
+int swing = 0, die_angle = 0, face_angle = 180, girl_face_angle = 180;
 //swing: 走路時，手腳擺動的角度, die_angle: 死掉時，人物倒下的角度
-
+int pass = 0;
+int time_count = 100;
 GLuint texture[50];
 
 /* 貼圖時使用的一些matrix */
@@ -239,7 +242,7 @@ int ImageLoad(char* pic, Image* image) {
     }
     // we're done.
     return 1;
-} 
+}
 
 /* 設定texture的屬性 */
 void loadTexture(char* file_name, Image* image, int tex_index) {
@@ -268,25 +271,25 @@ static void drawHead(GLfloat size, GLenum type)
 
     for (i = 5; i >= 0; i--) {
         switch (i) {
-            case 0:
-                glBindTexture(GL_TEXTURE_2D, texture[2]); //right face (model的視角)
+        case 0:
+            glBindTexture(GL_TEXTURE_2D, texture[2]); //right face (model的視角)
             break;
-            case 2:
-                glBindTexture(GL_TEXTURE_2D, texture[3]); //left face
-                break;
-            case 4:
-                glBindTexture(GL_TEXTURE_2D, texture[0]); //front face
-                break;
-            default:
-                glBindTexture(GL_TEXTURE_2D, texture[1]); //hair
-                break;
+        case 2:
+            glBindTexture(GL_TEXTURE_2D, texture[3]); //left face
+            break;
+        case 4:
+            glBindTexture(GL_TEXTURE_2D, texture[0]); //front face
+            break;
+        default:
+            glBindTexture(GL_TEXTURE_2D, texture[1]); //hair
+            break;
         }
         glBegin(type);
-            glNormal3fv(&n[i][0]);
-            glTexCoord2d(0.0, 0.0); glVertex3fv(&v[faces[i][0]][0]);
-            glTexCoord2d(0.0, 1.0); glVertex3fv(&v[faces[i][1]][0]);
-            glTexCoord2d(1.0, 1.0); glVertex3fv(&v[faces[i][2]][0]);
-            glTexCoord2d(1.0, 0.0); glVertex3fv(&v[faces[i][3]][0]);
+        glNormal3fv(&n[i][0]);
+        glTexCoord2d(0.0, 0.0); glVertex3fv(&v[faces[i][0]][0]);
+        glTexCoord2d(0.0, 1.0); glVertex3fv(&v[faces[i][1]][0]);
+        glTexCoord2d(1.0, 1.0); glVertex3fv(&v[faces[i][2]][0]);
+        glTexCoord2d(1.0, 0.0); glVertex3fv(&v[faces[i][3]][0]);
         glEnd();
     }
 }
@@ -337,22 +340,22 @@ static void drawBody(GLfloat size, GLenum type)
     v[2][1] = v[3][1] = v[6][1] = v[7][1] = size / 2; //upper height
     v[0][2] = v[3][2] = v[4][2] = v[7][2] = -size / 4; //back thickness
     v[1][2] = v[2][2] = v[5][2] = v[6][2] = size / 4; //front thickness
-    
+
     for (i = 5; i >= 0; i--) {
         switch (i) {
-            case 4:
-                glBindTexture(GL_TEXTURE_2D, texture[4]); //front body
-                break;
-            default:
-                glBindTexture(GL_TEXTURE_2D, texture[5]); //back body
-                break;
+        case 4:
+            glBindTexture(GL_TEXTURE_2D, texture[4]); //front body
+            break;
+        default:
+            glBindTexture(GL_TEXTURE_2D, texture[5]); //back body
+            break;
         }
         glBegin(type);
-            glNormal3fv(&n[i][0]);
-            glTexCoord2d(0.0, 0.0); glVertex3fv(&v[faces[i][0]][0]);
-            glTexCoord2d(0.0, 1.0); glVertex3fv(&v[faces[i][1]][0]);
-            glTexCoord2d(1.0, 1.0); glVertex3fv(&v[faces[i][2]][0]);
-            glTexCoord2d(1.0, 0.0); glVertex3fv(&v[faces[i][3]][0]);
+        glNormal3fv(&n[i][0]);
+        glTexCoord2d(0.0, 0.0); glVertex3fv(&v[faces[i][0]][0]);
+        glTexCoord2d(0.0, 1.0); glVertex3fv(&v[faces[i][1]][0]);
+        glTexCoord2d(1.0, 1.0); glVertex3fv(&v[faces[i][2]][0]);
+        glTexCoord2d(1.0, 0.0); glVertex3fv(&v[faces[i][3]][0]);
         glEnd();
     }
 }
@@ -408,7 +411,7 @@ static void drawArm(GLfloat size, GLenum type)
         case 3:
             glBindTexture(GL_TEXTURE_2D, texture[10]); //手掌
             break;
-        case 4: 
+        case 4:
             glBindTexture(GL_TEXTURE_2D, texture[8]); //front arm
             break;
         case 5:
@@ -419,11 +422,11 @@ static void drawArm(GLfloat size, GLenum type)
             break;
         }
         glBegin(type);
-            glNormal3fv(&n[i][0]);
-            glTexCoord2d(0.0, 0.0); glVertex3fv(&v[faces[i][0]][0]);
-            glTexCoord2d(0.0, 1.0); glVertex3fv(&v[faces[i][1]][0]);
-            glTexCoord2d(1.0, 1.0); glVertex3fv(&v[faces[i][2]][0]);
-            glTexCoord2d(1.0, 0.0); glVertex3fv(&v[faces[i][3]][0]);
+        glNormal3fv(&n[i][0]);
+        glTexCoord2d(0.0, 0.0); glVertex3fv(&v[faces[i][0]][0]);
+        glTexCoord2d(0.0, 1.0); glVertex3fv(&v[faces[i][1]][0]);
+        glTexCoord2d(1.0, 1.0); glVertex3fv(&v[faces[i][2]][0]);
+        glTexCoord2d(1.0, 0.0); glVertex3fv(&v[faces[i][3]][0]);
         glEnd();
     }
 }
@@ -456,7 +459,7 @@ static void drawArm_girl(GLfloat size, GLenum type)
         case 4:
             glBindTexture(GL_TEXTURE_2D, texture[22]); //front arm
             break;
-        
+
         default:
             glBindTexture(GL_TEXTURE_2D, texture[21]); //others
             break;
@@ -469,7 +472,7 @@ static void drawArm_girl(GLfloat size, GLenum type)
         glTexCoord2d(1.0, 0.0); glVertex3fv(&v[faces[i][3]][0]);
         glEnd();
     }
-   
+
     glBindTexture(GL_TEXTURE_2D, texture[21]); //back arm
     glBegin(type);
     glNormal3fv(&n[i][0]);
@@ -564,8 +567,8 @@ static void drawLeg_girl(GLfloat size, GLenum type)
 }
 
 /* 指定bmp，載入頭部texture */
-void setHead(void ) {
-    char* file_name = (char*)malloc(100 * sizeof(char)); 
+void setHead(void) {
+    char* file_name = (char*)malloc(100 * sizeof(char));
     Image* image1 = (Image*)malloc(sizeof(Image));
     Image* image2 = (Image*)malloc(sizeof(Image));
     Image* image3 = (Image*)malloc(sizeof(Image));
@@ -726,7 +729,7 @@ void myinit(void)
     // Create Texture
     glGenTextures(50, texture); //total 50 textures
     setHead();
-    
+
     setBody();
     setArm();
     setLeg();
@@ -784,9 +787,9 @@ void myinit(void)
     //glShadeModel(GL_FLAT);
     /*image*****************************************/
     /****************************************************/
-   
+    
 }
-int time_count = 100;
+
 void timerFunc(int nTimerID)
 {
     switch (nTimerID)
@@ -818,7 +821,7 @@ void DrawString(string str)
     for (int i = 0; i < str.length(); i++)
         glCallList(lists + str.at(i));
 }
-static int kill = 0,kill_time=0;
+static int kill = 0, kill_time = 0;
 void auto_rotate(void) {
     Sleep(80); //每80ms更新一次此function
     //小女孩轉動
@@ -829,9 +832,9 @@ void auto_rotate(void) {
         girl_face_angle = (girl_face_angle + 30);
         if (girl_face_angle >= 359 && kill == 0) { kill = 1; kill_time = 0; }
         else if (girl_face_angle >= 170 && kill == 1) { kill = 0; kill_time = 0; }
-        girl_face_angle = (girl_face_angle )%360;
+        girl_face_angle = (girl_face_angle) % 360;
     }
-    
+
     //手腳擺動
     if (swing_down) {
         swing = (swing - 10) % 40;
@@ -851,9 +854,9 @@ void auto_rotate(void) {
 
     //人物死掉向後倒地
     if (die) {
-        if(die_angle >= -90) die_angle = die_angle - 15;
+        if (die_angle >= -90) die_angle = die_angle - 15;
     }
-    
+
     glutPostRedisplay();
 }
 void draw_view(int length, int width, int sky_height, int floor_height) {
@@ -878,7 +881,7 @@ void draw_view(int length, int width, int sky_height, int floor_height) {
     glVertex3f(width, sky_height, 0);
     glEnd();
     glPopMatrix();
-    
+
     //right wall front
     glPushMatrix();
     glBindTexture(GL_TEXTURE_2D, texture_backgrond[0]);
@@ -894,10 +897,10 @@ void draw_view(int length, int width, int sky_height, int floor_height) {
 
     glTexCoord2f(0.0, 1.0);
     glVertex3f(width, sky_height, length * 2);
-    
+
     glEnd();
     glPopMatrix();
-    
+
     //back wall
     glPushMatrix();
     glBindTexture(GL_TEXTURE_2D, texture_backgrond[0]);
@@ -915,7 +918,7 @@ void draw_view(int length, int width, int sky_height, int floor_height) {
     glVertex3f(-width, sky_height, 0);
     glEnd();
     glPopMatrix();
-    
+
     //left wall back
     glPushMatrix();
     glBindTexture(GL_TEXTURE_2D, texture_backgrond[0]);
@@ -953,7 +956,7 @@ void draw_view(int length, int width, int sky_height, int floor_height) {
 
     glEnd();
     glPopMatrix();
-    
+
     //floor back
     glPushMatrix();
     glBindTexture(GL_TEXTURE_2D, texture_backgrond[0]);
@@ -971,7 +974,7 @@ void draw_view(int length, int width, int sky_height, int floor_height) {
     glVertex3f(width, floor_height, 0);
     glEnd();
     glPopMatrix();
-    
+
     //floor front
     glPushMatrix();
     glBindTexture(GL_TEXTURE_2D, texture_backgrond[0]);
@@ -1002,12 +1005,12 @@ void draw_view(int length, int width, int sky_height, int floor_height) {
     glVertex3f(width, sky_height, length * 2);
     glVertex3f(width, sky_height, 0);
     glEnd();
-    glColor3f(1,1,1);
+    glColor3f(1, 1, 1);
     glBegin(GL_QUADS);
-    glVertex3f(width, floor_height+0.001, length -20);
-    glVertex3f(width, floor_height + 0.001, length  - 25);
-    glVertex3f(-width, floor_height + 0.001, length  - 25);
-    glVertex3f(-width, floor_height + 0.001, length  - 20);
+    glVertex3f(width, floor_height + 0.001, length - 20);
+    glVertex3f(width, floor_height + 0.001, length - 25);
+    glVertex3f(-width, floor_height + 0.001, length - 25);
+    glVertex3f(-width, floor_height + 0.001, length - 20);
     glEnd();
     glEnable(GL_TEXTURE_2D);
     glPopMatrix();
@@ -1035,16 +1038,18 @@ void display(void) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glColor3f(0, 0, 0);//设置绘图颜色
 
-    glTranslatef(meX, meY-2, meZ-(length * 2 - 3));
-    glRasterPos3f(width/2, sky_height/2, length*1.5);//设置文字位置
+    //計時***************************************
+    glTranslatef(meX, meY - 2, meZ - (length * 2 - 3));
+    glRasterPos3f(width / 2, sky_height / 2, length * 1.5);//设置文字位置
     string str(std::to_string(time_count));
     string str1 = "remain time : ";
     string str2 = " s";
-    str = str1 + str+str2;
+    str = str1 + str + str2;
     DrawString(str);
+    //********************************************
     glLoadIdentity();            //clear the matrix
     gluLookAt(meX, meY, meZ, seeX, seeY, seeZ, 0.0, 1.0, 0.0);
-    
+
 
     //xyz-------------------------
     glPushMatrix();
@@ -1071,117 +1076,117 @@ void display(void) {
     draw_view(length, width, sky_height, floor_height);
     /***********************************************************/
     glPushMatrix();
-        glEnable(GL_TEXTURE_2D);
+    glEnable(GL_TEXTURE_2D);
 
-        //line 410~476 是畫完整人物的code，要移動可以整坨一起動
-        glPushMatrix();
-            glTranslatef(0, 0,20);
-            glRotatef(girl_face_angle, 0.0, 1.0, 0.0);
-            //head
-            glPushMatrix();
-            //glTranslatef(0, 40, 0);
-                glTranslatef(0, 50, 0);
-                drawHead_girl(20.0, GL_QUADS);
-            glPopMatrix();
-            //body
-            glPushMatrix();
-                glTranslatef(0, 30, 0);
-                drawBody_girl(20.0, GL_QUADS);
-            glPopMatrix();
-            //arm
-            glPushMatrix();
-                glTranslatef(-12, 30.0, 0.0);
-                drawArm_girl(20.0, GL_QUADS);
-            glPopMatrix();
-            //arm
-            glPushMatrix();
-                glTranslatef(12, 30.0, 0.0);
-                drawArm_girl(20.0, GL_QUADS);
-            glPopMatrix();
-            //left leg
-            glPushMatrix();
-                glTranslatef(-6.0,4.0, 0.0);
-                drawLeg_girl(20.0, GL_QUADS);
-                //drawArm_girl(20.0, GL_QUADS);
-            glPopMatrix();
-            glPushMatrix();
-            glTranslatef(6.0, 4.0, 0.0);
-            drawLeg_girl(20.0, GL_QUADS);
-            //drawArm_girl(20.0, GL_QUADS);
-            glPopMatrix();
-        glPopMatrix();
+    //line 410~476 是畫完整人物的code，要移動可以整坨一起動
+    glPushMatrix();
+    glTranslatef(0, 0, 20);
+    glRotatef(girl_face_angle, 0.0, 1.0, 0.0);
+    //head
+    glPushMatrix();
+    //glTranslatef(0, 40, 0);
+    glTranslatef(0, 50, 0);
+    drawHead_girl(20.0, GL_QUADS);
+    glPopMatrix();
+    //body
+    glPushMatrix();
+    glTranslatef(0, 30, 0);
+    drawBody_girl(20.0, GL_QUADS);
+    glPopMatrix();
+    //arm
+    glPushMatrix();
+    glTranslatef(-12, 30.0, 0.0);
+    drawArm_girl(20.0, GL_QUADS);
+    glPopMatrix();
+    //arm
+    glPushMatrix();
+    glTranslatef(12, 30.0, 0.0);
+    drawArm_girl(20.0, GL_QUADS);
+    glPopMatrix();
+    //left leg
+    glPushMatrix();
+    glTranslatef(-6.0, 4.0, 0.0);
+    drawLeg_girl(20.0, GL_QUADS);
+    //drawArm_girl(20.0, GL_QUADS);
+    glPopMatrix();
+    glPushMatrix();
+    glTranslatef(6.0, 4.0, 0.0);
+    drawLeg_girl(20.0, GL_QUADS);
+    //drawArm_girl(20.0, GL_QUADS);
+    glPopMatrix();
+    glPopMatrix();
 
-        glPushMatrix();
-            glTranslatef(meX, meY, meZ);
-            glTranslatef(0.0, 0.9- meY, -10); //初始位置(可改)
-            glRotatef(face_angle, 0.0, 1.0, 0.0);
+    glPushMatrix();
+    glTranslatef(meX, meY, meZ);
+    glTranslatef(0.0, 0.9 - meY, -10); //初始位置(可改)
+    glRotatef(face_angle, 0.0, 1.0, 0.0);
 
-            if (die) { //死掉了
-                glTranslatef(0.0, -2.0, 0.0);
-                glRotatef(die_angle, 1.0, 0.0, 0.0);
-                glTranslatef(0.0, 3.0, 0.0);
-            }
+    if (die) { //死掉了
+        glTranslatef(0.0, -2.0, 0.0);
+        glRotatef(die_angle, 1.0, 0.0, 0.0);
+        glTranslatef(0.0, 3.0, 0.0);
+    }
 
-            //head
-            glPushMatrix();
-                drawHead(1.0, GL_QUADS);
-            glPopMatrix();
+    //head
+    glPushMatrix();
+    drawHead(1.0, GL_QUADS);
+    glPopMatrix();
 
-            //body
-            glPushMatrix();
-                glTranslatef(0.0, -1.0, 0.0);
-                drawBody(1.0, GL_QUADS);
-            glPopMatrix();
+    //body
+    glPushMatrix();
+    glTranslatef(0.0, -1.0, 0.0);
+    drawBody(1.0, GL_QUADS);
+    glPopMatrix();
 
-            //left arm
-            glPushMatrix();
-                glTranslatef(-0.65, -1.0, 0.0);
-                if (walk == true) {
-                    if(first_part) glRotatef(-swing, 1.0, 0.0, 0.0); //擺動前半部分 往前擺
-                    else glRotatef(swing, 1.0, 0.0, 0.0); //擺動後半部分 往後擺
-                }
-                
-                drawArm(1.0, GL_QUADS); 
-            glPopMatrix();
+    //left arm
+    glPushMatrix();
+    glTranslatef(-0.65, -1.0, 0.0);
+    if (walk == true) {
+        if (first_part) glRotatef(-swing, 1.0, 0.0, 0.0); //擺動前半部分 往前擺
+        else glRotatef(swing, 1.0, 0.0, 0.0); //擺動後半部分 往後擺
+    }
 
-            //right arm
-            glPushMatrix();
-                glTranslatef(0.65, -1.0, 0.0);
-                if (walk == true) {
-                    if (first_part) glRotatef(swing, 1.0, 0.0, 0.0); //擺動前半部分 往前擺
-                    else glRotatef(-swing, 1.0, 0.0, 0.0); //擺動後半部分 往後擺
-                }
-                glRotatef(180, 0.0, 1.0, 0.0);
-                drawArm(1.0, GL_QUADS); 
-            glPopMatrix();
+    drawArm(1.0, GL_QUADS);
+    glPopMatrix();
 
-            //left leg
-            glPushMatrix();
-                glTranslatef(-0.25, -2.25, 0.0);
-                if (walk == true) {
-                    glTranslatef(0.0, 1.0, 0.0);
-                        if (first_part) glRotatef(swing, 1.0, 0.0, 0.0); //擺動前半部分 往前擺
-                        else glRotatef(-swing, 1.0, 0.0, 0.0); //擺動後半部分 往後擺
-                    glTranslatef(0.0, -1.0, 0.0);
-                }
-                drawLeg(1.0, GL_QUADS);  
-            glPopMatrix();
+    //right arm
+    glPushMatrix();
+    glTranslatef(0.65, -1.0, 0.0);
+    if (walk == true) {
+        if (first_part) glRotatef(swing, 1.0, 0.0, 0.0); //擺動前半部分 往前擺
+        else glRotatef(-swing, 1.0, 0.0, 0.0); //擺動後半部分 往後擺
+    }
+    glRotatef(180, 0.0, 1.0, 0.0);
+    drawArm(1.0, GL_QUADS);
+    glPopMatrix();
 
-            //right leg
-            glPushMatrix();
-                glTranslatef(0.25, -2.25, 0.0);
-                if (walk == true) {
-                    glTranslatef(0.0, 1.0, 0.0);
-                        if (first_part) glRotatef(-swing, 1.0, 0.0, 0.0); //擺動前半部分 往前擺
-                        else glRotatef(swing, 1.0, 0.0, 0.0); //擺動後半部分 往後擺
-                    glTranslatef(0.0, -1.0, 0.0);
-                }
-                glRotatef(180, 0.0, 1.0, 0.0);
-                drawLeg(1.0, GL_QUADS);  
-            glPopMatrix();
-        glPopMatrix(); //finish drawing model
+    //left leg
+    glPushMatrix();
+    glTranslatef(-0.25, -2.25, 0.0);
+    if (walk == true) {
+        glTranslatef(0.0, 1.0, 0.0);
+        if (first_part) glRotatef(swing, 1.0, 0.0, 0.0); //擺動前半部分 往前擺
+        else glRotatef(-swing, 1.0, 0.0, 0.0); //擺動後半部分 往後擺
+        glTranslatef(0.0, -1.0, 0.0);
+    }
+    drawLeg(1.0, GL_QUADS);
+    glPopMatrix();
 
-        glDisable(GL_TEXTURE_2D);
+    //right leg
+    glPushMatrix();
+    glTranslatef(0.25, -2.25, 0.0);
+    if (walk == true) {
+        glTranslatef(0.0, 1.0, 0.0);
+        if (first_part) glRotatef(-swing, 1.0, 0.0, 0.0); //擺動前半部分 往前擺
+        else glRotatef(swing, 1.0, 0.0, 0.0); //擺動後半部分 往後擺
+        glTranslatef(0.0, -1.0, 0.0);
+    }
+    glRotatef(180, 0.0, 1.0, 0.0);
+    drawLeg(1.0, GL_QUADS);
+    glPopMatrix();
+    glPopMatrix(); //finish drawing model
+
+    glDisable(GL_TEXTURE_2D);
     glPopMatrix();
     glutSwapBuffers();
 }
@@ -1205,7 +1210,7 @@ void myReshape(int w, int h) {
 
 
 void move(int m) {
-   // if (kill==1 && die == false) die = true;
+    if (kill==1 && die == false) die = true;
     if (time_count <= 0) die = true;
     if (die == true) return;
     //cout <<"seeX: " << seeX << endl;
@@ -1223,6 +1228,7 @@ void move(int m) {
     else if (m == 2) {
         if (meZ < length * 2 - 2) {
             meZ = meZ + 1;
+            if (meZ > (length - 25)) pass = 1;
             //seeX = meX;
             //seeZ = meZ + 0.1;
             seeZ = seeZ + 1;
@@ -1253,18 +1259,18 @@ void move(int m) {
 void keyboardUp(unsigned char key, int x, int y) {
     glutIgnoreKeyRepeat(1); //ignore key repeat
     switch (key) {
-        case 'w': 
-        case 'a':
-        case 's':
-        case 'd':
-            cout <<"B" << endl;
-            walk = false; //釋放鍵盤時，停止走路
-            break;
-        case 27: // “esc” on keyboard
-            exit(0);
-            break;
-        default:
-            break;
+    case 'w':
+    case 'a':
+    case 's':
+    case 'd':
+        cout << "B" << endl;
+        walk = false; //釋放鍵盤時，停止走路
+        break;
+    case 27: // “esc” on keyboard
+        exit(0);
+        break;
+    default:
+        break;
     }
     glutPostRedisplay();
 }
@@ -1317,13 +1323,15 @@ void mouse(int button, int state, int x, int y)
             }
             break;
         */
-        default:
-            break;
+    default:
+        break;
     }
 }
 
 int main(int argc, char** argv)
 {
+    //ISoundEngine* engine = createIrrKlangDevice();
+    //engine->play2D("audio/breakout.mp3", true);
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowPosition(0, 0);
