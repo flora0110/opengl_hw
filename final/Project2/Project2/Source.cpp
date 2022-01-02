@@ -20,11 +20,12 @@
 #include <GL/glu.h>
 //#include <stdio.h>
 //#include <math.h>
+#include "string"
 
 using namespace std;
 #define WIDTH 1600.0f
 #define HEIGHT 1024.0f 
-
+#define REDISPLAYTIMERID 1
 //********************************************
 
 
@@ -783,6 +784,39 @@ void myinit(void)
     //glShadeModel(GL_FLAT);
     /*image*****************************************/
     /****************************************************/
+   
+}
+int time_count = 100;
+void timerFunc(int nTimerID)
+{
+    switch (nTimerID)
+    {
+    case REDISPLAYTIMERID:
+        if (time_count > 0) {
+            time_count--;
+            glutPostRedisplay();
+            glutTimerFunc(1000, timerFunc, REDISPLAYTIMERID);
+        }
+        break;
+    }
+}
+void DrawString(string str)
+{
+    static int isFirstCall = 1;
+    static GLuint lists;
+
+    if (isFirstCall)
+    {//第一次调用时 为每个ASCII字符生成一个显示列表
+        isFirstCall = 0;
+        //申请MAX__CHAR个连续的显示列表编号
+        lists = glGenLists(128);
+        //把每个字符的绘制命令装到对应的显示列表中
+        wglUseFontBitmaps(wglGetCurrentDC(), 0, 128, lists);
+    }
+
+    //调用每个字符对应的显示列表，绘制每个字符
+    for (int i = 0; i < str.length(); i++)
+        glCallList(lists + str.at(i));
 }
 static int kill = 0,kill_time=0;
 void auto_rotate(void) {
@@ -793,7 +827,7 @@ void auto_rotate(void) {
     }
     else {
         girl_face_angle = (girl_face_angle + 30);
-        if (girl_face_angle >= 350 && kill == 0) { kill = 1; kill_time = 0; }
+        if (girl_face_angle >= 359 && kill == 0) { kill = 1; kill_time = 0; }
         else if (girl_face_angle >= 170 && kill == 1) { kill = 0; kill_time = 0; }
         girl_face_angle = (girl_face_angle )%360;
     }
@@ -860,7 +894,7 @@ void draw_view(int length, int width, int sky_height, int floor_height) {
 
     glTexCoord2f(0.0, 1.0);
     glVertex3f(width, sky_height, length * 2);
-
+    
     glEnd();
     glPopMatrix();
     
@@ -955,23 +989,34 @@ void draw_view(int length, int width, int sky_height, int floor_height) {
     glVertex3f(-width, floor_height, length * 2);
 
     glEnd();
+
     glPopMatrix();
     /*****************************************/
     /* sky */
     glDisable(GL_TEXTURE_2D);
     glColor3f((float)208 / 255, (float)222 / 255, (float)223 / 255);
+    //glColor3f(1.0f, 1.0f, 0.3f);
     glBegin(GL_QUADS);
     glVertex3f(-width, sky_height, 0);
     glVertex3f(-width, sky_height, length * 2);
     glVertex3f(width, sky_height, length * 2);
     glVertex3f(width, sky_height, 0);
     glEnd();
+    glColor3f(1,1,1);
+    glBegin(GL_QUADS);
+    glVertex3f(width, floor_height+0.001, length -20);
+    glVertex3f(width, floor_height + 0.001, length  - 25);
+    glVertex3f(-width, floor_height + 0.001, length  - 25);
+    glVertex3f(-width, floor_height + 0.001, length  - 20);
+    glEnd();
     glEnable(GL_TEXTURE_2D);
     glPopMatrix();
 }
+
 static int length = 100, width = 50, sky_height = 70, floor_height = -2;
 static GLfloat meX = 0.0, meY = 3.0, meZ = length * 2 - 3;
 static GLfloat seeX = 0.0, seeY = 0.0, seeZ = -1.0;
+
 void display(void) {
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -988,8 +1033,19 @@ void display(void) {
     GLfloat mat_emission[] = { 0.3, 0.2, 0.2, 0.0 };
     //*****************************
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glColor3f(0, 0, 0);//设置绘图颜色
+
+    glTranslatef(meX, meY-2, meZ-(length * 2 - 3));
+    glRasterPos3f(width/2, sky_height/2, length*1.5);//设置文字位置
+    string str(std::to_string(time_count));
+    string str1 = "remain time : ";
+    string str2 = " s";
+    str = str1 + str+str2;
+    DrawString(str);
     glLoadIdentity();            //clear the matrix
     gluLookAt(meX, meY, meZ, seeX, seeY, seeZ, 0.0, 1.0, 0.0);
+    
+
     //xyz-------------------------
     glPushMatrix();
     glDisable(GL_TEXTURE_2D);
@@ -1149,7 +1205,8 @@ void myReshape(int w, int h) {
 
 
 void move(int m) {
-    if (kill==1 && die == false) die = true;
+   // if (kill==1 && die == false) die = true;
+    if (time_count <= 0) die = true;
     if (die == true) return;
     //cout <<"seeX: " << seeX << endl;
    // cout <<"meX: " << meX << endl;
@@ -1239,6 +1296,7 @@ void keyboard(unsigned char key, int x, int y) {
         if (die) {
             die = false;
             die_angle = 0;
+            time_count = 100;
         }
         break;
     case 27: // “esc” on keyboard
@@ -1284,6 +1342,7 @@ int main(int argc, char** argv)
     glutKeyboardUpFunc(keyboardUp);
     glutMouseFunc(mouse);
     glutIdleFunc(auto_rotate);
+    glutTimerFunc(1000, timerFunc, REDISPLAYTIMERID);
     glutMainLoop();
 
     return 0;
