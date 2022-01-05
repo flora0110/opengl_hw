@@ -865,7 +865,7 @@ void timerFunc(int nTimerID)
         break;
     case MUSIC_ROTATE:
         //小女孩轉動
-        printf("killtime %d\n",kill_time);
+        //printf("killtime %d\n",kill_time);
         if (kill_time <= 30) {
             kill_time++;
         }
@@ -875,9 +875,9 @@ void timerFunc(int nTimerID)
             else if (girl_face_angle >= 170 && kill == 1) { kill = 0; kill_time = 0; engine_game->play2D("audio/girl_song.mp3", false);
             }
             girl_face_angle = (girl_face_angle) % 360;
-            printf("girl_face_angle %d\n", girl_face_angle);
+            //printf("girl_face_angle %d\n", girl_face_angle);
         }
-        printf("time %d\n",test_time++);
+        //printf("time %d\n",test_time++);
         glutTimerFunc(100, timerFunc, MUSIC_ROTATE);
         break;
     }
@@ -1361,7 +1361,7 @@ void display(void) {
             glDisable(GL_TEXTURE_2D);
         glPopMatrix();
 
-        if(pass) printf("pass=%d\n", pass);
+        //if (pass) printf("pass=%d\n", pass);
         display_die_menu(); //若死掉，使用死掉畫面
 
         glutSwapBuffers();
@@ -1384,7 +1384,7 @@ void move(int m) {
    // cout <<"meX: " << meX << endl;
     if (m == 1) {
         if (meZ > 2) {
-            printf("at %d %f\n",length, meZ);
+            //printf("at %d %f\n",length, meZ);
             meZ = meZ - 1;
             if (meZ < (length - 10)) pass = 1;
             //seeX = meX;
@@ -1488,7 +1488,7 @@ void keyboard(unsigned char key, int x, int y) {
         }
 
         if (start_menu) {
-            printf("start menu\n");
+            //printf("start menu\n");
             time_count = 100;
             start_menu = false;
             engine_start->drop();
@@ -1503,7 +1503,7 @@ void keyboard(unsigned char key, int x, int y) {
         start_menu = true; //回到主選單
         die = false;
         die_menu = false;
-        printf("esc\n");
+        //printf("esc\n");
         engine_game->drop();
         engine_start = irrklang::createIrrKlangDevice();
         engine_start->play2D("audio/Main_Theme_cut1.mp3", true);
@@ -1558,7 +1558,7 @@ int main(int argc, char** argv)
 
     myinit();
     engine_start->play2D("audio/Main_Theme_cut1.mp3", true);
-    printf("main\n");
+    //printf("main\n");
     glutDisplayFunc(display);
     glutReshapeFunc(myReshape);
     glutKeyboardFunc(keyboard);
