@@ -22,6 +22,8 @@ using namespace std;
 #define HEIGHT 1024.0f 
 #define REDISPLAYTIMERID 1
 #define MUSIC_ROTATE 2
+#define GIRL_WAIT_TIME 30
+#define GAME_START_TIME 20
 //********************************************
 
 // sound
@@ -35,8 +37,13 @@ bool walk = false, swing_down = false, first_part = true, die = false,unbeat=fal
 int swing = 0, die_angle = 0, face_angle = 180, girl_face_angle = 180;
 //swing: 走路時，手腳擺動的角度, die_angle: 死掉時，人物倒下的角度
 int pass = 0;
-int time_count = 100;
+int time_count = GAME_START_TIME;
 static int kill = 0, kill_time = 0;
+int time_x,time_y,time_z;
+static int length = 100, width = 50, sky_height = 70, floor_height = -2;
+static GLfloat meX = 0.0, meY = 3.0, meZ = length * 2 - 3;
+static GLfloat seeX = 0.0, seeY = 0.0, seeZ = -1.0;
+
 
 GLuint texture[70];
 
@@ -69,6 +76,7 @@ typedef struct Image Image;
 
 /*image***********************************************/
 GLuint texture_backgrond[2];
+GLuint texture_shield[5];
 
 #define checkImageWidth 64
 #define checkImageHeight 64
@@ -167,12 +175,14 @@ Image* loadTexture_backgrond() {
     }
     return image1;
 }
+
+
 /*image****************************************************************/
 
 /* 從texture資料夾 載入bmp圖片 */
 int ImageLoad(char* pic, Image* image) {
     FILE* file;
-    unsigned long size; // size of the image in bytes.
+    unsigned long size; // size of the image in bytes.loadTexture(file_name, image1
     unsigned long i; // standard counter.
     unsigned short int planes; // number of planes in image (must be 1)
     unsigned short int bpp; // number of bits per pixel (must be 24)
@@ -297,6 +307,8 @@ static void drawWinBackground() {
     glScalef(0.25, 0.25, 0.25);
     glPopMatrix();
 }
+
+
 
 /* 畫頭 */
 static void drawHead(GLfloat size, GLenum type)
@@ -593,7 +605,68 @@ static void drawLeg_girl(GLfloat size, GLenum type)
         glEnd();
     }
 }
+static void DrawShield(GLfloat size, GLenum type)
+{
+    char* file_name = (char*)malloc(100 * sizeof(char));
+    Image* image1 = (Image*)malloc(sizeof(Image));
+    Image* image2 = (Image*)malloc(sizeof(Image));
+    Image* image3 = (Image*)malloc(sizeof(Image));
+    Image* image4 = (Image*)malloc(sizeof(Image));
 
+    strcpy(file_name, "hair_new.bmp");
+    loadTexture(file_name, image1, 51); //textureNo 
+    glBindTexture(GL_TEXTURE_2D, texture[51]);
+    glBegin(type);
+    //glNormal3fv(&n[i][0]);
+    glTexCoord2d(0.0, 0.0); glVertex3f(meX + 0.8, 3.6, meZ - 10);
+    glTexCoord2d(0.0, 1.0); glVertex3f(meX + 0.8, 2, meZ - 10);
+    glTexCoord2d(1.0, 1.0); glVertex3f(meX - 0.8, 2, meZ - 10);
+    glTexCoord2d(1.0, 0.0); glVertex3f(meX - 0.8, 3.6, meZ - 10);
+    glEnd();
+
+    strcpy(file_name, "back_body_gray2.bmp");
+    loadTexture(file_name, image2, 52); //textureNo 0
+    glBindTexture(GL_TEXTURE_2D, texture[52]);
+    glBegin(type);
+    //glNormal3fv(&n[i][0]);
+    glTexCoord2d(0.0, 0.0); glVertex3f(meX + 1, 2, meZ - 10);
+    glTexCoord2d(0.0, 1.0); glVertex3f(meX + 1, 0, meZ - 10);
+    glTexCoord2d(1.0, 1.0); glVertex3f(meX - 1, 0, meZ - 10);
+    glTexCoord2d(1.0, 0.0);  glVertex3f(meX - 1, 2, meZ - 10);
+    glEnd();
+    
+    strcpy(file_name, "front_hand_gray2.bmp");
+    loadTexture(file_name, image3, 53); //textureNo 0
+    glBindTexture(GL_TEXTURE_2D, texture[53]);
+    glBegin(type);
+    //glNormal3fv(&n[i][0]);
+    glTexCoord2d(0.0, 1.0); glVertex3f(meX + 1, 2, meZ - 10);
+    glTexCoord2d(0.0, 0.0); glVertex3f(meX + 1, 0.2, meZ - 10);
+    glTexCoord2d(1.0, 0.0); glVertex3f(meX + 1.4, 0.2, meZ - 10);
+    glTexCoord2d(1.0, 1.0); glVertex3f(meX + 1.4, 2, meZ - 10);
+    glEnd();
+    glBindTexture(GL_TEXTURE_2D, texture[53]);
+    glBegin(type);
+    //glNormal3fv(&n[i][0]);
+    glTexCoord2d(0.0, 1.0); glVertex3f(meX - 1, 2, meZ - 10);
+    glTexCoord2d(0.0, 0.0); glVertex3f(meX - 1, 0.2, meZ - 10);
+    glTexCoord2d(1.0, 0.0); glVertex3f(meX - 1.4, 0.2, meZ - 10);
+    glTexCoord2d(1.0, 1.0); glVertex3f(meX - 1.4, 2, meZ - 10);
+    glEnd();
+    
+    
+    
+    
+    /*
+    glBindTexture(GL_TEXTURE_2D, texture[54]);
+    glBegin(type);
+    //glNormal3fv(&n[i][0]);
+    glTexCoord2d(0.0, 0.0); glVertex3fv(&v[faces[i][0]][0]);
+    glTexCoord2d(0.0, 1.0); glVertex3fv(&v[faces[i][1]][0]);
+    glTexCoord2d(1.0, 1.0); glVertex3fv(&v[faces[i][2]][0]);
+    glTexCoord2d(1.0, 0.0); glVertex3fv(&v[faces[i][3]][0]);
+    glEnd();*/
+}
 /* 指定bmp，載入選單texture */
 void setMenuBackground(void) {
     char* file_name = (char*)malloc(100 * sizeof(char));
@@ -799,7 +872,8 @@ void myinit(void)
     setLeg_girl();
 
     setMenuBackground();
-
+    
+    
     glShadeModel(GL_SMOOTH);
     glEnable(GL_NORMALIZE); //不要讓glScalef()改到我的法向量
 
@@ -843,7 +917,9 @@ void myinit(void)
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
     glEnable(GL_TEXTURE_2D);
-    //glShadeModel(GL_FLAT);
+    
+    /***************************************************************/
+   
     /*image*****************************************/
     /****************************************************/
     
@@ -854,10 +930,13 @@ void myinit(void)
 int test_time = 0;
 void timerFunc(int nTimerID)
 {
+    //printf("start_menu %b\n",start_menu);
+   //if (start_menu) printf("a\n");
+    //else printf("b\n");
     switch (nTimerID)
     {
     case REDISPLAYTIMERID:
-        if (time_count > 0) {
+        if (time_count > 0 && !pass && !start_menu) {
             time_count--;
             glutPostRedisplay();
             glutTimerFunc(1000, timerFunc, REDISPLAYTIMERID);
@@ -866,23 +945,34 @@ void timerFunc(int nTimerID)
     case MUSIC_ROTATE:
         //小女孩轉動
         //printf("killtime %d\n",kill_time);
-        if (kill_time <= 30) {
-            kill_time++;
-        }
-        else {
-            girl_face_angle = (girl_face_angle + 30);
-            if (girl_face_angle >= 359 && kill == 0) { kill = 1; kill_time = 0; }
-            else if (girl_face_angle >= 170 && kill == 1) { kill = 0; kill_time = 0; engine_game->play2D("audio/girl_song.mp3", false);
+        if (!start_menu) {
+            if (kill_time <= GIRL_WAIT_TIME) {
+                //printf("killtim %d\n", kill_time);
+                kill_time++;
             }
-            girl_face_angle = (girl_face_angle) % 360;
-            //printf("girl_face_angle %d\n", girl_face_angle);
+            else {
+                //printf("wait %d\n",kill_time);
+                //printf("origin girl_face_angle %d\n", girl_face_angle);
+                girl_face_angle = (girl_face_angle + 30);
+                //printf("after girl_face_angle %d\n", girl_face_angle);
+                if (girl_face_angle >= 359 && kill == 0) { kill = 1; kill_time = 0; }
+                else if (girl_face_angle >= 170 && kill == 1) {
+                    kill = 0; kill_time = 0; engine_game->play2D("audio/girl_song.mp3", false);
+                }
+                girl_face_angle = (girl_face_angle) % 360;
+                //printf("girl_face_angle %d\n", girl_face_angle);
+            }
         }
         //printf("time %d\n",test_time++);
+        //printf("b\n");
+        glutPostRedisplay();
+        //printf("bbb\n");
         glutTimerFunc(100, timerFunc, MUSIC_ROTATE);
+        //printf("bbbbbb\n");
         break;
     }
 }
-void DrawString(string str)
+/*void DrawString(string str)
 {
     static int isFirstCall = 1;
     static GLuint lists;
@@ -899,12 +989,62 @@ void DrawString(string str)
     //调用每个字符对应的显示列表，绘制每个字符
     for (int i = 0; i < str.length(); i++)
         glCallList(lists + str.at(i));
-}
+}*/
+/*
+void DrawShield() {
 
-void auto_rotate(void) {
-    Sleep(80); //每80ms更新一次此function
+    
+    glDisable(GL_LIGHTING);
+    glDisable(GL_LIGHT0);
+    glDisable(GL_TEXTURE_2D);
+    
+    glColor3f(0.5, 0.5, 0.5);
+    glBegin(GL_QUADS);
+    glVertex3f(meX + 0.8, 3.2, meZ-10);
+    glVertex3f(meX + 0.8, 2, meZ-10);
+    glVertex3f(meX - 0.8, 2, meZ-10);
+    glVertex3f(meX - 0.8, 3.2, meZ-10);
+    glEnd();
+    glColor3f(0.7, 0.7, 0.7);
+    glBegin(GL_QUADS);
+    glVertex3f(meX + 1, 2, meZ - 10);
+    glVertex3f(meX + 1, 0, meZ - 10);
+    glVertex3f(meX - 1, 0, meZ - 10);
+    glVertex3f(meX - 1, 2, meZ - 10);
+    glEnd();
+    glColor3f(0.8, 0.8, 0.8);
+    glBegin(GL_QUADS);
+    glVertex3f(meX + 1, 2, meZ - 10);
+    glVertex3f(meX + 1, 0.2, meZ - 10);
+    glVertex3f(meX + 1.5, 0.2, meZ - 10);
+    glVertex3f(meX + 1.5, 2, meZ - 10);
+    glEnd();
+    glBegin(GL_QUADS);
+    glVertex3f(meX - 1, 2, meZ - 10);
+    glVertex3f(meX - 1, 0.2, meZ - 10);
+    glVertex3f(meX - 1.5, 0.2, meZ - 10);
+    glVertex3f(meX - 1.5, 2, meZ - 10);
+    glEnd();
     
 
+    glEnable(GL_TEXTURE_2D);
+    glPopMatrix();
+}
+ */
+
+void DrawString2(string str)
+{
+    //char note[100] = "";
+    //strcpy(note, str);
+    //glRasterPos2f(-3.0, 3.9); //字體位置	
+    for (int i = 0; i < str.size(); i++) { //loop to display character by character
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, str[i]);
+    }
+}
+void auto_rotate(void) {
+    Sleep(80); //每80ms更新一次此function
+    //printf("tiem_count %d\n",time_count);
+    if (time_count <= 0 && !unbeat) die = true;
     //手腳擺動
     if (swing_down) {
         swing = (swing - 10) % 40;
@@ -1078,6 +1218,7 @@ void draw_view(int length, int width, int sky_height, int floor_height) {
     glVertex3f(width, sky_height, length * 2);
     glVertex3f(width, sky_height, 0);
     glEnd();
+    /*line*/
     glColor3f(1, 1, 1);
     glBegin(GL_QUADS);
     glVertex3f(width, floor_height + 0.001, length - 20);
@@ -1089,9 +1230,7 @@ void draw_view(int length, int width, int sky_height, int floor_height) {
     glPopMatrix();
 }
 
-static int length = 100, width = 50, sky_height = 70, floor_height = -2;
-static GLfloat meX = 0.0, meY = 3.0, meZ = length * 2 - 3;
-static GLfloat seeX = 0.0, seeY = 0.0, seeZ = -1.0;
+
 
 
 void display_start_menu(void) {
@@ -1220,13 +1359,14 @@ void display(void) {
         glColor3f(0, 0, 0);//设置绘图颜色
 
         //計時***************************************
-        glTranslatef(meX, meY - 2, meZ - (length * 2 - 3));
-        glRasterPos3f(width / 2, sky_height / 2, length * 1.5);//设置文字位置
+        //glTranslatef(meX, meY - 2, meZ - (length * 2 - 3));
+        glRasterPos3f(time_x,time_y,time_z);
+        //glRasterPos3f(width / 2, sky_height / 2, length * 1.5);//设置文字位置
         string str(std::to_string(time_count));
         string str1 = "remain time : ";
         string str2 = " s";
         str = str1 + str + str2;
-        DrawString(str);
+        DrawString2(str);
         //********************************************
         glLoadIdentity();            //clear the matrix
         gluLookAt(meX, meY, meZ, seeX, seeY, seeZ, 0.0, 1.0, 0.0);
@@ -1253,7 +1393,10 @@ void display(void) {
         glPopMatrix();
         // ------------------------xyz*/
         //draw_view
+        glEnable(GL_TEXTURE_2D);
         draw_view(length, width, sky_height, floor_height);
+        DrawShield(20.0, GL_QUADS);
+        
         /***********************************************************/
         glPushMatrix();
             glEnable(GL_TEXTURE_2D);
@@ -1377,8 +1520,9 @@ void myReshape(int w, int h) {
 }
 
 void move(int m) {
-    if (kill==1 && die == false && !unbeat) die = true;
-    if (time_count <= 0 && !unbeat) die = true;
+    
+    if (kill==1 && die == false && !unbeat && !pass) die = true;
+   
     if (die == true) return;
     //cout <<"seeX: " << seeX << endl;
    // cout <<"meX: " << meX << endl;
@@ -1386,6 +1530,7 @@ void move(int m) {
         if (meZ > 2) {
             //printf("at %d %f\n",length, meZ);
             meZ = meZ - 1;
+            time_z -= 1;
             if (meZ < (length - 10)) pass = 1;
             //seeX = meX;
             //seeZ =meZ - 0.1;
@@ -1402,6 +1547,7 @@ void move(int m) {
             //seeX = meX;
             //seeZ = meZ + 0.1;
             seeZ = seeZ + 1;
+            time_z += 1;
             face_angle = 180;
         }
     }
@@ -1411,12 +1557,14 @@ void move(int m) {
             //seeZ = meZ;
             //seeX = meX+ 0.1;
             seeX = seeX + 1;
+            time_x += 1;
             face_angle = 90;
         }
     }
     else if (m == 4) {
         if (meX > -width + 2) {
             meX = meX - 1;
+            time_x -= 1;
             //seeZ = meZ;
             //seeX = meX - 0.1;
             seeX = seeX - 1;
@@ -1475,7 +1623,7 @@ void keyboard(unsigned char key, int x, int y) {
             die = false;
             die_menu = false;
             die_angle = 0;
-            time_count = 100;
+            time_count = GAME_START_TIME;
         }
         break;
     case 'P':
@@ -1489,21 +1637,28 @@ void keyboard(unsigned char key, int x, int y) {
 
         if (start_menu) {
             //printf("start menu\n");
-            time_count = 100;
+            time_count = GAME_START_TIME;
             start_menu = false;
             engine_start->drop();
             engine_game = irrklang::createIrrKlangDevice();
             engine_game->play2D("audio/girl_song.mp3", false);
             kill_time = 0;
             test_time = 0;
+            face_angle = 180;
             kill = 0;
         }
+        break;
+    case '+':
+        time_count += 1;
+        break;
+    case '-':
+        time_count -= 1;
         break;
     case 27: // “esc” on keyboard
         start_menu = true; //回到主選單
         die = false;
         die_menu = false;
-        //printf("esc\n");
+        printf("esc\n");
         engine_game->drop();
         engine_start = irrklang::createIrrKlangDevice();
         engine_start->play2D("audio/Main_Theme_cut1.mp3", true);
@@ -1544,7 +1699,9 @@ void mouse(int button, int state, int x, int y)
 
 int main(int argc, char** argv)
 {
-    
+    time_x = width / 2-2;
+    time_y = sky_height / 2;
+    time_z = length * 1.5;
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowPosition(0, 0);
