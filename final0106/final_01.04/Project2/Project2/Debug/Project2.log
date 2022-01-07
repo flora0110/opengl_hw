@@ -21,15 +21,6 @@ D:\Junior\opengl\final0106\final_01.04\Project2\Project2\Source.cpp(665,54): war
 D:\Junior\opengl\final0106\final_01.04\Project2\Project2\Source.cpp(666,55): warning C4305: '引數': 從 'double' 轉換為 'GLfloat'，是由較大的類型轉換為較小的類型，可能導致資料遺失
 D:\Junior\opengl\final0106\final_01.04\Project2\Project2\Source.cpp(667,57): warning C4305: '引數': 從 'double' 轉換為 'GLfloat'，是由較大的類型轉換為較小的類型，可能導致資料遺失
 D:\Junior\opengl\final0106\final_01.04\Project2\Project2\Source.cpp(914,53): warning C4305: '正在初始化': 從 'double' 轉換為 'GLfloat'，是由較大的類型轉換為較小的類型，可能導致資料遺失
-D:\Junior\opengl\final0106\final_01.04\Project2\Project2\Source.cpp(967,16): warning C4476: 'printf' : 格式規範中有未知的類型欄位字元 'b'
-D:\Junior\opengl\final0106\final_01.04\Project2\Project2\Source.cpp(967,40): warning C4474: 'printf': 傳遞給格式字串的引數太多
-D:\Junior\opengl\final0106\final_01.04\Project2\Project2\Source.cpp(967,40): message : 預留位置及其參數需要 1 個 variadic 引數，但卻提供了 2 個
-D:\Junior\opengl\final0106\final_01.04\Project2\Project2\Source.cpp(968,16): warning C4476: 'printf' : 格式規範中有未知的類型欄位字元 'b'
-D:\Junior\opengl\final0106\final_01.04\Project2\Project2\Source.cpp(968,42): warning C4474: 'printf': 傳遞給格式字串的引數太多
-D:\Junior\opengl\final0106\final_01.04\Project2\Project2\Source.cpp(968,42): message : 預留位置及其參數需要 1 個 variadic 引數，但卻提供了 2 個
-D:\Junior\opengl\final0106\final_01.04\Project2\Project2\Source.cpp(969,16): warning C4476: 'printf' : 格式規範中有未知的類型欄位字元 'b'
-D:\Junior\opengl\final0106\final_01.04\Project2\Project2\Source.cpp(969,42): warning C4474: 'printf': 傳遞給格式字串的引數太多
-D:\Junior\opengl\final0106\final_01.04\Project2\Project2\Source.cpp(969,42): message : 預留位置及其參數需要 1 個 variadic 引數，但卻提供了 2 個
 D:\Junior\opengl\final0106\final_01.04\Project2\Project2\Source.cpp(1055,23): warning C4018: '<': signed/unsigned 不相符
 D:\Junior\opengl\final0106\final_01.04\Project2\Project2\Source.cpp(1128,23): warning C4244: '引數': 將 'int' 轉換為 'GLfloat'，由於類型不同，可能導致資料遺失
 D:\Junior\opengl\final0106\final_01.04\Project2\Project2\Source.cpp(1128,16): warning C4244: '引數': 將 'int' 轉換為 'GLfloat'，由於類型不同，可能導致資料遺失

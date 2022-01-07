@@ -260,7 +260,7 @@ void loadTexture(char* file_name, Image* image, int tex_index) {
     if (!ImageLoad(file_name, image)) {
         exit(1);
     }
-    printf("%s index %d\n",file_name,tex_index);
+    //printf("%s index %d\n",file_name,tex_index);
     glBindTexture(GL_TEXTURE_2D, texture[tex_index]);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); //scale linearly when image bigger than texture
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //scale linearly when image smalled than texture
@@ -963,10 +963,10 @@ void timerFunc(int nTimerID)
     switch (nTimerID)
     {
     case REDISPLAYTIMERID:
-        printf("time count %d\n",time_count);
-        printf("1 : %d %b\n",shield1_t,shield1);
-        printf("2 : %d %b\n", shield2_t, shield2);
-        printf("3 : %d %b\n", shield3_t, shield3);
+       // printf("time count %d\n",time_count);
+        //printf("1 : %d %b\n",shield1_t,shield1);
+        //printf("2 : %d %b\n", shield2_t, shield2);
+        //printf("3 : %d %b\n", shield3_t, shield3);
         if (time_count > 0 && !pass && !start_menu) {
             time_count--;
             glutPostRedisplay();
