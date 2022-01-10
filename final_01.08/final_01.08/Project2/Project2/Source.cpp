@@ -2812,18 +2812,9 @@ void myinit(void)
 }
 
 
-void timerFunc(int nTimerID)
-{
-    //printf("start_menu %b\n",start_menu);
-   //if (start_menu) printf("a\n");
-    //else printf("b\n");
-    switch (nTimerID)
-    {
+void timerFunc(int nTimerID){
+    switch (nTimerID){
     case REDISPLAYTIMERID:
-        // printf("time count %d\n",time_count);
-         //printf("1 : %d %b\n",shield1_t,shield1);
-         //printf("2 : %d %b\n", shield2_t, shield2);
-         //printf("3 : %d %b\n", shield3_t, shield3);
         if (time_count > 0 && !pass && !start_menu) {
             time_count--;
             glutPostRedisplay();
@@ -2854,38 +2845,27 @@ void timerFunc(int nTimerID)
         break;
     case MUSIC_ROTATE:
         //小女孩轉動
-        //printf("killtime %d\n",kill_time);
         if (!start_menu && button_select==0) {
             if (kill_time <= GIRL_WAIT_TIME) {
                 //printf("killtim %d\n", kill_time);
                 kill_time++;
             }
             else {
-                //printf("wait %d\n",kill_time);
-                //printf("origin girl_face_angle %d\n", girl_face_angle);
                 girl_face_angle = (girl_face_angle + 30);
                 if (kill == 1) {
                     turn_to_kill = false;
                     girl_face_angle = (girl_face_angle + 30);
                     kill = 0;
                 }
-                
-                //printf("after girl_face_angle %d\n", girl_face_angle);
                 if (girl_face_angle >= 359 && turn_to_kill) { kill = 1; kill_time = 0; }
                 else if (girl_face_angle >= 170 && !turn_to_kill) {
                     kill = 0; kill_time = 0; engine_game->play2D("audio/girl_song.mp3", false);
                     turn_to_kill = true;
                 }
                 girl_face_angle = (girl_face_angle) % 360;
-                //printf("girl_face_angle %d\n", girl_face_angle);
             }
         }
-        //printf("time %d\n",test_time++);
-        //printf("b\n");
-        glutPostRedisplay();
-        //printf("bbb\n");
         glutTimerFunc(100, timerFunc, MUSIC_ROTATE);
-        //printf("bbbbbb\n");
         break;
     }
 }
@@ -2921,7 +2901,7 @@ void DrawString2(string str)
 void auto_rotate(void) {
     Sleep(80); //每80ms更新一次此function
     
-    if (time_count <= 0 && !unbeat) {
+    if (time_count <= 0) {
         die = true;
         //printf("tiem_count %d\n", time_count);
         //printf("3 die %d \n", pass, die_menu);
@@ -3686,13 +3666,9 @@ void myReshape(int w, int h) {
 }
 
 void move(int m) {
-    if (kill == 1 && die == false && !(unbeat || shield1 || shield2 || shield3) && !pass) { die = true; 
+    if (kill == 1 && die == false && !(unbeat || shield1 || shield2 || shield3) && !pass) {
+        die = true; 
     }
-    if (unbeat && time_count == 0) { //雖然有拿無敵盾牌 但timeout，結束遊戲
-        die = true;
-        //printf("1 die %d\n", die_menu);
-    }
-
     if (die == true) return;
     //cout <<"seeX: " << seeX << endl;
    // cout <<"meX: " << meX << endl;
