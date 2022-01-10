@@ -1876,6 +1876,8 @@ irrklang::ISoundEngine* engine_start = irrklang::createIrrKlangDevice();
 irrklang::ISoundEngine* engine_game = irrklang::createIrrKlangDevice();
 irrklang::ISoundEngine* engine_gun = irrklang::createIrrKlangDevice();
 
+static GLfloat fly = 0.4, shade_cut = 0;;
+int up = 1;
 bool start_menu = true, die_menu = false, guide=false; int button_select = 0;
 //start_menu: 正在顯示選單而非遊戲畫面
 bool walk = false, swing_down = false, first_part = true, die = false, unbeat = false, pick = false, pick_star=false;
@@ -2515,6 +2517,7 @@ static void DrawShield(GLfloat size, GLenum type)
     glTexCoord2d(1.0, 0.0);  glVertex3f(-0.2, -2, -10);
     glEnd();
 
+    
 
 
 
@@ -2917,6 +2920,7 @@ void DrawString2(string str)
     }
     glPopMatrix();
 }
+
 void auto_rotate(void) {
     Sleep(80); //每80ms更新一次此function
     
@@ -2925,6 +2929,16 @@ void auto_rotate(void) {
         //printf("tiem_count %d\n", time_count);
         //printf("3 die %d \n", pass, die_menu);
     }
+    if (up==1) { 
+        if (fly < 1) { fly += 0.05; shade_cut += 0.05; }
+        else up = 0;
+    }
+    else {
+        if (fly > 0.4) { fly -= 0.05; shade_cut -= 0.05; }
+        else up = 1;
+    }
+    
+    
     //手腳擺動
     if (swing_down) {
         swing = (swing - 10) % 40;
@@ -3487,23 +3501,63 @@ void display(void) {
         }
         if (shield1_t == 0) {
             glPushMatrix();
-            glTranslatef(shield_1X, shield_1Y, shield_1Z);
-            // glTranslatef(0,0,180);
-            DrawShield(20.0, GL_QUADS);
+                glTranslatef(shield_1X, 0, shield_1Z);
+                glPushMatrix();
+                    glTranslatef(0, fly, 0);
+                    // glTranslatef(0,0,180);
+                    DrawShield(20.0, GL_QUADS);
+                glPopMatrix();
+                glPushMatrix();
+                    glDisable(GL_TEXTURE_2D);
+                    glColor4f(0.5, 0.5, 0.5,0.5);
+                    glLineWidth(3);
+                    glBegin(GL_LINES);
+                    glVertex3f(1 - shade_cut, -1.99, -10);
+                    glVertex3f(-1 + shade_cut, -1.99, -10);
+                    glEnd();
+                    glEnable(GL_TEXTURE_2D);
+                glPopMatrix();
             glPopMatrix();
         }
         if (shield2_t == 0) {
             glPushMatrix();
-            glTranslatef(shield_2X, shield_2Y, shield_2Z);
-            //glTranslatef(0,0,90);
+            glTranslatef(shield_2X, 0, shield_2Z);
+            glPushMatrix();
+            glTranslatef(0, fly, 0);
+            // glTranslatef(0,0,180);
             DrawShield(20.0, GL_QUADS);
+            glPopMatrix();
+            glPushMatrix();
+            glDisable(GL_TEXTURE_2D);
+            glColor4f(0.5, 0.5, 0.5, 0.5);
+            glLineWidth(3);
+            glBegin(GL_LINES);
+            glVertex3f(1 - shade_cut, -1.99, -10);
+            glVertex3f(-1 + shade_cut, -1.99, -10);
+            glEnd();
+            glEnable(GL_TEXTURE_2D);
+            glPopMatrix();
             glPopMatrix();
         }
         if (shield3_t == 0) {
             glPushMatrix();
-            glTranslatef(shield_3X, shield_3Y, shield_3Z);
-            //glTranslatef(0,0,195);
-            DrawShield(20.0, GL_QUADS);
+            glTranslatef(shield_3X, 0, shield_3Z);
+            glPushMatrix();
+                glTranslatef(0, fly, 0);
+                // glTranslatef(0,0,180);
+                DrawShield(20.0, GL_QUADS);
+                
+            glPopMatrix();
+            glPushMatrix();
+            glDisable(GL_TEXTURE_2D);
+            glColor4f(0.5, 0.5, 0.5, 0.5);
+            glLineWidth(3);
+            glBegin(GL_LINES);
+            glVertex3f(1 - shade_cut, -1.99, -10);
+            glVertex3f(-1 + shade_cut, -1.99, -10);
+            glEnd();
+            glEnable(GL_TEXTURE_2D);
+            glPopMatrix();
             glPopMatrix();
         }
  
@@ -3932,7 +3986,7 @@ void keyboard(unsigned char key, int x, int y) {
         }
         break;
     case 'b':
-        guide = false; start_menu = true;
+        if (guide) { guide = false; start_menu = true; }
         break;
     case '+':
     case '=':
@@ -3966,14 +4020,17 @@ void keyboard(unsigned char key, int x, int y) {
     glutPostRedisplay();
 }
 void keyboardSpecial(GLint key, GLint x, GLint y) {
-    if (key == GLUT_KEY_UP) {
-        if (button_select == 0) button_select = (BUTTON_NUM - 1);
-        else button_select--;
+    if (start_menu) {
+        if (key == GLUT_KEY_UP) {
+            if (button_select == 0) button_select = (BUTTON_NUM - 1);
+            else button_select--;
+        }
+        else if (key == GLUT_KEY_DOWN) {
+            if (button_select == (BUTTON_NUM - 1)) button_select = 0;
+            else button_select++;
+        }
     }
-    else if (key == GLUT_KEY_DOWN) {
-        if (button_select == (BUTTON_NUM-1)) button_select = 0;
-        else button_select++;
-    }
+    
     glutPostRedisplay();
 }
 
